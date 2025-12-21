@@ -1,21 +1,21 @@
 {
     "api_keys": {
-        "openai": "sk-xxxxx",
+        "openai": "sk-6xZZuVSouHWEEZendAcqaaWux1jTtW1YMD1WdTAmhjSAsyWR",
         "anthropic": "",
         "zhipu": "",
         "notes": "请填入您的API密钥"
     },
     "ai": {
-        "model_preference": "openai",
+        "model_preference": "qwen-plus",
         "models": {
-            "openai": "gpt-4.1-nano",
+            "openai": "qwen-plus",
             "anthropic": "claude-3-haiku-20240307",
             "zhipu": "chatglm_turbo"
         },
         "max_tokens": 4000,
         "temperature": 0.7,
         "api_base_urls": {
-            "openai": "http://192.168.3.23:3001/v1",
+            "openai": "https://jeniya.cn/v1",
             "notes": "如使用中转API，修改上述URL"
         }
     },
@@ -42,7 +42,7 @@
     },
     "web_auth": {
         "enabled": true,
-        "password": "your_password_here",
+        "password": "123",
         "session_timeout": 3600,
         "notes": "Web界面密码鉴权配置：enabled=是否启用，password=访问密码，session_timeout=会话超时时间(秒)"
     },

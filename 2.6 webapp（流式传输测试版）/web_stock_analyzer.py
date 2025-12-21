@@ -15,6 +15,7 @@ from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Tuple, Callable
 import time
 import re
+import yfinance as yf
 
 # 忽略警告
 warnings.filterwarnings('ignore')
@@ -220,150 +221,121 @@ class WebStockAnalyzer:
         
         self.logger.info("=" * 40)
 
-    def get_stock_data(self, stock_code, period='1y'):
-        """获取股票价格数据（修正版本）"""
-        if stock_code in self.price_cache:
-            cache_time, data = self.price_cache[stock_code]
-            if datetime.now() - cache_time < self.cache_duration:
-                self.logger.info(f"使用缓存的价格数据: {stock_code}")
-                return data
-        
+    def get_stock_data(self, stock_code, exchange: Optional[str]=None, start_date=None, end_date=None):
+        """
+        获取股票数据，支持 A 股（akshare）、港股/美股（yfinance）。
+        参数:
+            stock_code: 例如 "600519"、"0700.HK"、"AAPL"、"0700"
+            exchange: 可选 'cn'|'hk'|'us'，不填则自动推断
+            start_date/end_date: 支持 'YYYYMMDD' 或 'YYYY-MM-DD' 字符串，默认过去 1 年
+        返回:
+            DataFrame，列: date, open, close, high, low, volume（按 date 排序）
+        """
+        def parse_date(d):
+            if d is None:
+                return None
+            try:
+                if '-' in d:
+                    return datetime.strptime(d, '%Y-%m-%d')
+                else:
+                    return datetime.strptime(d, '%Y%m%d')
+            except Exception:
+                return pd.to_datetime(d)
+
+        if start_date is None:
+            start_dt = datetime.now() - timedelta(days=365)
+        else:
+            start_dt = parse_date(start_date)
+        if end_date is None:
+            end_dt = datetime.now()
+        else:
+            end_dt = parse_date(end_date)
+
+        code = str(stock_code).strip()
+        inferred = None
+        if exchange:
+            exchange = exchange.lower()
+        else:
+            up = code.upper()
+            if up.endswith('.HK'):
+                inferred = 'hk'
+            elif code.isdigit() and len(code) == 6:
+                inferred = 'cn'
+            elif code.isdigit() and (len(code) == 4 or len(code) == 3):
+                inferred = 'hk'
+            else:
+                inferred = 'us'
+            exchange = inferred
+
         try:
-            import akshare as ak
-            
-            end_date = datetime.now().strftime('%Y%m%d')
-            # 使用用户配置的技术分析周期
-            days = self.analysis_params.get('technical_period_days', 180)
-            start_date = (datetime.now() - timedelta(days=days)).strftime('%Y%m%d')
-            
-            self.logger.info(f"正在获取 {stock_code} 的历史数据 (过去{days}天)...")
-            
-            stock_data = ak.stock_zh_a_hist(
-                symbol=stock_code,
-                period="daily",
-                start_date=start_date,
-                end_date=end_date,
-                adjust="qfq"
-            )
-            
-            if stock_data.empty:
-                raise ValueError(f"无法获取股票 {stock_code} 的数据")
-            
-            # 智能处理列名映射 - 修复版本
-            try:
-                actual_columns = len(stock_data.columns)
-                self.logger.info(f"获取到 {actual_columns} 列数据，列名: {list(stock_data.columns)}")
-                
-                # 根据实际返回的列数进行映射
-                if actual_columns == 13:  # 包含code列的完整格式
-                    standard_columns = ['date', 'code', 'open', 'close', 'high', 'low', 'volume', 'turnover', 'amplitude', 'change_pct', 'change_amount', 'turnover_rate', 'extra']
-                elif actual_columns == 12:  # 包含code列
-                    standard_columns = ['date', 'code', 'open', 'close', 'high', 'low', 'volume', 'turnover', 'amplitude', 'change_pct', 'change_amount', 'turnover_rate']
-                elif actual_columns == 11:  # 不包含code列的标准格式
-                    standard_columns = ['date', 'open', 'close', 'high', 'low', 'volume', 'turnover', 'amplitude', 'change_pct', 'change_amount', 'turnover_rate']
-                elif actual_columns == 10:  # 简化格式
-                    standard_columns = ['date', 'open', 'close', 'high', 'low', 'volume', 'turnover', 'amplitude', 'change_pct', 'change_amount']
-                else:
-                    # 对于未知格式，尝试智能识别
-                    standard_columns = [f'col_{i}' for i in range(actual_columns)]
-                    self.logger.warning(f"未知的列数格式 ({actual_columns} 列)，使用通用列名")
-                
-                # 创建列名映射
-                column_mapping = dict(zip(stock_data.columns, standard_columns))
-                stock_data = stock_data.rename(columns=column_mapping)
-                
-                self.logger.info(f"列名映射完成: {column_mapping}")
-                
-            except Exception as e:
-                self.logger.warning(f"列名标准化失败: {e}，保持原列名")
-            
-            # 确保必要的列存在并且映射正确
-            required_columns = ['close', 'open', 'high', 'low', 'volume']
-            missing_columns = []
-            
-            for col in required_columns:
-                if col not in stock_data.columns:
-                    # 尝试找到相似的列名
-                    similar_cols = [c for c in stock_data.columns if col in c.lower() or c.lower() in col]
-                    if similar_cols:
-                        stock_data[col] = stock_data[similar_cols[0]]
-                        self.logger.info(f"✓ 映射列 {similar_cols[0]} -> {col}")
-                    else:
-                        missing_columns.append(col)
-            
-            if missing_columns:
-                self.logger.warning(f"缺少必要的列: {missing_columns}")
-                # 如果缺少必要列，尝试使用位置索引映射
-                if len(stock_data.columns) >= 6:  # 至少有6列才能进行位置映射
-                    cols = list(stock_data.columns)
-                    # 通常akshare的列顺序是: 日期, [代码], 开盘, 收盘, 最高, 最低, 成交量, ...
-                    if 'code' in cols[1].lower() or len(cols[1]) == 6:  # 第二列是股票代码
-                        position_mapping = {
-                            cols[0]: 'date',
-                            cols[1]: 'code', 
-                            cols[2]: 'open',
-                            cols[3]: 'close',  # 确保第4列是收盘价
-                            cols[4]: 'high',
-                            cols[5]: 'low'
-                        }
-                        if len(cols) > 6:
-                            position_mapping[cols[6]] = 'volume'
-                    else:  # 没有代码列
-                        position_mapping = {
-                            cols[0]: 'date',
-                            cols[1]: 'open', 
-                            cols[2]: 'close',  # 确保第3列是收盘价
-                            cols[3]: 'high',
-                            cols[4]: 'low'
-                        }
-                        if len(cols) > 5:
-                            position_mapping[cols[5]] = 'volume'
-                    
-                    # 应用位置映射
-                    stock_data = stock_data.rename(columns=position_mapping)
-                    self.logger.info(f"✓ 应用位置映射: {position_mapping}")
-            
-            # 处理日期列
-            try:
-                if 'date' in stock_data.columns:
-                    stock_data['date'] = pd.to_datetime(stock_data['date'])
-                    stock_data = stock_data.set_index('date')
-                else:
-                    stock_data.index = pd.to_datetime(stock_data.index)
-            except Exception as e:
-                self.logger.warning(f"日期处理失败: {e}")
-            
-            # 确保数值列为数值类型
-            numeric_columns = ['open', 'close', 'high', 'low', 'volume']
-            for col in numeric_columns:
-                if col in stock_data.columns:
-                    try:
-                        stock_data[col] = pd.to_numeric(stock_data[col], errors='coerce')
-                    except:
-                        pass
-            
-            # 验证数据质量
-            if 'close' in stock_data.columns:
-                latest_close = stock_data['close'].iloc[-1]
-                latest_open = stock_data['open'].iloc[-1] if 'open' in stock_data.columns else 0
-                self.logger.info(f"✓ 数据验证 - 最新收盘价: {latest_close}, 最新开盘价: {latest_open}")
-                
-                # 检查收盘价是否合理
-                if pd.isna(latest_close) or latest_close <= 0:
-                    self.logger.error(f"❌ 收盘价数据异常: {latest_close}")
-                    raise ValueError(f"股票 {stock_code} 的收盘价数据异常")
-            
-            # 缓存数据
-            self.price_cache[stock_code] = (datetime.now(), stock_data)
-            
-            self.logger.info(f"✓ 成功获取 {stock_code} 的价格数据，共 {len(stock_data)} 条记录")
-            self.logger.info(f"✓ 数据列: {list(stock_data.columns)}")
-            
-            return stock_data
-            
+            if exchange == 'cn':
+                import akshare as ak
+                s = start_dt.strftime('%Y%m%d') if isinstance(start_dt, datetime) else None
+                e = end_dt.strftime('%Y%m%d') if isinstance(end_dt, datetime) else None
+
+                df = ak.stock_zh_a_hist(symbol=code,
+                                        start_date=s,
+                                        end_date=e,
+                                        adjust="qfq")
+                df = df.rename(columns={
+                    "日期": "date",
+                    "开盘": "open",
+                    "收盘": "close",
+                    "最高": "high",
+                    "最低": "low",
+                    "成交量": "volume"
+                })
+                df['date'] = pd.to_datetime(df['date'])
+                numeric_columns = ['open', 'close', 'high', 'low', 'volume']
+                df[numeric_columns] = df[numeric_columns].apply(pd.to_numeric, errors='coerce')
+                df = df.dropna()
+                return df.sort_values('date')
+
+            elif exchange in ('hk', 'us'):
+                try:
+                    import yfinance as yf
+                except ImportError:
+                    self.logger.error("yfinance 未安装，请 pip install yfinance")
+                    raise
+
+                ticker = code
+                if exchange == 'hk':
+                    up = code.upper()
+                    if not up.endswith('.HK'):
+                        if code.isdigit():
+                            code4 = code.zfill(4)
+                            ticker = f"{code4}.HK"
+                        else:
+                            ticker = code
+
+                start_str = start_dt.strftime('%Y-%m-%d') if isinstance(start_dt, datetime) else None
+                end_str = end_dt.strftime('%Y-%m-%d') if isinstance(end_dt, datetime) else None
+
+                data = yf.download(ticker, start=start_str, end=end_str, progress=False, auto_adjust=True)
+                if data is None or data.empty:
+                    raise Exception(f"yfinance 未返回数据: {ticker}")
+
+                data = data.reset_index()
+                data = data.rename(columns={
+                    'Date': 'date',
+                    'Open': 'open',
+                    'Close': 'close',
+                    'High': 'high',
+                    'Low': 'low',
+                    'Volume': 'volume'
+                })
+                numeric_columns = ['open', 'close', 'high', 'low', 'volume']
+                data[numeric_columns] = data[numeric_columns].apply(pd.to_numeric, errors='coerce')
+                data = data.dropna(subset=['date', 'close'])
+                data['date'] = pd.to_datetime(data['date'])
+                return data.sort_values('date')
+
+            else:
+                raise Exception(f"不支持的交易所: {exchange}")
+
         except Exception as e:
             self.logger.error(f"获取股票数据失败: {str(e)}")
-            return pd.DataFrame()
+            raise Exception(f"获取股票数据失败: {str(e)}")
 
     def get_comprehensive_fundamental_data(self, stock_code):
         """获取25项综合财务指标数据（修正版本）"""
