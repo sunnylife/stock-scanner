@@ -1,7 +1,7 @@
 """
-Flask Web服务器 - SSE流式输出版 + 港美股支持
+Flask Web服务器 - SSE流式输出版 + gm支持
 支持Server-Sent Events实时推送分析进度和结果
-支持市场：A股、港股、美股
+支持市场：A、g、m
 """
 
 from flask import Flask, request, jsonify, render_template_string, send_from_directory, session, redirect, url_for, Response
@@ -227,7 +227,7 @@ LOGIN_TEMPLATE = """<!DOCTYPE html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>登录 - 全球股票分析系统</title>
+    <title>登录 - 全球分析系统</title>
     <style>
         * {
             margin: 0;
@@ -367,7 +367,7 @@ LOGIN_TEMPLATE = """<!DOCTYPE html>
     <div class="login-container">
         <div class="login-header">
             <h1>🌍 系统登录</h1>
-            <p>Enhanced v3.1-Multi-Market 全球股票分析系统</p>
+            <p>Enhanced v3.1-Multi-Market 全球分析系统</p>
         </div>
 
         {% if error %}
@@ -397,7 +397,7 @@ LOGIN_TEMPLATE = """<!DOCTYPE html>
         <div class="login-footer">
             <p>🔒 系统采用密码鉴权保护</p>
             <p>🛡️ 会话将在 {{ session_timeout }} 分钟后过期</p>
-            <p>🌍 支持A股/港股/美股分析</p>
+            <p>🌍 支持A/g/m分析</p>
             <p>🌊 支持SSE流式推送</p>
         </div>
     </div>
@@ -419,13 +419,13 @@ LOGIN_TEMPLATE = """<!DOCTYPE html>
 </body>
 </html>"""
 
-# 主页面HTML模板 - 支持SSE流式输出 + 港美股
+# 主页面HTML模板 - 支持SSE流式输出 + gm
 MAIN_TEMPLATE_MULTI_MARKET = r"""<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>全球股票分析系统 - Enhanced v3.1-Multi-Market</title>
+    <title>全球分析系统 - Enhanced v3.1-Multi-Market</title>
     <style>
         * {
             margin: 0;
@@ -1073,15 +1073,15 @@ MAIN_TEMPLATE_MULTI_MARKET = r"""<!DOCTYPE html>
     <div class="container">
         <!-- Header -->
         <div class="header">
-            <h1>🌍 全球股票分析系统 - Multi-Market Edition</h1>
+            <h1>🌍 全球分析系统 - Multi-Market Edition</h1>
             <div class="header-info">
                 <div class="version-info">
-                    Enhanced v3.1-Multi-Market | EnhancedWebStockAnalyzer | A股/港股/美股 {% if auth_enabled %}| 🔐 已认证{% endif %}
+                    Enhanced v3.1-Multi-Market | EnhancedWebStockAnalyzer | A/g/m {% if auth_enabled %}| 🔐 已认证{% endif %}
                     <span id="systemStatus" class="status-indicator status-ready">系统就绪</span>
                     <div class="market-indicators" id="marketIndicators">
-                        <div class="market-badge a">A股</div>
-                        <div class="market-badge hk">港股</div>
-                        <div class="market-badge us">美股</div>
+                        <div class="market-badge a">A</div>
+                        <div class="market-badge hk">g</div>
+                        <div class="market-badge us">m</div>
                     </div>
                 </div>
                 <div class="header-buttons">
@@ -1106,19 +1106,19 @@ MAIN_TEMPLATE_MULTI_MARKET = r"""<!DOCTYPE html>
                 <!-- Single Stock Analysis -->
                 <div id="singleTab" class="tab-content active">
                     <div class="form-group">
-                        <label for="stockCode">股票代码</label>
+                        <label for="stockCode">代码</label>
                         
                         <!-- Market Selector -->
                         <div class="market-selector">
                             <div class="market-option selected" data-market="auto">🤖 自动识别</div>
-                            <div class="market-option" data-market="a_stock">🇨🇳 A股</div>
-                            <div class="market-option" data-market="hk_stock">🇭🇰 港股</div>
-                            <div class="market-option" data-market="us_stock">🇺🇸 美股</div>
+                            <div class="market-option" data-market="a_stock">🇨🇳 A</div>
+                            <div class="market-option" data-market="hk_stock">🇭🇰 g</div>
+                            <div class="market-option" data-market="us_stock">🇺🇸 m</div>
                         </div>
 
                         <div class="stock-input-group">
                             <input type="text" id="stockCode" class="form-control" 
-                                   placeholder="输入股票代码（如：000001、00700、AAPL）">
+                                   placeholder="输入代码（如：000001、00700、AAPL）">
                             <button class="market-detect-btn" onclick="detectMarket()">🔍 检测</button>
                         </div>
 
@@ -1146,9 +1146,9 @@ MAIN_TEMPLATE_MULTI_MARKET = r"""<!DOCTYPE html>
                 <!-- Batch Analysis -->
                 <div id="batchTab" class="tab-content">
                     <div class="form-group">
-                        <label for="stockList">全球股票代码列表</label>
+                        <label for="stockList">全球代码列表</label>
                         <textarea id="stockList" class="form-control textarea" 
-                                  placeholder="输入多个股票代码，每行一个，支持混合市场&#10;例如：&#10;000001（A股）&#10;00700（港股）&#10;AAPL（美股）&#10;600036（A股）&#10;00388（港股）&#10;TSLA（美股）"></textarea>
+                                  placeholder="输入多个代码，每行一个，支持混合市场&#10;例如：&#10;000001（A）&#10;00700（g）&#10;AAPL（m）&#10;600036（A）&#10;00388（g）&#10;TSLA（m）"></textarea>
                     </div>
                     
                     <button id="batchAnalyzeBtn" class="btn btn-success" onclick="analyzeBatchStocks()">
@@ -1177,7 +1177,7 @@ MAIN_TEMPLATE_MULTI_MARKET = r"""<!DOCTYPE html>
                         </div>
                     </div>
                     <div id="logDisplay" class="log-display">
-                        <div class="log-entry log-info">📋 全球股票分析系统就绪，支持A股/港股/美股...</div>
+                        <div class="log-entry log-info">📋 全球分析系统就绪，支持A/g/m...</div>
                     </div>
                 </div>
             </div>
@@ -1239,9 +1239,9 @@ MAIN_TEMPLATE_MULTI_MARKET = r"""<!DOCTYPE html>
                 <div id="resultsContent" class="results-content">
                     <div class="empty-state">
                         <h3>🌍 等待全球分析</h3>
-                        <p>请在左侧输入股票代码并开始分析</p>
+                        <p>请在左侧输入代码并开始分析</p>
                         <p style="margin-top: 8px; font-size: 12px; color: #9ba2ab;">
-                            💫 支持A股 (6位数字) | 港股 (5位数字) | 美股 (字母代码)<br>
+                            💫 支持A (6位数字) | g (5位数字) | m (字母代码)<br>
                             🌊 SSE实时推送 | 🤖 AI深度分析
                         </p>
                     </div>
@@ -1265,21 +1265,21 @@ MAIN_TEMPLATE_MULTI_MARKET = r"""<!DOCTYPE html>
         // 市场配置
         const MARKET_CONFIG = {
             'a_stock': {
-                name: 'A股',
+                name: 'A',
                 currency: 'CNY',
                 flag: '🇨🇳',
                 pattern: /^\d{6}$/,
                 example: '000001, 600036, 300019'
             },
             'hk_stock': {
-                name: '港股',
+                name: 'g',
                 currency: 'HKD',
                 flag: '🇭🇰',
                 pattern: /^\d{5}$|^HK\d{5}$/i,
                 example: '00700, 00388, 01024'
             },
             'us_stock': {
-                name: '美股',
+                name: 'm',
                 currency: 'USD', 
                 flag: '🇺🇸',
                 pattern: /^[A-Z]{1,5}$/,
@@ -1353,14 +1353,14 @@ MAIN_TEMPLATE_MULTI_MARKET = r"""<!DOCTYPE html>
         function detectMarket() {
             const stockCode = document.getElementById('stockCode').value.trim();
             if (!stockCode) {
-                addLog('请先输入股票代码', 'warning');
+                addLog('请先输入代码', 'warning');
                 return;
             }
             
             const market = detectStockMarket(stockCode);
             if (market) {
                 const config = MARKET_CONFIG[market];
-                addLog(`🔍 检测到股票代码 ${stockCode} 属于 ${config.flag} ${config.name} 市场`, 'success');
+                addLog(`🔍 检测到代码 ${stockCode} 属于 ${config.flag} ${config.name} 市场`, 'success');
                 
                 // 自动选择对应市场
                 document.querySelectorAll('.market-option').forEach(opt => opt.classList.remove('selected'));
@@ -1368,7 +1368,7 @@ MAIN_TEMPLATE_MULTI_MARKET = r"""<!DOCTYPE html>
                 selectedMarket = market;
                 updateMarketInfo();
             } else {
-                addLog(`❌ 无法识别股票代码 ${stockCode} 的市场类型`, 'error');
+                addLog(`❌ 无法识别代码 ${stockCode} 的市场类型`, 'error');
             }
         }
 
@@ -1555,7 +1555,7 @@ MAIN_TEMPLATE_MULTI_MARKET = r"""<!DOCTYPE html>
                     resultsContent.innerHTML = `
                         <div style="line-height: 1.6;">
                             <h2 style="color: #2c3e50; border-bottom: 2px solid #e9ecef; padding-bottom: 12px; margin-bottom: 20px;">
-                                📈 全球股票实时分析进行中...
+                                📈 全球实时分析进行中...
                                 <span style="font-size: 12px; color: #28a745; font-weight: normal;">🌊 AI流式生成中</span>
                             </h2>
                             
@@ -1711,7 +1711,7 @@ MAIN_TEMPLATE_MULTI_MARKET = r"""<!DOCTYPE html>
                         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px;">
                             <div style="background: #f8f9fa; padding: 16px; border-radius: 8px;">
                                 <h4 style="color: #495057; margin-bottom: 8px;">基本信息</h4>
-                                <p><strong>股票代码:</strong> ${data.stock_code}</p>
+                                <p><strong>代码:</strong> ${data.stock_code}</p>
                                 <p><strong>交易市场:</strong> ${marketInfo.flag || '🌍'} ${marketInfo.name || '未知'}</p>
                                 <p><strong>计价货币:</strong> ${marketInfo.currency || 'Unknown'}</p>
                                 <p><strong>当前价格:</strong> ${(data.current_price || 0).toFixed(2)}</p>
@@ -1794,7 +1794,7 @@ MAIN_TEMPLATE_MULTI_MARKET = r"""<!DOCTYPE html>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px;">
                         <div style="background: #f8f9fa; padding: 16px; border-radius: 8px;">
                             <h4 style="color: #495057; margin-bottom: 8px;">基本信息</h4>
-                            <p><strong>股票代码:</strong> ${report.stock_code}</p>
+                            <p><strong>代码:</strong> ${report.stock_code}</p>
                             <p><strong>交易市场:</strong> ${marketInfo.flag || '🌍'} ${marketInfo.name || report.market}</p>
                             <p><strong>计价货币:</strong> ${marketInfo.currency || 'Unknown'}</p>
                             <p><strong>当前价格:</strong> ${(report.price_info?.current_price || 0).toFixed(2)}</p>
@@ -1854,7 +1854,7 @@ MAIN_TEMPLATE_MULTI_MARKET = r"""<!DOCTYPE html>
                 basicInfoDiv.innerHTML = `
                     <div style="background: #f8f9fa; padding: 16px; border-radius: 8px;">
                         <h4 style="color: #495057; margin-bottom: 8px;">基本信息</h4>
-                        <p><strong>股票代码:</strong> ${report.stock_code}</p>
+                        <p><strong>代码:</strong> ${report.stock_code}</p>
                         <p><strong>交易市场:</strong> ${marketInfo.flag || '🌍'} ${marketInfo.name || report.market}</p>
                         <p><strong>计价货币:</strong> ${marketInfo.currency || 'Unknown'}</p>
                         <p><strong>当前价格:</strong> ${(report.price_info?.current_price || 0).toFixed(2)}</p>
@@ -1957,7 +1957,7 @@ MAIN_TEMPLATE_MULTI_MARKET = r"""<!DOCTYPE html>
             const html = `
                 <div style="line-height: 1.6;">
                     <h2 style="color: #2c3e50; border-bottom: 2px solid #e9ecef; padding-bottom: 12px; margin-bottom: 20px;">
-                        🌍 全球批量分析报告 (${reports.length} 只股票)
+                        🌍 全球批量分析报告 (${reports.length} 只)
                         <span style="font-size: 12px; color: #28a745; font-weight: normal;">✅ 流式分析完成</span>
                     </h2>
                     
@@ -1966,11 +1966,11 @@ MAIN_TEMPLATE_MULTI_MARKET = r"""<!DOCTYPE html>
                         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px;">
                             <div><strong>分析数量:</strong> ${reports.length} 只</div>
                             <div><strong>平均得分:</strong> ${avgScores.comprehensive.toFixed(1)}</div>
-                            <div><strong>优秀股票:</strong> ${reports.filter(r => r.scores.comprehensive >= 80).length} 只</div>
-                            <div><strong>良好股票:</strong> ${reports.filter(r => r.scores.comprehensive >= 60).length} 只</div>
-                            <div><strong>A股数量:</strong> ${reports.filter(r => r.market === 'a_stock').length} 只</div>
-                            <div><strong>港股数量:</strong> ${reports.filter(r => r.market === 'hk_stock').length} 只</div>
-                            <div><strong>美股数量:</strong> ${reports.filter(r => r.market === 'us_stock').length} 只</div>
+                            <div><strong>优秀:</strong> ${reports.filter(r => r.scores.comprehensive >= 80).length} 只</div>
+                            <div><strong>良好:</strong> ${reports.filter(r => r.scores.comprehensive >= 60).length} 只</div>
+                            <div><strong>A数量:</strong> ${reports.filter(r => r.market === 'a_stock').length} 只</div>
+                            <div><strong>g数量:</strong> ${reports.filter(r => r.market === 'hk_stock').length} 只</div>
+                            <div><strong>m数量:</strong> ${reports.filter(r => r.market === 'us_stock').length} 只</div>
                         </div>
                     </div>
                     
@@ -2038,7 +2038,7 @@ MAIN_TEMPLATE_MULTI_MARKET = r"""<!DOCTYPE html>
         async function analyzeSingleStock() {
             const stockCode = document.getElementById('stockCode').value.trim();
             if (!stockCode) {
-                addLog('请输入股票代码', 'warning');
+                addLog('请输入代码', 'warning');
                 return;
             }
 
@@ -2052,7 +2052,7 @@ MAIN_TEMPLATE_MULTI_MARKET = r"""<!DOCTYPE html>
             if (selectedMarket === 'auto') {
                 targetMarket = detectStockMarket(stockCode);
                 if (!targetMarket) {
-                    addLog('❌ 无法识别股票代码格式，请手动选择市场', 'error');
+                    addLog('❌ 无法识别代码格式，请手动选择市场', 'error');
                     return;
                 }
                 addLog(`🤖 自动识别为 ${MARKET_CONFIG[targetMarket].name} 市场`, 'info');
@@ -2063,7 +2063,7 @@ MAIN_TEMPLATE_MULTI_MARKET = r"""<!DOCTYPE html>
             document.getElementById('systemStatus').className = 'status-indicator status-analyzing';
             document.getElementById('systemStatus').textContent = '全球分析中';
 
-            addLog(`🚀 开始全球流式分析股票: ${stockCode} (${MARKET_CONFIG[targetMarket].name})`, 'header');
+            addLog(`🚀 开始全球流式分析: ${stockCode} (${MARKET_CONFIG[targetMarket].name})`, 'header');
             showLoading();
             showProgress('singleProgress');
 
@@ -2099,7 +2099,7 @@ MAIN_TEMPLATE_MULTI_MARKET = r"""<!DOCTYPE html>
         async function analyzeBatchStocks() {
             const stockListText = document.getElementById('stockList').value.trim();
             if (!stockListText) {
-                addLog('请输入股票代码列表', 'warning');
+                addLog('请输入代码列表', 'warning');
                 return;
             }
 
@@ -2110,11 +2110,11 @@ MAIN_TEMPLATE_MULTI_MARKET = r"""<!DOCTYPE html>
 
             const stockList = stockListText.split('\n').map(s => s.trim()).filter(s => s);
             if (stockList.length === 0) {
-                addLog('股票代码列表为空', 'warning');
+                addLog('代码列表为空', 'warning');
                 return;
             }
 
-            // 验证所有股票代码
+            // 验证所有代码
             const invalidCodes = [];
             for (const code of stockList) {
                 if (!detectStockMarket(code)) {
@@ -2123,7 +2123,7 @@ MAIN_TEMPLATE_MULTI_MARKET = r"""<!DOCTYPE html>
             }
 
             if (invalidCodes.length > 0) {
-                addLog(`❌ 以下股票代码格式无法识别: ${invalidCodes.join(', ')}`, 'error');
+                addLog(`❌ 以下代码格式无法识别: ${invalidCodes.join(', ')}`, 'error');
                 return;
             }
 
@@ -2132,7 +2132,7 @@ MAIN_TEMPLATE_MULTI_MARKET = r"""<!DOCTYPE html>
             document.getElementById('systemStatus').className = 'status-indicator status-analyzing';
             document.getElementById('systemStatus').textContent = '全球批量分析中';
 
-            addLog(`🌍 开始全球流式批量分析 ${stockList.length} 只股票`, 'header');
+            addLog(`🌍 开始全球流式批量分析 ${stockList.length} 只`, 'header');
             showLoading();
             showProgress('batchProgress');
             document.getElementById('currentStock').style.display = 'block';
@@ -2177,7 +2177,7 @@ MAIN_TEMPLATE_MULTI_MARKET = r"""<!DOCTYPE html>
                         const primary = data.data.primary_api || 'openai';
                         const markets = data.data.supported_markets || [];
                         
-                        let configInfo = `🔧 Enhanced v3.1-Multi-Market 全球股票配置状态
+                        let configInfo = `🔧 Enhanced v3.1-Multi-Market 全球配置状态
 
 🎯 当前系统状态：
 ✅ 分析器：EnhancedWebStockAnalyzer (全球多市场版)
@@ -2246,9 +2246,9 @@ ${status} ${api}: ${version}`;
 • 智谱AI ChatGLM (国内网络稳定)
 
 💡 全球市场特性：
-• 🇨🇳 A股: 6位数字代码 (000001, 600036, 300019)
-• 🇭🇰 港股: 5位数字代码 (00700, 00388, 01024)
-• 🇺🇸 美股: 字母代码 (AAPL, TSLA, GOOGL)
+• 🇨🇳 A: 6位数字代码 (000001, 600036, 300019)
+• 🇭🇰 g: 5位数字代码 (00700, 00388, 01024)
+• 🇺🇸 m: 字母代码 (AAPL, TSLA, GOOGL)
 
 🌊 SSE流式特性:
 • Server-Sent Events: 支持
@@ -2267,7 +2267,7 @@ ${status} ${api}: ${version}`;
                     }
                 })
                 .catch(error => {
-                    const fallbackInfo = `🔧 Enhanced v3.1-Multi-Market 全球股票配置管理
+                    const fallbackInfo = `🔧 Enhanced v3.1-Multi-Market 全球配置管理
 
 ❌ 无法获取当前配置状态，请检查服务器连接
 
@@ -2277,7 +2277,7 @@ ${status} ${api}: ${version}`;
 3. 配置支持的市场
 4. 重启服务器
 
-🌍 支持市场：A股、港股、美股
+🌍 支持市场：A、g、m
 🌊 新特性：支持SSE实时流式推送
 
 💡 如需帮助，请查看控制台日志`;
@@ -2306,12 +2306,12 @@ ${status} ${api}: ${version}`;
                     });
                     const marketSummary = Object.entries(marketCounts).map(([market, count]) => `${market}:${count}`).join(',');
                     
-                    reportType = `全球批量分析(${currentAnalysis.length}只股票-${marketSummary})`;
+                    reportType = `全球批量分析(${currentAnalysis.length}只-${marketSummary})`;
                     filename = `global_batch_analysis_${timestamp}.md`;
                     content = generateBatchMarkdown(currentAnalysis);
                 } else {
                     const marketInfo = MARKET_CONFIG[currentAnalysis.market] || {};
-                    reportType = `单个股票(${currentAnalysis.stock_code}-${marketInfo.name || currentAnalysis.market})`;
+                    reportType = `单个(${currentAnalysis.stock_code}-${marketInfo.name || currentAnalysis.market})`;
                     filename = `global_stock_analysis_${currentAnalysis.stock_code}_${timestamp}.md`;
                     content = generateSingleMarkdown(currentAnalysis);
                 }
@@ -2328,7 +2328,7 @@ ${status} ${api}: ${version}`;
                 
                 const fileSize = (content.length / 1024).toFixed(1);
                 setTimeout(() => {
-                    alert(`全球股票分析报告已导出！\\n\\n📄 文件名：${filename}\\n📊 报告类型：${reportType}\\n📏 文件大小：${fileSize} KB\\n🌍 分析范围：全球多市场\\n🌊 分析方式：SSE实时流式推送\\n🔧 分析器：Enhanced v3.1-Multi-Market`);
+                    alert(`全球分析报告已导出！\\n\\n📄 文件名：${filename}\\n📊 报告类型：${reportType}\\n📏 文件大小：${fileSize} KB\\n🌍 分析范围：全球多市场\\n🌊 分析方式：SSE实时流式推送\\n🔧 分析器：Enhanced v3.1-Multi-Market`);
                 }, 100);
 
             } catch (error) {
@@ -2342,14 +2342,14 @@ ${status} ${api}: ${version}`;
             const aiAnalysis = report.ai_analysis || '分析数据准备中...';
             const marketInfo = MARKET_CONFIG[report.market] || {};
             
-            return `# 📈 全球股票分析报告 (Enhanced v3.1-Multi-Market)
+            return `# 📈 全球分析报告 (Enhanced v3.1-Multi-Market)
 
 ## 🏢 基本信息
 | 项目 | 值 |
 |------|-----|
-| **股票代码** | ${report.stock_code} |
+| **代码** | ${report.stock_code} |
 | **原始代码** | ${report.original_code || report.stock_code} |
-| **股票名称** | ${report.stock_name} |
+| **名称** | ${report.stock_name} |
 | **交易市场** | ${marketInfo.flag || '🌍'} ${marketInfo.name || report.market} |
 | **计价货币** | ${marketInfo.currency || 'Unknown'} |
 | **分析时间** | ${report.analysis_date} |
@@ -2385,20 +2385,20 @@ ${aiAnalysis}
 *分析器版本：Enhanced v3.1-Multi-Market*  
 *分析器类：EnhancedWebStockAnalyzer (全球多市场版)*  
 *推送方式：Server-Sent Events 实时流式*  
-*支持市场：A股/港股/美股*  
+*支持市场：A/g/m*  
 *数据来源：全球多维度综合分析*
 `;
         }
 
         function generateBatchMarkdown(reports) {
-            let content = `# 🌍 全球批量股票分析报告 - Enhanced v3.1-Multi-Market
+            let content = `# 🌍 全球批量分析报告 - Enhanced v3.1-Multi-Market
 
 **分析时间：** ${new Date().toLocaleString('zh-CN')}
-**分析数量：** ${reports.length} 只股票
+**分析数量：** ${reports.length} 只
 **分析器版本：** Enhanced v3.1-Multi-Market
 **分析器类：** EnhancedWebStockAnalyzer (全球多市场版)
 **推送方式：** Server-Sent Events 实时流式
-**支持市场：** A股/港股/美股
+**支持市场：** A/g/m
 
 ## 📋 全球分析汇总
 
@@ -2417,7 +2417,7 @@ ${aiAnalysis}
                 content += `- **${market}：** ${count} 只\n`;
             });
 
-            content += `\n| 排名 | 股票代码 | 股票名称 | 市场 | 综合得分 | 技术面 | 基本面 | 情绪面 | 投资建议 |
+            content += `\n| 排名 | 代码 | 名称 | 市场 | 综合得分 | 技术面 | 基本面 | 情绪面 | 投资建议 |
 |------|----------|----------|------|----------|--------|--------|--------|----------|
 `;
 
@@ -2446,14 +2446,14 @@ ${aiAnalysis}
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
-            addLog('🌍 全球股票分析系统已启动 (Multi-Market Edition)', 'success');
+            addLog('🌍 全球分析系统已启动 (Multi-Market Edition)', 'success');
             addLog('📋 Enhanced v3.1-Multi-Market | EnhancedWebStockAnalyzer', 'info');
             addLog('🌊 SSE流式推送：实时进度显示', 'info');
             addLog('🔥 高并发优化：线程池 + 异步处理 + 任务队列', 'info');
             addLog('🤖 AI分析：支持OpenAI/Claude/智谱AI智能切换', 'info');
-            addLog('🌍 全球市场：A股/港股/美股全覆盖', 'info');
+            addLog('🌍 全球市场：A/g/m全覆盖', 'info');
             addLog('🔐 安全特性：密码鉴权 + 会话管理', 'info');
-            addLog('💡 股票代码示例：000001(A股), 00700(港股), AAPL(美股)', 'info');
+            addLog('💡 代码示例：000001(A), 00700(g), AAPL(m)', 'info');
             
             // 初始化SSE连接
             initSSE();
@@ -2707,7 +2707,7 @@ class StreamingAnalyzer:
         })
 
 def analyze_stock_streaming(stock_code, enable_streaming, client_id, target_market=None):
-    """流式股票分析（支持多市场）"""
+    """流式分析（支持多市场）"""
     streamer = StreamingAnalyzer(client_id)
     
     try:
@@ -2718,12 +2718,12 @@ def analyze_stock_streaming(stock_code, enable_streaming, client_id, target_mark
         else:
             market = detected_market
         
-        streamer.send_log(f"🚀 开始全球流式分析股票: {normalized_code} ({market.upper()})", 'header')
-        streamer.send_progress('singleProgress', 5, f"正在获取{market.upper()}股票基本信息...")
+        streamer.send_log(f"🚀 开始全球流式分析: {normalized_code} ({market.upper()})", 'header')
+        streamer.send_progress('singleProgress', 5, f"正在获取{market.upper()}基本信息...")
         
-        # 获取股票名称
+        # 获取名称
         stock_name = analyzer.get_stock_name(normalized_code)
-        streamer.send_log(f"✓ 股票名称: {stock_name} ({market.upper()})", 'success')
+        streamer.send_log(f"✓ 名称: {stock_name} ({market.upper()})", 'success')
         
         # 发送基本信息
         streamer.send_partial_result({
@@ -2741,7 +2741,7 @@ def analyze_stock_streaming(stock_code, enable_streaming, client_id, target_mark
         
         price_data = analyzer.get_stock_data(normalized_code)
         if price_data.empty:
-            raise ValueError(f"无法获取股票 {market.upper()} {normalized_code} 的价格数据")
+            raise ValueError(f"无法获取 {market.upper()} {normalized_code} 的价格数据")
         
         price_info = analyzer.get_price_info(price_data)
         market_config = analyzer.market_config.get(market, {})
@@ -2895,12 +2895,12 @@ def analyze_stock_streaming(stock_code, enable_streaming, client_id, target_mark
         raise
 
 def analyze_batch_streaming(stock_codes, client_id):
-    """流式批量股票分析（支持多市场）"""
+    """流式批量分析（支持多市场）"""
     streamer = StreamingAnalyzer(client_id)
     
     try:
         total_stocks = len(stock_codes)
-        streamer.send_log(f"🌍 开始全球流式批量分析 {total_stocks} 只股票", 'header')
+        streamer.send_log(f"🌍 开始全球流式批量分析 {total_stocks} 只", 'header')
         
         results = []
         failed_stocks = []
@@ -2915,12 +2915,12 @@ def analyze_batch_streaming(stock_codes, client_id):
                 market_counts[market] = market_counts.get(market, 0) + 1
                 
                 streamer.send_progress('batchProgress', progress, 
-                    f"正在分析第 {i+1}/{total_stocks} 只股票", 
+                    f"正在分析第 {i+1}/{total_stocks} 只", 
                     f"{normalized_code} ({market.upper()})")
                 
                 streamer.send_log(f"🔍 开始分析 {normalized_code} ({market.upper()}) ({i+1}/{total_stocks})", 'info')
                 
-                # 分析单只股票（简化版，不发送中间进度）
+                # 分析单只（简化版，不发送中间进度）
                 report = analyzer.analyze_stock(normalized_code, False)
                 results.append(report)
                 
@@ -2958,7 +2958,7 @@ def analyze_batch_streaming(stock_codes, client_id):
         
         success_count = len(results)
         market_summary = ", ".join([f"{market.upper()}:{count}" for market, count in market_counts.items()])
-        message = f"🎉 全球批量分析完成！成功分析 {success_count}/{total_stocks} 只股票 ({market_summary})"
+        message = f"🎉 全球批量分析完成！成功分析 {success_count}/{total_stocks} 只 ({market_summary})"
         if failed_stocks:
             message += f"，失败: {', '.join(failed_stocks)}"
         
@@ -2975,7 +2975,7 @@ def analyze_batch_streaming(stock_codes, client_id):
 @app.route('/api/analyze_stream', methods=['POST'])
 @require_auth
 def analyze_stock_stream():
-    """单只股票流式分析接口（支持多市场）"""
+    """单只流式分析接口（支持多市场）"""
     try:
         if not analyzer:
             return jsonify({
@@ -2992,7 +2992,7 @@ def analyze_stock_stream():
         if not stock_code:
             return jsonify({
                 'success': False,
-                'error': '股票代码不能为空'
+                'error': '代码不能为空'
             }), 400
         
         if not client_id:
@@ -3001,12 +3001,12 @@ def analyze_stock_stream():
                 'error': '缺少客户端ID'
             }), 400
         
-        # 验证股票代码格式
+        # 验证代码格式
         is_valid, validation_message = analyzer.validate_stock_code(stock_code)
         if not is_valid:
             return jsonify({
                 'success': False,
-                'error': f'股票代码格式错误: {validation_message}'
+                'error': f'代码格式错误: {validation_message}'
             }), 400
         
         # 检查是否有相同的分析正在进行
@@ -3014,7 +3014,7 @@ def analyze_stock_stream():
             if stock_code in analysis_tasks:
                 return jsonify({
                     'success': False,
-                    'error': f'股票 {stock_code} 正在分析中，请稍候'
+                    'error': f' {stock_code} 正在分析中，请稍候'
                 }), 429
             
             analysis_tasks[stock_code] = {
@@ -3024,7 +3024,7 @@ def analyze_stock_stream():
                 'market': target_market
             }
         
-        logger.info(f"开始全球流式分析股票: {stock_code}, 目标市场: {target_market}, 客户端: {client_id}")
+        logger.info(f"开始全球流式分析: {stock_code}, 目标市场: {target_market}, 客户端: {client_id}")
         
         # 异步执行分析
         def run_analysis():
@@ -3032,9 +3032,9 @@ def analyze_stock_stream():
                 global currentAnalysis
                 report = analyze_stock_streaming(stock_code, enable_streaming, client_id, target_market)
                 currentAnalysis = report
-                logger.info(f"全球股票流式分析完成: {stock_code}")
+                logger.info(f"全球流式分析完成: {stock_code}")
             except Exception as e:
-                logger.error(f"全球股票流式分析失败: {stock_code}, 错误: {e}")
+                logger.error(f"全球流式分析失败: {stock_code}, 错误: {e}")
             finally:
                 with task_lock:
                     analysis_tasks.pop(stock_code, None)
@@ -3044,13 +3044,13 @@ def analyze_stock_stream():
         
         return jsonify({
             'success': True,
-            'message': f'股票 {stock_code} 全球流式分析已启动',
+            'message': f' {stock_code} 全球流式分析已启动',
             'client_id': client_id,
             'target_market': target_market
         })
         
     except Exception as e:
-        logger.error(f"启动全球股票流式分析失败: {e}")
+        logger.error(f"启动全球流式分析失败: {e}")
         return jsonify({
             'success': False,
             'error': str(e)
@@ -3059,7 +3059,7 @@ def analyze_stock_stream():
 @app.route('/api/batch_analyze_stream', methods=['POST'])
 @require_auth
 def batch_analyze_stream():
-    """批量股票流式分析接口（支持多市场）"""
+    """批量流式分析接口（支持多市场）"""
     try:
         if not analyzer:
             return jsonify({
@@ -3074,7 +3074,7 @@ def batch_analyze_stream():
         if not stock_codes:
             return jsonify({
                 'success': False,
-                'error': '股票代码列表不能为空'
+                'error': '代码列表不能为空'
             }), 400
         
         if not client_id:
@@ -3087,10 +3087,10 @@ def batch_analyze_stream():
         if len(stock_codes) > 10:
             return jsonify({
                 'success': False,
-                'error': '批量分析最多支持10只股票'
+                'error': '批量分析最多支持10只'
             }), 400
         
-        # 验证所有股票代码
+        # 验证所有代码
         invalid_codes = []
         market_distribution = {}
         
@@ -3105,10 +3105,10 @@ def batch_analyze_stream():
         if invalid_codes:
             return jsonify({
                 'success': False,
-                'error': f'以下股票代码格式错误: {"; ".join(invalid_codes)}'
+                'error': f'以下代码格式错误: {"; ".join(invalid_codes)}'
             }), 400
         
-        logger.info(f"开始全球流式批量分析 {len(stock_codes)} 只股票, 市场分布: {market_distribution}, 客户端: {client_id}")
+        logger.info(f"开始全球流式批量分析 {len(stock_codes)} 只, 市场分布: {market_distribution}, 客户端: {client_id}")
         
         # 异步执行批量分析
         def run_batch_analysis():
@@ -3116,7 +3116,7 @@ def batch_analyze_stream():
                 global currentAnalysis
                 results = analyze_batch_streaming(stock_codes, client_id)
                 currentAnalysis = results
-                logger.info(f"全球批量流式分析完成，成功分析 {len(results)}/{len(stock_codes)} 只股票")
+                logger.info(f"全球批量流式分析完成，成功分析 {len(results)}/{len(stock_codes)} 只")
             except Exception as e:
                 logger.error(f"全球批量流式分析失败: {e}")
         
@@ -3125,7 +3125,7 @@ def batch_analyze_stream():
         
         return jsonify({
             'success': True,
-            'message': f'全球批量分析已启动，共 {len(stock_codes)} 只股票',
+            'message': f'全球批量分析已启动，共 {len(stock_codes)} 只',
             'client_id': client_id,
             'market_distribution': market_distribution
         })
@@ -3147,7 +3147,7 @@ def status():
         return jsonify({
             'success': True,
             'status': 'ready',
-            'message': '全球股票分析系统运行正常 (Multi-Market Edition)',
+            'message': '全球分析系统运行正常 (Multi-Market Edition)',
             'analyzer_available': analyzer is not None,
             'auth_enabled': auth_enabled,
             'sse_support': True,
@@ -3164,7 +3164,7 @@ def status():
 @app.route('/api/analyze', methods=['POST'])
 @require_auth
 def analyze_stock():
-    """单只股票分析 - 兼容接口（非流式，支持多市场）"""
+    """单只分析 - 兼容接口（非流式，支持多市场）"""
     try:
         if not analyzer:
             return jsonify({
@@ -3179,15 +3179,15 @@ def analyze_stock():
         if not stock_code:
             return jsonify({
                 'success': False,
-                'error': '股票代码不能为空'
+                'error': '代码不能为空'
             }), 400
         
-        # 验证股票代码格式
+        # 验证代码格式
         is_valid, validation_message = analyzer.validate_stock_code(stock_code)
         if not is_valid:
             return jsonify({
                 'success': False,
-                'error': f'股票代码格式错误: {validation_message}'
+                'error': f'代码格式错误: {validation_message}'
             }), 400
         
         # 检查是否有相同的分析正在进行
@@ -3195,7 +3195,7 @@ def analyze_stock():
             if stock_code in analysis_tasks:
                 return jsonify({
                     'success': False,
-                    'error': f'股票 {stock_code} 正在分析中，请稍候'
+                    'error': f' {stock_code} 正在分析中，请稍候'
                 }), 429
             
             analysis_tasks[stock_code] = {
@@ -3203,7 +3203,7 @@ def analyze_stock():
                 'status': 'analyzing'
             }
         
-        logger.info(f"开始全球分析股票: {stock_code}")
+        logger.info(f"开始全球分析: {stock_code}")
         
         try:
             # 执行分析
@@ -3212,12 +3212,12 @@ def analyze_stock():
             # 清理数据中的NaN值
             cleaned_report = clean_data_for_json(report)
             
-            logger.info(f"全球股票分析完成: {stock_code} ({report.get('market', 'Unknown').upper()})")
+            logger.info(f"全球分析完成: {stock_code} ({report.get('market', 'Unknown').upper()})")
             
             return jsonify({
                 'success': True,
                 'data': cleaned_report,
-                'message': f'股票 {stock_code} 全球分析完成'
+                'message': f' {stock_code} 全球分析完成'
             })
             
         finally:
@@ -3228,7 +3228,7 @@ def analyze_stock():
         with task_lock:
             analysis_tasks.pop(stock_code, None)
         
-        logger.error(f"全球股票分析失败: {e}")
+        logger.error(f"全球分析失败: {e}")
         return jsonify({
             'success': False,
             'error': str(e)
@@ -3237,7 +3237,7 @@ def analyze_stock():
 @app.route('/api/batch_analyze', methods=['POST'])
 @require_auth
 def batch_analyze():
-    """批量股票分析 - 兼容接口（非流式，支持多市场）"""
+    """批量分析 - 兼容接口（非流式，支持多市场）"""
     try:
         if not analyzer:
             return jsonify({
@@ -3251,16 +3251,16 @@ def batch_analyze():
         if not stock_codes:
             return jsonify({
                 'success': False,
-                'error': '股票代码列表不能为空'
+                'error': '代码列表不能为空'
             }), 400
         
         if len(stock_codes) > 10:
             return jsonify({
                 'success': False,
-                'error': '批量分析最多支持10只股票'
+                'error': '批量分析最多支持10只'
             }), 400
         
-        # 验证所有股票代码
+        # 验证所有代码
         invalid_codes = []
         market_distribution = {}
         
@@ -3275,10 +3275,10 @@ def batch_analyze():
         if invalid_codes:
             return jsonify({
                 'success': False,
-                'error': f'以下股票代码格式错误: {"; ".join(invalid_codes)}'
+                'error': f'以下代码格式错误: {"; ".join(invalid_codes)}'
             }), 400
         
-        logger.info(f"开始全球批量分析 {len(stock_codes)} 只股票，市场分布: {market_distribution}")
+        logger.info(f"开始全球批量分析 {len(stock_codes)} 只，市场分布: {market_distribution}")
         
         results = []
         failed_stocks = []
@@ -3313,19 +3313,19 @@ def batch_analyze():
             market = result.get('market', 'Unknown')
             success_by_market[market] = success_by_market.get(market, 0) + 1
         
-        logger.info(f"全球批量分析完成，成功分析 {success_count}/{total_count} 只股票，市场分布: {success_by_market}")
+        logger.info(f"全球批量分析完成，成功分析 {success_count}/{total_count} 只，市场分布: {success_by_market}")
         
         response_data = {
             'success': True,
             'data': cleaned_results,
-            'message': f'全球批量分析完成，成功分析 {success_count}/{total_count} 只股票',
+            'message': f'全球批量分析完成，成功分析 {success_count}/{total_count} 只',
             'market_distribution': market_distribution,
             'success_by_market': success_by_market
         }
         
         if failed_stocks:
             response_data['failed_stocks'] = failed_stocks
-            response_data['message'] += f'，失败股票: {", ".join(failed_stocks)}'
+            response_data['message'] += f'，失败: {", ".join(failed_stocks)}'
         
         return jsonify(response_data)
         
@@ -3348,7 +3348,7 @@ def get_task_status(stock_code):
             return jsonify({
                 'success': True,
                 'status': 'not_found',
-                'message': f'未找到股票 {stock_code} 的分析任务'
+                'message': f'未找到 {stock_code} 的分析任务'
             })
         
         # 计算分析时长
@@ -3360,7 +3360,7 @@ def get_task_status(stock_code):
             'elapsed_time': elapsed_time,
             'client_id': task_info.get('client_id'),
             'market': task_info.get('market'),
-            'message': f'股票 {stock_code} 正在分析中'
+            'message': f' {stock_code} 正在分析中'
         })
         
     except Exception as e:
@@ -3447,7 +3447,7 @@ def get_system_info():
 @app.route('/api/validate_stock', methods=['POST'])
 @require_auth  
 def validate_stock():
-    """验证股票代码接口"""
+    """验证代码接口"""
     try:
         if not analyzer:
             return jsonify({
@@ -3461,10 +3461,10 @@ def validate_stock():
         if not stock_code:
             return jsonify({
                 'success': False,
-                'error': '股票代码不能为空'
+                'error': '代码不能为空'
             }), 400
         
-        # 验证股票代码
+        # 验证代码
         is_valid, message = analyzer.validate_stock_code(stock_code)
         normalized_code, market = analyzer.normalize_stock_code(stock_code)
         
@@ -3508,8 +3508,8 @@ def internal_error(error):
 
 def main():
     """主函数"""
-    print("🌍 启动全球股票分析系统（Multi-Market Edition）...")
-    print("🌊 Server-Sent Events | 实时流式推送 | A股/港股/美股")
+    print("🌍 启动全球分析系统（Multi-Market Edition）...")
+    print("🌊 Server-Sent Events | 实时流式推送 | A/g/m")
     print("=" * 70)
     
     # 检查依赖
@@ -3620,7 +3620,7 @@ def main():
         print("❌ 分析器初始化失败，程序退出")
         return
     
-    print("✅ 全球股票分析系统初始化完成！")
+    print("✅ 全球分析系统初始化完成！")
     print("🌍 全球市场支持:")
     if analyzer:
         markets = analyzer.get_supported_markets()
@@ -3723,20 +3723,20 @@ def main():
     print("🔧 API接口文档:")
     print("   - GET  /api/status - 系统状态")
     print("   - GET  /api/sse?client_id=xxx - SSE流式接口")
-    print("   - POST /api/analyze_stream - 单只股票流式分析")
-    print("   - POST /api/batch_analyze_stream - 批量股票流式分析")
-    print("   - POST /api/analyze - 单只股票分析 (兼容)")
-    print("   - POST /api/batch_analyze - 批量股票分析 (兼容)")
-    print("   - POST /api/validate_stock - 股票代码验证")
+    print("   - POST /api/analyze_stream - 单只流式分析")
+    print("   - POST /api/batch_analyze_stream - 批量流式分析")
+    print("   - POST /api/analyze - 单只分析 (兼容)")
+    print("   - POST /api/batch_analyze - 批量分析 (兼容)")
+    print("   - POST /api/validate_stock - 代码验证")
     print("   - GET  /api/task_status/<code> - 任务状态")
     print("   - GET  /api/system_info - 系统信息")
     print("   - GET  /login - 登录页面 (如启用鉴权)")
     print("   - GET  /logout - 退出登录")
     
-    print("🌍 支持股票代码:")
-    print("   - A股: 6位数字 (000001, 600036, 300019)")
-    print("   - 港股: 5位数字 (00700, 00388, 01024)")
-    print("   - 美股: 字母代码 (AAPL, TSLA, GOOGL)")
+    print("🌍 支持代码:")
+    print("   - A: 6位数字 (000001, 600036, 300019)")
+    print("   - g: 5位数字 (00700, 00388, 01024)")
+    print("   - m: 字母代码 (AAPL, TSLA, GOOGL)")
     
     print("🌊 SSE事件类型:")
     print("   - connected: 连接确认")
@@ -3764,7 +3764,7 @@ def main():
             processes=1
         )
     except KeyboardInterrupt:
-        print("\n👋 全球股票分析系统已关闭")
+        print("\n👋 全球分析系统已关闭")
         executor.shutdown(wait=True)
     except Exception as e:
         print(f"❌ 服务器启动失败: {e}")

@@ -1,7 +1,7 @@
 """
-Web版增强股票分析系统 - 支持AI流式输出 + 港美股分析
-基于最新 stock_analyzer.py 修正版本，新增AI流式返回功能和港美股支持
-支持市场：A股、港股、美股
+Web版增强分析系统 - 支持AI流式输出 + gm分析
+基于最新 stock_analyzer.py 修正版本，新增AI流式返回功能和gm支持
+支持市场：A、g、m
 """
 
 import os
@@ -35,7 +35,7 @@ logging.basicConfig(
 )
 
 class EnhancedWebStockAnalyzer:
-    """增强版Web股票分析器（支持A股/港股/美股 + AI流式输出）"""
+    """增强版Web分析器（支持A/g/m + AI流式输出）"""
     
     def __init__(self, config_file='config.json'):
         """初始化分析器"""
@@ -98,7 +98,7 @@ class EnhancedWebStockAnalyzer:
         # API密钥配置
         self.api_keys = self.config.get('api_keys', {})
         
-        self.logger.info("增强版Web股票分析器初始化完成（支持A股/港股/美股 + AI流式输出）")
+        self.logger.info("增强版Web分析器初始化完成（支持A/g/m + AI流式输出）")
         self._log_config_status()
 
     def _load_config(self):
@@ -133,7 +133,7 @@ class EnhancedWebStockAnalyzer:
             return self._get_default_config()
 
     def _get_default_config(self):
-        """获取增强版默认配置（支持港美股）"""
+        """获取增强版默认配置（支持gm）"""
         return {
             "api_keys": {
                 "openai": "",
@@ -182,21 +182,21 @@ class EnhancedWebStockAnalyzer:
                     "currency": "CNY",
                     "timezone": "Asia/Shanghai",
                     "trading_hours": "09:30-15:00",
-                    "notes": "中国A股市场"
+                    "notes": "中国A市场"
                 },
                 "hk_stock": {
                     "enabled": True,
                     "currency": "HKD", 
                     "timezone": "Asia/Hong_Kong",
                     "trading_hours": "09:30-16:00",
-                    "notes": "香港股票市场"
+                    "notes": "香g市场"
                 },
                 "us_stock": {
                     "enabled": True,
                     "currency": "USD",
                     "timezone": "America/New_York", 
                     "trading_hours": "09:30-16:00",
-                    "notes": "美国股票市场"
+                    "notes": "m国市场"
                 }
             },
             "web_auth": {
@@ -208,7 +208,7 @@ class EnhancedWebStockAnalyzer:
             "_metadata": {
                 "version": "3.1.0-multi-market-streaming",
                 "created": datetime.now().isoformat(),
-                "description": "增强版AI股票分析系统配置文件（支持A股/港股/美股 + AI流式输出）"
+                "description": "增强版AI分析系统配置文件（支持A/g/m + AI流式输出）"
             }
         }
 
@@ -223,7 +223,7 @@ class EnhancedWebStockAnalyzer:
 
     def _log_config_status(self):
         """记录配置状态"""
-        self.logger.info("=== 增强版系统配置状态（支持A股/港股/美股 + AI流式输出）===")
+        self.logger.info("=== 增强版系统配置状态（支持A/g/m + AI流式输出）===")
         
         # 检查API密钥状态
         available_apis = []
@@ -266,32 +266,32 @@ class EnhancedWebStockAnalyzer:
         self.logger.info("=" * 50)
 
     def detect_market(self, stock_code):
-        """检测股票所属市场"""
+        """检测所属市场"""
         stock_code = stock_code.strip().upper()
         
-        # A股检测（6位数字）
+        # A检测（6位数字）
         if re.match(r'^\d{6}$', stock_code):
             return 'a_stock'
         
-        # 港股检测（5位数字，通常以0开头）
+        # g检测（5位数字，通常以0开头）
         elif re.match(r'^\d{5}$', stock_code):
             return 'hk_stock'
         
-        # 港股检测（带HK前缀）
+        # g检测（带HK前缀）
         elif re.match(r'^HK\d{5}$', stock_code):
             return 'hk_stock'
         
-        # 美股检测（字母代码）
+        # m检测（字母代码）
         elif re.match(r'^[A-Z]{1,5}$', stock_code):
             return 'us_stock'
         
-        # 默认返回A股
+        # 默认返回A
         else:
-            self.logger.warning(f"⚠️ 无法识别股票代码格式: {stock_code}，默认为A股")
+            self.logger.warning(f"⚠️ 无法识别代码格式: {stock_code}，默认为A")
             return 'a_stock'
 
     def normalize_stock_code(self, stock_code, market=None):
-        """标准化股票代码"""
+        """标准化代码"""
         stock_code = stock_code.strip().upper()
         
         if market is None:
@@ -301,14 +301,14 @@ class EnhancedWebStockAnalyzer:
             # 移除HK前缀（如果有）
             if stock_code.startswith('HK'):
                 stock_code = stock_code[2:]
-            # 港股代码补零到5位
+            # g代码补零到5位
             if len(stock_code) < 5:
                 stock_code = stock_code.zfill(5)
         
         return stock_code, market
 
     def get_stock_data(self, stock_code, period='1y'):
-        """获取股票价格数据（支持多市场）"""
+        """获取价格数据（支持多市场）"""
         stock_code, market = self.normalize_stock_code(stock_code)
         cache_key = f"{market}_{stock_code}"
         
@@ -330,7 +330,7 @@ class EnhancedWebStockAnalyzer:
             stock_data = None
             
             if market == 'a_stock':
-                # A股数据
+                # A数据
                 stock_data = ak.stock_zh_a_hist(
                     symbol=stock_code,
                     period="daily",
@@ -339,7 +339,7 @@ class EnhancedWebStockAnalyzer:
                     adjust="qfq"
                 )
             elif market == 'hk_stock':
-                # 港股数据
+                # g数据
                 try:
                     stock_data = ak.stock_hk_hist(
                         symbol=stock_code,
@@ -349,14 +349,14 @@ class EnhancedWebStockAnalyzer:
                         adjust="qfq"
                     )
                 except Exception as e:
-                    self.logger.warning(f"使用港股历史数据接口失败: {e}，尝试备用接口...")
+                    self.logger.warning(f"使用g历史数据接口失败: {e}，尝试备用接口...")
                     # 备用接口
                     stock_data = ak.stock_hk_daily(symbol=stock_code, adjust="qfq")
                     if not stock_data.empty:
                         # 过滤日期范围
                         stock_data = stock_data[stock_data.index >= start_date]
             elif market == 'us_stock':
-                # 美股数据
+                # m数据
                 # session = requests.Session()
                 # # 设置 User-Agent，假装自己是 Windows 上的 Chrome 浏览器
                 # session.headers.update({
@@ -400,7 +400,7 @@ class EnhancedWebStockAnalyzer:
                     stock_data = None
             
             if stock_data is None or stock_data.empty:
-                raise ValueError(f"无法获取股票 {market.upper()} {stock_code} 的数据")
+                raise ValueError(f"无法获取 {market.upper()} {stock_code} 的数据")
             
             # 标准化列名
             stock_data = self._standardize_price_data_columns(stock_data, market)
@@ -413,7 +413,7 @@ class EnhancedWebStockAnalyzer:
             return stock_data
             
         except Exception as e:
-            self.logger.error(f"获取股票数据失败: {str(e)}")
+            self.logger.error(f"获取数据失败: {str(e)}")
             return pd.DataFrame()
 
     def _standardize_price_data_columns(self, stock_data, market):
@@ -424,14 +424,14 @@ class EnhancedWebStockAnalyzer:
             
             # 根据市场和实际列数进行映射
             if market == 'a_stock':
-                # A股列名映射
+                # A列名映射
                 if actual_columns >= 11:
                     standard_columns = ['date', 'open', 'close', 'high', 'low', 'volume', 'turnover', 'amplitude', 'change_pct', 'change_amount', 'turnover_rate']
                 else:
                     standard_columns = [f'col_{i}' for i in range(actual_columns)]
                     
             elif market == 'hk_stock':
-                # 港股列名映射
+                # g列名映射
                 if actual_columns >= 6:
                     standard_columns = ['date', 'open', 'close', 'high', 'low', 'volume']
                     if actual_columns > 6:
@@ -440,7 +440,7 @@ class EnhancedWebStockAnalyzer:
                     standard_columns = [f'col_{i}' for i in range(actual_columns)]
                     
             elif market == 'us_stock':
-                # 美股列名映射
+                # m列名映射
                 if actual_columns >= 6:
                     standard_columns = ['date', 'open', 'close', 'high', 'low', 'volume']
                     if actual_columns > 6:
@@ -528,7 +528,7 @@ class EnhancedWebStockAnalyzer:
             }
 
     def _get_a_stock_fundamental_data(self, stock_code):
-        """获取A股基本面数据"""
+        """获取A股基本面数据 - 修复版"""
         import akshare as ak
         
         fundamental_data = {}
@@ -537,6 +537,8 @@ class EnhancedWebStockAnalyzer:
         try:
             self.logger.info("正在获取A股基本信息...")
             stock_info = ak.stock_individual_info_em(symbol=stock_code)
+            # 这里的 stock_info 返回的是 DataFrame，需要转 dict
+            # DataFrame 结构通常是 item, value 两列
             info_dict = dict(zip(stock_info['item'], stock_info['value']))
             fundamental_data['basic_info'] = info_dict
             self.logger.info("✓ A股基本信息获取成功")
@@ -553,15 +555,27 @@ class EnhancedWebStockAnalyzer:
             self.logger.warning(f"获取A股财务指标失败: {e}")
             fundamental_data['financial_indicators'] = {}
         
-        # 3. 估值指标
+        # 3. 估值指标 (修复点：替换失效接口 stock_a_indicator_lg)
         try:
-            valuation_data = ak.stock_a_indicator_lg(symbol=stock_code)
+            # 使用百度接口获取个股估值，包含PE, PB, 市值等
+            valuation_data = ak.stock_zh_a_valuation_baidu(symbol=stock_code)
             if not valuation_data.empty:
+                # 百度接口返回字段：date, pe(ttm), pb, etc. 取最后一行
                 latest_valuation = valuation_data.iloc[-1].to_dict()
-                cleaned_valuation = self._clean_financial_data(latest_valuation)
-                fundamental_data['valuation'] = cleaned_valuation
+                
+                # 映射字段名为通用名称
+                mapped_valuation = {
+                    '市盈率(TTM)': latest_valuation.get('pe_ttm'),
+                    '市净率': latest_valuation.get('pb'),
+                    '股息率': latest_valuation.get('dividend_yield'),
+                    '总市值': latest_valuation.get('total_market_cap')
+                }
+                fundamental_data['valuation'] = self._clean_financial_data(mapped_valuation)
+                self.logger.info("✓ A股估值指标获取成功")
+            else:
+                fundamental_data['valuation'] = {}
         except Exception as e:
-            self.logger.warning(f"获取A股估值指标失败: {e}")
+            self.logger.warning(f"获取A股估值指标失败: {e} (已跳过)")
             fundamental_data['valuation'] = {}
         
         # 4. 业绩预告
@@ -586,31 +600,31 @@ class EnhancedWebStockAnalyzer:
         return fundamental_data
 
     def _get_hk_stock_fundamental_data(self, stock_code):
-        """获取港股基本面数据"""
+        """获取g基本面数据"""
         import akshare as ak
         
         fundamental_data = {}
         
         # 1. 基本信息
         try:
-            self.logger.info("正在获取港股基本信息...")
-            # 港股基本信息
+            self.logger.info("正在获取g基本信息...")
+            # g基本信息
             hk_info = ak.stock_hk_spot_em()
             stock_info = hk_info[hk_info['代码'] == stock_code]
             if not stock_info.empty:
                 fundamental_data['basic_info'] = stock_info.iloc[0].to_dict()
             else:
-                fundamental_data['basic_info'] = {'代码': stock_code, '市场': '港股'}
-            self.logger.info("✓ 港股基本信息获取成功")
+                fundamental_data['basic_info'] = {'代码': stock_code, '市场': 'g'}
+            self.logger.info("✓ g基本信息获取成功")
         except Exception as e:
-            self.logger.warning(f"获取港股基本信息失败: {e}")
-            fundamental_data['basic_info'] = {'代码': stock_code, '市场': '港股'}
+            self.logger.warning(f"获取g基本信息失败: {e}")
+            fundamental_data['basic_info'] = {'代码': stock_code, '市场': 'g'}
         
-        # 2. 财务指标（港股财务数据较少）
+        # 2. 财务指标（g财务数据较少）
         try:
             financial_indicators = {}
             
-            # 尝试获取港股财务数据
+            # 尝试获取g财务数据
             try:
                 hk_financial = ak.stock_hk_valuation_baidu(symbol=stock_code)
                 if not hk_financial.empty:
@@ -624,11 +638,11 @@ class EnhancedWebStockAnalyzer:
                 core_indicators = self._calculate_hk_financial_indicators(financial_indicators)
                 fundamental_data['financial_indicators'] = core_indicators
             else:
-                fundamental_data['financial_indicators'] = self._get_default_financial_indicators('港股')
+                fundamental_data['financial_indicators'] = self._get_default_financial_indicators('g')
                 
         except Exception as e:
-            self.logger.warning(f"获取港股财务指标失败: {e}")
-            fundamental_data['financial_indicators'] = self._get_default_financial_indicators('港股')
+            self.logger.warning(f"获取g财务指标失败: {e}")
+            fundamental_data['financial_indicators'] = self._get_default_financial_indicators('g')
         
         # 3. 估值指标
         fundamental_data['valuation'] = {}
@@ -645,31 +659,31 @@ class EnhancedWebStockAnalyzer:
         return fundamental_data
 
     def _get_us_stock_fundamental_data(self, stock_code):
-        """获取美股基本面数据"""
+        """获取m基本面数据"""
         import akshare as ak
         
         fundamental_data = {}
         
         # 1. 基本信息
         try:
-            self.logger.info("正在获取美股基本信息...")
-            # 美股基本信息
+            self.logger.info("正在获取m基本信息...")
+            # m基本信息
             us_info = ak.stock_us_spot_em()
             stock_info = us_info[us_info['代码'] == stock_code.upper()]
             if not stock_info.empty:
                 fundamental_data['basic_info'] = stock_info.iloc[0].to_dict()
             else:
-                fundamental_data['basic_info'] = {'代码': stock_code.upper(), '市场': '美股'}
-            self.logger.info("✓ 美股基本信息获取成功")
+                fundamental_data['basic_info'] = {'代码': stock_code.upper(), '市场': 'm'}
+            self.logger.info("✓ m基本信息获取成功")
         except Exception as e:
-            self.logger.warning(f"获取美股基本信息失败: {e}")
-            fundamental_data['basic_info'] = {'代码': stock_code.upper(), '市场': '美股'}
+            self.logger.warning(f"获取m基本信息失败: {e}")
+            fundamental_data['basic_info'] = {'代码': stock_code.upper(), '市场': 'm'}
         
         # 2. 财务指标
         try:
             financial_indicators = {}
             
-            # 尝试获取美股财务数据
+            # 尝试获取m财务数据
             try:
                 us_financial = ak.stock_us_fundamental(symbol=stock_code.upper())
                 if not us_financial.empty:
@@ -682,11 +696,11 @@ class EnhancedWebStockAnalyzer:
                 core_indicators = self._calculate_us_financial_indicators(financial_indicators)
                 fundamental_data['financial_indicators'] = core_indicators
             else:
-                fundamental_data['financial_indicators'] = self._get_default_financial_indicators('美股')
+                fundamental_data['financial_indicators'] = self._get_default_financial_indicators('m')
                 
         except Exception as e:
-            self.logger.warning(f"获取美股财务指标失败: {e}")
-            fundamental_data['financial_indicators'] = self._get_default_financial_indicators('美股')
+            self.logger.warning(f"获取m财务指标失败: {e}")
+            fundamental_data['financial_indicators'] = self._get_default_financial_indicators('m')
         
         # 3. 估值指标
         fundamental_data['valuation'] = {}
@@ -703,7 +717,7 @@ class EnhancedWebStockAnalyzer:
         return fundamental_data
 
     def _get_a_stock_financial_indicators(self, stock_code):
-        """获取A股详细财务指标"""
+        """获取A股详细财务指标 - 增强健壮性版"""
         import akshare as ak
         
         financial_indicators = {}
@@ -711,7 +725,7 @@ class EnhancedWebStockAnalyzer:
         try:
             # 利润表数据
             income_statement = ak.stock_financial_abstract_ths(symbol=stock_code, indicator="按报告期")
-            if not income_statement.empty:
+            if income_statement is not None and not income_statement.empty:
                 latest_income = income_statement.iloc[0].to_dict()
                 financial_indicators.update(latest_income)
         except Exception as e:
@@ -720,18 +734,20 @@ class EnhancedWebStockAnalyzer:
         try:
             # 财务分析指标
             balance_sheet = ak.stock_financial_analysis_indicator(symbol=stock_code)
-            if not balance_sheet.empty:
+            if balance_sheet is not None and not balance_sheet.empty:
                 latest_balance = balance_sheet.iloc[-1].to_dict()
                 financial_indicators.update(latest_balance)
         except Exception as e:
             self.logger.warning(f"获取财务分析指标失败: {e}")
         
         try:
-            # 现金流量表
+            # 现金流量表 (修复点：增加 None 判断)
             cash_flow = ak.stock_cash_flow_sheet_by_report_em(symbol=stock_code)
-            if not cash_flow.empty:
+            if cash_flow is not None and not cash_flow.empty:
                 latest_cash = cash_flow.iloc[-1].to_dict()
                 financial_indicators.update(latest_cash)
+            else:
+                self.logger.warning("现金流量表数据为空")
         except Exception as e:
             self.logger.warning(f"获取现金流量表失败: {e}")
         
@@ -740,7 +756,7 @@ class EnhancedWebStockAnalyzer:
         return core_indicators
 
     def _calculate_hk_financial_indicators(self, raw_data):
-        """计算港股财务指标"""
+        """计算g财务指标"""
         indicators = {}
         
         def safe_get(key, default=0):
@@ -755,22 +771,22 @@ class EnhancedWebStockAnalyzer:
             except (ValueError, TypeError):
                 return default
         
-        # 港股基本指标
+        # g基本指标
         indicators['市盈率'] = safe_get('市盈率')
         indicators['市净率'] = safe_get('市净率')
-        indicators['股息收益率'] = safe_get('股息收益率')
+        indicators['息收益率'] = safe_get('息收益率')
         indicators['市值'] = safe_get('市值')
         indicators['流通市值'] = safe_get('流通市值')
         
         # 添加其他默认指标
         for i in range(20):
-            key = f'港股指标_{i+1}'
+            key = f'g指标_{i+1}'
             indicators[key] = safe_get(key, 0)
         
         return indicators
 
     def _calculate_us_financial_indicators(self, raw_data):
-        """计算美股财务指标"""
+        """计算m财务指标"""
         indicators = {}
         
         def safe_get(key, default=0):
@@ -785,7 +801,7 @@ class EnhancedWebStockAnalyzer:
             except (ValueError, TypeError):
                 return default
         
-        # 美股基本指标
+        # m基本指标
         indicators['PE_Ratio'] = safe_get('PE_Ratio')
         indicators['PB_Ratio'] = safe_get('PB_Ratio')
         indicators['Dividend_Yield'] = safe_get('Dividend_Yield')
@@ -804,15 +820,15 @@ class EnhancedWebStockAnalyzer:
 
     def _get_default_financial_indicators(self, market):
         """获取默认财务指标"""
-        if market == '港股':
+        if market == 'g':
             return {
                 '市盈率': 0,
                 '市净率': 0,
-                '股息收益率': 0,
+                '息收益率': 0,
                 '市值': 0,
                 '数据完整度': '有限'
             }
-        elif market == '美股':
+        elif market == 'm':
             return {
                 'PE_Ratio': 0,
                 'PB_Ratio': 0,
@@ -824,7 +840,7 @@ class EnhancedWebStockAnalyzer:
             return {}
 
     def _calculate_core_financial_indicators(self, raw_data):
-        """计算25项核心财务指标（A股）"""
+        """计算25项核心财务指标（A）"""
         try:
             indicators = {}
             
@@ -873,7 +889,7 @@ class EnhancedWebStockAnalyzer:
             indicators['市净率'] = safe_get('市净率')
             indicators['市销率'] = safe_get('市销率')
             indicators['PEG比率'] = safe_get('PEG比率')
-            indicators['股息收益率'] = safe_get('股息收益率')
+            indicators['息收益率'] = safe_get('息收益率')
             
             # 过滤掉无效的指标
             valid_indicators = {k: v for k, v in indicators.items() if v not in [0, None, 'nan']}
@@ -903,23 +919,23 @@ class EnhancedWebStockAnalyzer:
             industry_data = {}
             
             if market == 'a_stock':
-                # A股行业分析
+                # A行业分析
                 try:
                     industry_info = ak.stock_board_industry_name_em()
                     stock_industry = industry_info[industry_info.iloc[:, 0].astype(str).str.contains(stock_code, na=False)]
                     if not stock_industry.empty:
                         industry_data['industry_info'] = stock_industry.iloc[0].to_dict()
                 except Exception as e:
-                    self.logger.warning(f"获取A股行业信息失败: {e}")
+                    self.logger.warning(f"获取A行业信息失败: {e}")
             
             elif market == 'hk_stock':
-                # 港股行业分析
-                industry_data['market'] = '港股'
+                # g行业分析
+                industry_data['market'] = 'g'
                 industry_data['currency'] = 'HKD'
                 
             elif market == 'us_stock':
-                # 美股行业分析
-                industry_data['market'] = '美股'
+                # m行业分析
+                industry_data['market'] = 'm'
                 industry_data['currency'] = 'USD'
             
             return industry_data
@@ -978,7 +994,7 @@ class EnhancedWebStockAnalyzer:
             }
 
     def _get_a_stock_news_data(self, stock_code, days):
-        """获取A股新闻数据"""
+        """获取A股新闻数据 - 修复版"""
         import akshare as ak
         
         all_news_data = {
@@ -990,37 +1006,38 @@ class EnhancedWebStockAnalyzer:
             'news_summary': {}
         }
         
-        # 1. 公司新闻
+        # 1. 公司新闻 (修复点：增加异常处理)
         try:
+            # 尝试使用东财个股资讯
             company_news = ak.stock_news_em(symbol=stock_code)
-            if not company_news.empty:
+            if company_news is not None and not company_news.empty:
                 processed_news = []
-                for _, row in company_news.head(50).iterrows():
+                for _, row in company_news.head(20).iterrows():
+                    # 东财返回列名通常为: 关键词, 标题, 内容, 发布时间, 文章来源, 网址
                     news_item = {
-                        'title': str(row.get(row.index[0], '')),
-                        'content': str(row.get(row.index[1], '')) if len(row.index) > 1 else '',
-                        'date': str(row.get(row.index[2], '')) if len(row.index) > 2 else datetime.now().strftime('%Y-%m-%d'),
+                        'title': str(row.get('新闻标题') or row.get('title') or row.iloc[1]),
+                        'content': str(row.get('新闻内容') or row.get('content') or row.iloc[2]),
+                        'date': str(row.get('发布时间') or row.get('date') or row.iloc[3]),
                         'source': 'eastmoney',
-                        'url': str(row.get(row.index[3], '')) if len(row.index) > 3 else '',
                         'relevance_score': 1.0
                     }
                     processed_news.append(news_item)
-                
                 all_news_data['company_news'] = processed_news
         except Exception as e:
             self.logger.warning(f"获取A股公司新闻失败: {e}")
         
-        # 2. 公司公告
+        # 2. 公司公告 (修复点：替换失效接口 stock_zh_a_alerts_cls)
         try:
-            announcements = ak.stock_zh_a_alerts_cls(symbol=stock_code)
-            if not announcements.empty:
+            # 使用东财公告接口替代财联社
+            announcements = ak.stock_notice_report(symbol=stock_code)
+            if announcements is not None and not announcements.empty:
                 processed_announcements = []
-                for _, row in announcements.head(30).iterrows():
+                for _, row in announcements.head(20).iterrows():
                     announcement = {
-                        'title': str(row.get(row.index[0], '')),
-                        'content': str(row.get(row.index[1], '')) if len(row.index) > 1 else '',
-                        'date': str(row.get(row.index[2], '')) if len(row.index) > 2 else datetime.now().strftime('%Y-%m-%d'),
-                        'type': str(row.get(row.index[3], '')) if len(row.index) > 3 else '公告',
+                        'title': str(row.get('公告标题')),
+                        'content': str(row.get('公告类型')), # 公告通常只有标题和类型
+                        'date': str(row.get('公告日期')),
+                        'type': '公告',
                         'relevance_score': 1.0
                     }
                     processed_announcements.append(announcement)
@@ -1032,15 +1049,14 @@ class EnhancedWebStockAnalyzer:
         # 3. 研究报告
         try:
             research_reports = ak.stock_research_report_em(symbol=stock_code)
-            if not research_reports.empty:
+            if research_reports is not None and not research_reports.empty:
                 processed_reports = []
                 for _, row in research_reports.head(20).iterrows():
                     report = {
-                        'title': str(row.get(row.index[0], '')),
-                        'institution': str(row.get(row.index[1], '')) if len(row.index) > 1 else '',
-                        'rating': str(row.get(row.index[2], '')) if len(row.index) > 2 else '',
-                        'target_price': str(row.get(row.index[3], '')) if len(row.index) > 3 else '',
-                        'date': str(row.get(row.index[4], '')) if len(row.index) > 4 else datetime.now().strftime('%Y-%m-%d'),
+                        'title': str(row.get('报告名称') or row.iloc[0]),
+                        'institution': str(row.get('机构名称') or row.iloc[1]),
+                        'rating': str(row.get('评级') or row.iloc[2]),
+                        'date': str(row.get('发布日期') or row.iloc[4]),
                         'relevance_score': 0.9
                     }
                     processed_reports.append(report)
@@ -1067,8 +1083,8 @@ class EnhancedWebStockAnalyzer:
         return all_news_data
 
     def _get_hk_stock_news_data(self, stock_code, days):
-        """获取港股新闻数据"""
-        # 港股新闻数据相对有限，返回基本结构
+        """获取g新闻数据"""
+        # g新闻数据相对有限，返回基本结构
         return {
             'company_news': [],
             'announcements': [],
@@ -1082,14 +1098,14 @@ class EnhancedWebStockAnalyzer:
                 'research_reports_count': 0,
                 'industry_news_count': 0,
                 'data_freshness': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-                'market': '港股',
-                'note': '港股新闻数据来源有限'
+                'market': 'g',
+                'note': 'g新闻数据来源有限'
             }
         }
 
     def _get_us_stock_news_data(self, stock_code, days):
-        """获取美股新闻数据"""
-        # 美股新闻数据相对有限，返回基本结构
+        """获取m新闻数据"""
+        # m新闻数据相对有限，返回基本结构
         return {
             'company_news': [],
             'announcements': [],
@@ -1103,8 +1119,8 @@ class EnhancedWebStockAnalyzer:
                 'research_reports_count': 0,
                 'industry_news_count': 0,
                 'data_freshness': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-                'market': '美股',
-                'note': '美股新闻数据来源有限'
+                'market': 'm',
+                'note': 'm新闻数据来源有限'
             }
         }
 
@@ -1536,7 +1552,7 @@ class EnhancedWebStockAnalyzer:
             return 50
 
     def get_stock_name(self, stock_code):
-        """获取股票名称（支持多市场）"""
+        """获取名称（支持多市场）"""
         try:
             stock_code, market = self.normalize_stock_code(stock_code)
             
@@ -1547,11 +1563,11 @@ class EnhancedWebStockAnalyzer:
                     stock_info = ak.stock_individual_info_em(symbol=stock_code)
                     if not stock_info.empty:
                         info_dict = dict(zip(stock_info['item'], stock_info['value']))
-                        stock_name = info_dict.get('股票简称', stock_code)
+                        stock_name = info_dict.get('简称', stock_code)
                         if stock_name and stock_name != stock_code:
                             return stock_name
                 except Exception as e:
-                    self.logger.warning(f"获取A股名称失败: {e}")
+                    self.logger.warning(f"获取A名称失败: {e}")
             
             elif market == 'hk_stock':
                 try:
@@ -1560,7 +1576,7 @@ class EnhancedWebStockAnalyzer:
                     if not stock_info.empty:
                         return stock_info['名称'].iloc[0]
                 except Exception as e:
-                    self.logger.warning(f"获取港股名称失败: {e}")
+                    self.logger.warning(f"获取g名称失败: {e}")
             
             elif market == 'us_stock':
                 try:
@@ -1569,12 +1585,12 @@ class EnhancedWebStockAnalyzer:
                     if not stock_info.empty:
                         return stock_info['名称'].iloc[0]
                 except Exception as e:
-                    self.logger.warning(f"获取美股名称失败: {e}")
+                    self.logger.warning(f"获取m名称失败: {e}")
             
             return f"{market.upper()}_{stock_code}"
             
         except Exception as e:
-            self.logger.warning(f"获取股票名称时出错: {e}")
+            self.logger.warning(f"获取名称时出错: {e}")
             return stock_code
 
     def get_price_info(self, price_data):
@@ -1695,11 +1711,11 @@ class EnhancedWebStockAnalyzer:
             
             # 根据市场特点调整建议
             if market == 'hk_stock':
-                base_recommendation += " (港股)"
+                base_recommendation += " (g)"
             elif market == 'us_stock':
-                base_recommendation += " (美股)"
+                base_recommendation += " (m)"
             elif market == 'a_stock':
-                base_recommendation += " (A股)"
+                base_recommendation += " (A)"
                 
             return base_recommendation
                 
@@ -1733,65 +1749,74 @@ class EnhancedWebStockAnalyzer:
                     financial_text += f"{i}. {key}: {value}\n"
         
         # 构建完整的提示词
-        prompt = f"""请作为一位资深的全球股票分析师，基于以下详细数据对股票进行深度分析：
+        prompt = """
+# Role
+你是一位拥有20年实战经验的**资深全球量化交易员**。你的风格是**结论先行、数据驱动、拒绝废话**。
+你不需要向我解释什么是ETF或，也不需要科普监管环境。你需要基于我提供的详细数据，像写**交易日志**一样，给出直击要害的分析和操作计划。
 
-**股票基本信息：**
-- 股票代码：{stock_code}
-- 股票名称：{stock_name}
-- 当前价格：{price_info.get('current_price', 0):.2f}
-- 涨跌幅：{price_info.get('price_change', 0):.2f}%
-- 成交量比率：{price_info.get('volume_ratio', 1):.2f}
-- 波动率：{price_info.get('volatility', 0):.2f}%
+# Input Data (市场情报)
+**基础信息**：
+- 代码：{stock_code} ({stock_name})
+- 现价：{price_info.get('current_price', 0):.2f} (涨跌: {price_info.get('price_change', 0):.2f}%)
+- 波动率：{price_info.get('volatility', 0):.2f}% | 量比：{price_info.get('volume_ratio', 1):.2f}
 
-{market_info}
-
-**技术分析详情：**
-- 均线趋势：{technical_analysis.get('ma_trend', '未知')}
-- RSI指标：{technical_analysis.get('rsi', 50):.1f}
-- MACD信号：{technical_analysis.get('macd_signal', '未知')}
-- 布林带位置：{technical_analysis.get('bb_position', 0.5):.2f}
+**技术信号**：
+- 趋势：{technical_analysis.get('ma_trend', '未知')}
+- 指标：RSI={technical_analysis.get('rsi', 50):.1f} | MACD={technical_analysis.get('macd_signal', '未知')}
+- 布林带位置：{technical_analysis.get('bb_position', 0.5):.2f} (0=下轨, 1=上轨)
 - 成交量状态：{technical_analysis.get('volume_status', '未知')}
 
+**情绪与评分**：
+- 市场情绪：{sentiment_analysis.get('sentiment_trend', '中性')} (得分: {sentiment_analysis.get('overall_sentiment', 0):.3f})
+- 综合评分：{scores.get('comprehensive', 50):.1f}/100 (技术:{scores.get('technical', 50):.1f} | 基本面:{scores.get('fundamental', 50):.1f})
+
+**补充情报**：
+{market_info}
 {financial_text}
 
-**市场情绪分析：**
-- 整体情绪得分：{sentiment_analysis.get('overall_sentiment', 0):.3f}
-- 情绪趋势：{sentiment_analysis.get('sentiment_trend', '中性')}
-- 置信度：{sentiment_analysis.get('confidence_score', 0):.2f}
-- 分析新闻数量：{sentiment_analysis.get('total_analyzed', 0)}条
+---
 
-**综合评分：**
-- 技术面得分：{scores.get('technical', 50):.1f}/100
-- 基本面得分：{scores.get('fundamental', 50):.1f}/100
-- 情绪面得分：{scores.get('sentiment', 50):.1f}/100
-- 综合得分：{scores.get('comprehensive', 50):.1f}/100
+# Output Requirement (输出要求)
+请严格模仿“专业投研报告”的格式，按照以下结构输出：
 
-**分析要求：**
+## {stock_name} ({stock_code}) 深度交易策略报告
 
-请基于以上数据，从多市场角度进行深度分析：
+### 核心观点 (Core Thesis)
+(用一句话定性：看多/看空/震荡。结合综合评分 {scores.get('comprehensive', 0):.1f} 和情绪，给出明确的方向性判断。)
 
-1. **市场特征分析**：
-   - 分析该股票所属市场的特点和投资环境
-   - 评估市场流动性、监管环境、交易机制等因素
-   - 对比不同市场的估值体系和投资逻辑
+### 1. 基本面驱动逻辑 (Fundamental Drivers)
+* **核心逻辑**：(基于 `{financial_text}`，简述营收、利润或宏观驱动力。如果是m/ETF，重点分析宏观利率、汇率影响或成分表现。)
+* **估值与资金**：(分析当前价格是否合理，是否有大资金流入流出迹象。)
 
-2. **跨市场比较**：
-   - 如果有同类型公司在其他市场交易，进行对比分析
-   - 评估汇率风险和地缘政治因素影响
-   - 分析市场间的资金流动和套利机会
+### 2. 技术面狙击 (Technical Sniper)
+* **形态与趋势**：(结合 `{technical_analysis.get('ma_trend')}` 和 涨跌幅，描述K线形态，如“突破箱体”、“缩量回调”等。)
+* **量价配合**：(基于量比 {price_info.get('volume_ratio'):.2f} 和成交量状态，分析主力意图。)
+* **指标共振**：
+    * MACD: {technical_analysis.get('macd_signal')} (解读其含义，如“多头趋势确认”或“顶背离警示”)
+    * RSI ({technical_analysis.get('rsi'):.1f}): (解读是否超买/超卖，结合布林带位置 {technical_analysis.get('bb_position'):.2f} 判断反弹或回调压力。)
+* **关键点位预测**：
+    * 🔴 **强阻力位**：[基于波动率和布林带估算价格]
+    * 🟢 **强支撑位**：[基于波动率和布林带估算价格]
 
-3. **投资策略建议**：
-   - 针对不同市场特点制定投资策略
-   - 考虑市场开放时间、交易成本、税务影响
-   - 提供适合该市场的风险管理建议
+### 3. 多空博弈与风险 (Risk & Opportunity)
+* **多头逻辑**：(上涨的催化剂是什么？)
+* **空头风险**：(下跌的风险点，包括地缘政治、汇率风险或技术破位风险。)
 
-4. **全球化视角**：
-   - 分析公司的国际化程度和全球竞争力
-   - 评估宏观经济和政策对该市场的影响
-   - 预测市场间的联动效应
+### 4. 实战操作建议 (Action Plan)
+(综合以上分析，给出具体的操盘逻辑。是左侧低吸？还是右侧追涨？还是空仓观望？)
 
-请用专业、客观的语言进行分析，确保考虑多市场投资的复杂性。"""
+### AI 交易决策 (AI Signal)
+(声明：仅供参考，不构成投资建议)
+| 操作方向 | 建议价格区间 | 建议仓位 | 期望收益率(EV) | 策略置信度 |
+| :--- | :--- | :--- | :--- | :--- |
+| [买入/卖出/观望] | [具体数值] | [如: 30%] | [如: +15%] | [0.0-1.0] |
 
+---
+**注意**：
+1. 语言风格要**犀利、专业**，像是在给基金经理写汇报。
+2. 必须给出**具体的数字**（支撑位、阻力位），不要给模糊的范围。
+3. 结合“全球视角”，如果是跨境投资，简要提及汇率或m联储政策的影响，但不要展开写科普文。
+"""
         return prompt
 
     def generate_ai_analysis(self, analysis_data, enable_streaming=False, stream_callback=None):
@@ -1894,11 +1919,21 @@ class EnhancedWebStockAnalyzer:
             max_tokens = self.config.get('ai', {}).get('max_tokens', 6000)
             temperature = self.config.get('ai', {}).get('temperature', 0.7)
             
+            # messages = [
+            #     {"role": "system", "content": "你是一位资深的全球分析师，具有丰富的多市场投资经验。请提供专业、客观、有深度的分析。"},
+            #     {"role": "user", "content": prompt}
+            # ]
             messages = [
-                {"role": "system", "content": "你是一位资深的全球股票分析师，具有丰富的多市场投资经验。请提供专业、客观、有深度的股票分析。"},
-                {"role": "user", "content": prompt}
+                {
+                    "role": "system", 
+                    # 关键修改：把“分析师”改成“交易员”，并强调“拒绝废话”
+                    "content": "你是一位资深全球量化交易员。请严格根据用户提供的数据，以实战、犀利的风格输出交易策略报告，拒绝模棱两可的废话。" 
+                },
+                {
+                    "role": "user", 
+                    "content": prompt
+                }
             ]
-            
             # 检测OpenAI库版本
             try:
                 if hasattr(openai, 'OpenAI'):
@@ -2118,11 +2153,11 @@ class EnhancedWebStockAnalyzer:
                 currency = market_config.get('currency', 'CNY')
                 
                 if market == 'a_stock':
-                    market_info = "**A股市场特征：** 中国内地主板市场，以人民币计价，T+1交易制度，涨跌停限制±10%。"
+                    market_info = "**A市场特征：** 中国内地主板市场，以人民币计价，T+1交易制度，涨跌停限制±10%。"
                 elif market == 'hk_stock':
-                    market_info = "**港股市场特征：** 香港联合交易所，港币计价，T+0交易制度，无涨跌停限制，国际化程度高。"
+                    market_info = "**g市场特征：** 香g联合交易所，g币计价，T+0交易制度，无涨跌停限制，国际化程度高。"
                 elif market == 'us_stock':
-                    market_info = "**美股市场特征：** 纳斯达克/纽交所，美元计价，T+0交易制度，盘前盘后交易，全球影响力最大。"
+                    market_info = "**m市场特征：** 纳斯达克/纽交所，m元计价，T+0交易制度，盘前盘后交易，全球影响力最大。"
             
             # 2. 综合评估
             comprehensive_score = scores.get('comprehensive', 50)
@@ -2185,21 +2220,21 @@ class EnhancedWebStockAnalyzer:
             
             if market == 'hk_stock':
                 market_specific_advice = """
-**港股投资注意事项：**
-- 考虑汇率风险（港币对人民币）
+**g投资注意事项：**
+- 考虑汇率风险（g币对人民币）
 - 关注南下资金流向
-- 注意港股通交易限制
-- 考虑香港政治经济环境影响"""
+- 注意g通交易限制
+- 考虑香g政治经济环境影响"""
             elif market == 'us_stock':
                 market_specific_advice = """
-**美股投资注意事项：**
-- 考虑汇率风险（美元对人民币）
-- 关注美联储政策影响
-- 注意ADR与正股价差
+**m投资注意事项：**
+- 考虑汇率风险（m元对人民币）
+- 关注m联储政策影响
+- 注意ADR与正价差
 - 考虑税务和资金成本"""
             elif market == 'a_stock':
                 market_specific_advice = """
-**A股投资注意事项：**
+**A投资注意事项：**
 - 关注政策导向和监管变化
 - 注意涨跌停限制
 - 考虑T+1交易制度
@@ -2236,28 +2271,28 @@ class EnhancedWebStockAnalyzer:
         })
 
     def analyze_stock(self, stock_code, enable_streaming=None, stream_callback=None):
-        """分析股票的主方法（支持多市场 + AI流式输出）"""
+        """分析的主方法（支持多市场 + AI流式输出）"""
         if enable_streaming is None:
             enable_streaming = self.streaming_config.get('enabled', False)
         
         try:
-            # 标准化股票代码并检测市场
+            # 标准化代码并检测市场
             normalized_code, market = self.normalize_stock_code(stock_code)
             
-            self.logger.info(f"开始增强版股票分析: {normalized_code} ({market.upper()})")
+            self.logger.info(f"开始增强版分析: {normalized_code} ({market.upper()})")
             
             # 检查市场是否启用
             if not self.market_config.get(market, {}).get('enabled', True):
                 raise ValueError(f"市场 {market.upper()} 未启用")
             
-            # 获取股票名称
+            # 获取名称
             stock_name = self.get_stock_name(normalized_code)
             
             # 1. 获取价格数据和技术分析
             self.logger.info(f"正在进行 {market.upper()} 技术分析...")
             price_data = self.get_stock_data(normalized_code)
             if price_data.empty:
-                raise ValueError(f"无法获取股票 {market.upper()} {normalized_code} 的价格数据")
+                raise ValueError(f"无法获取 {market.upper()} {normalized_code} 的价格数据")
             
             price_info = self.get_price_info(price_data)
             technical_analysis = self.calculate_technical_indicators(price_data)
@@ -2329,7 +2364,7 @@ class EnhancedWebStockAnalyzer:
                 }
             }
             
-            self.logger.info(f"✓ 增强版股票分析完成: {normalized_code} ({market.upper()})")
+            self.logger.info(f"✓ 增强版分析完成: {normalized_code} ({market.upper()})")
             self.logger.info(f"  - 市场类型: {market.upper()}")
             self.logger.info(f"  - 财务指标: {len(fundamental_data.get('financial_indicators', {}))} 项")
             self.logger.info(f"  - 新闻数据: {sentiment_analysis.get('total_analyzed', 0)} 条")
@@ -2338,11 +2373,11 @@ class EnhancedWebStockAnalyzer:
             return report
             
         except Exception as e:
-            self.logger.error(f"增强版股票分析失败 {stock_code}: {str(e)}")
+            self.logger.error(f"增强版分析失败 {stock_code}: {str(e)}")
             raise
 
     def analyze_stock_with_streaming(self, stock_code, streamer):
-        """带流式回调的股票分析方法"""
+        """带流式回调的分析方法"""
         def stream_callback(content):
             """AI流式内容回调"""
             if streamer:
@@ -2367,7 +2402,7 @@ class EnhancedWebStockAnalyzer:
         return supported_markets
 
     def validate_stock_code(self, stock_code):
-        """验证股票代码格式"""
+        """验证代码格式"""
         try:
             normalized_code, market = self.normalize_stock_code(stock_code)
             
@@ -2377,13 +2412,13 @@ class EnhancedWebStockAnalyzer:
             
             # 基本格式验证
             if market == 'a_stock' and not re.match(r'^\d{6}$', normalized_code):
-                return False, "A股代码应为6位数字"
+                return False, "A代码应为6位数字"
             elif market == 'hk_stock' and not re.match(r'^\d{5}$', normalized_code):
-                return False, "港股代码应为5位数字"
+                return False, "g代码应为5位数字"
             elif market == 'us_stock' and not re.match(r'^[A-Z]{1,5}$', normalized_code):
-                return False, "美股代码应为1-5位字母"
+                return False, "m代码应为1-5位字母"
             
-            return True, f"有效的{market.upper()}股票代码"
+            return True, f"有效的{market.upper()}代码"
             
         except Exception as e:
             return False, f"代码验证失败: {str(e)}"
@@ -2419,21 +2454,21 @@ def main():
     markets = analyzer.get_supported_markets()
     print(f"支持的市场: {', '.join([m['name'] for m in markets])}")
     
-    # 测试分析 - 包含多个市场的股票
+    # 测试分析 - 包含多个市场的
     test_stocks = [
-        '000001',  # A股：平安银行
-        '00700',   # 港股：腾讯
-        'AAPL',    # 美股：苹果
-        '600036',  # A股：招商银行
-        '00388',   # 港股：香港交易所
-        'TSLA'     # 美股：特斯拉
+        '000001',  # A：平安银行
+        '00700',   # g：腾讯
+        'AAPL',    # m：苹果
+        '600036',  # A：招商银行
+        '00388',   # g：香g交易所
+        'TSLA'     # m：特斯拉
     ]
     
     for stock_code in test_stocks:
         try:
             print(f"\n=== 开始多市场增强版分析 {stock_code} ===")
             
-            # 验证股票代码
+            # 验证代码
             is_valid, message = analyzer.validate_stock_code(stock_code)
             print(f"代码验证: {message}")
             
@@ -2446,8 +2481,8 @@ def main():
             
             report = analyzer.analyze_stock(stock_code, enable_streaming=True, stream_callback=print_stream)
             
-            print(f"\n股票代码: {report['stock_code']} (原始: {report['original_code']})")
-            print(f"股票名称: {report['stock_name']}")
+            print(f"\n代码: {report['stock_code']} (原始: {report['original_code']})")
+            print(f"名称: {report['stock_name']}")
             print(f"交易市场: {report['market'].upper()}")
             print(f"计价货币: {report['market_info'].get('currency', 'Unknown')}")
             print(f"当前价格: {report['price_info']['current_price']:.2f}")
