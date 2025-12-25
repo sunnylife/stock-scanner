@@ -3,6 +3,12 @@
         "openai": "sk-6xZZuVSouHWEEZendAcqaaWux1jTtW1YMD1WdTAmhjSAsyWR",
         "anthropic": "",
         "zhipu": "",
+        "longport": {
+                    "app_key": "f1bcf06adc2989210ab7caa4fd9101f6",
+                    "app_secret": "5e62e4155b17eba48c7e56e93045d5ea44e130dd411433c859b5da0db4d36cd1",
+                    "access_token": "m_eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJsb25nYnJpZGdlIiwic3ViIjoiYWNjZXNzX3Rva2VuIiwiZXhwIjoxNzczNDY5MDcxLCJpYXQiOjE3NjU2OTMwNzIsImFrIjoiZjFiY2YwNmFkYzI5ODkyMTBhYjdjYWE0ZmQ5MTAxZjYiLCJhYWlkIjoyMDkzNjY2MywiYWMiOiJsYiIsIm1pZCI6MjI3MDg1ODMsInNpZCI6ImxKdjRxRXNuVFVLMS9vb25MYzVIREE9PSIsImJsIjozLCJ1bCI6MCwiaWsiOiJsYl8yMDkzNjY2MyJ9.vNhw1zOyekRYEgceW-EFXnrQLW2QarE5qZq-WqWqXAOdTHKLSV5zcKYpVQIQ6ddWiT_Q9M1LvEcbZWoPjSLbddqxDWM8QgUwenkV7gKa-xDJIT9I5FQsFQtsUvxTryhdUDfUofJ7uR6jbv_qDtCVU23Jb_bXolBioOx64N2M5teRWYCpszISwbRtawCsqiEoe6DNF3OqrH9GeHXg0aK_bP3hxt_TSOFQ_00UQZ-WOQtgvT-yfmndkvn-Gv2L_aQbvS4487OBnM7lB0yt6qsYMGpSNxDP8Eq851XTqr-x1VYSrT2sAGD6iOPYzIynbO8DVTmjeSAWfrO8u5OIL40_Jsxuew-FOIqqvtomAVBsbIgPLQM--nTcEJPsY-3756V9B_NfGyrXW_V_rCGDxIw94TZtRndb9PW5-9YeY2S50rOT4uvtHE_807l0Vlk6OEfgetcTaxxIrCENxWe0KjMh5vgFaDZ_8DlX31JPG0DhWWHlQpZhEyzKtMli7q8CYntnzilJXk9MGifXhTKEbz-6QFX2t7CVluW76ylZVUCXZjEyCeO4qAV3Yal3k3EMbLCScYphNQdKi8GbSk9pCOoax6TK3U_5yPvQsGJh6dnL_7VjQijN2ALwRcgFj5kJgEmLoZnWXX3X7iM81vZZSCusxl7mw94mX4PHG-8yhdGMyCw",
+                    "base_url": "https://openapi.longportapp.cn"
+                },
         "notes": "请填入您的API密钥"
     },
     "ai": {

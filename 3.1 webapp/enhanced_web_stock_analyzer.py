@@ -16,6 +16,11 @@ import re
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Tuple, Callable
 import time
+import yfinance as yf
+import random
+import requests
+import pandas_datareader.data as web
+import pandas as pd
 
 # 忽略警告
 warnings.filterwarnings('ignore')
@@ -352,21 +357,47 @@ class EnhancedWebStockAnalyzer:
                         stock_data = stock_data[stock_data.index >= start_date]
             elif market == 'us_stock':
                 # 美股数据
+                # session = requests.Session()
+                # # 设置 User-Agent，假装自己是 Windows 上的 Chrome 浏览器
+                # session.headers.update({
+                #     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+                # })
                 try:
-                    stock_data = ak.stock_us_hist(
-                        symbol=stock_code,
-                        period="daily",
-                        start_date=start_date,
-                        end_date=end_date,
-                        adjust="qfq"
-                    )
+                    start_dt = datetime.now() - timedelta(days=180)
+                    end_dt = datetime.now()
+
+                    df = web.DataReader(stock_code, 'stooq', start=start_dt, end=end_dt)
+                    if df is None or df.empty:
+                            self.logger.warning(f"警告: Stooq 返回 {stock_code} 数据为空")
+                            stock_data = None
+                    else:
+                        df = df.sort_index(ascending=True)
+                        
+                        df = df.reset_index()
+                        
+                        # 重命名列以适配你的系统
+                        df = df.rename(columns={
+                            "Date": "date", 
+                            "Open": "open", 
+                            "High": "high", 
+                            "Low": "low", 
+                            "Close": "close", 
+                            "Volume": "volume"
+                        })
+                        
+                        # 处理时区和格式
+                        df['date'] = pd.to_datetime(df['date'])
+                        if df['date'].dt.tz is not None:
+                            df['date'] = df['date'].dt.tz_localize(None)
+                        
+                        # 再次确保只取最近 180 天（Stooq 有时会返回更多）
+                        stock_data = df[df['date'] >= pd.to_datetime(start_date)]
+                        
+                        self.logger.info(f"✓ 成功从 Stooq 获取数据: {len(stock_data)} 条")
+
                 except Exception as e:
-                    self.logger.warning(f"使用美股历史数据接口失败: {e}，尝试备用接口...")
-                    # 备用接口
-                    stock_data = ak.stock_us_daily(symbol=stock_code)
-                    if not stock_data.empty:
-                        # 过滤日期范围
-                        stock_data = stock_data[stock_data.index >= start_date]
+                    self.logger.error(f"Stooq 获取失败: {e}")
+                    stock_data = None
             
             if stock_data is None or stock_data.empty:
                 raise ValueError(f"无法获取股票 {market.upper()} {stock_code} 的数据")

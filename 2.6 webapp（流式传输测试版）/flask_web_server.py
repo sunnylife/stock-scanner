@@ -226,7 +226,7 @@ LOGIN_TEMPLATE = """<!DOCTYPE html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>登录 - 现代股票分析系统</title>
+    <title>登录 - 系统</title>
     <style>
         * {
             margin: 0;
@@ -366,7 +366,7 @@ LOGIN_TEMPLATE = """<!DOCTYPE html>
     <div class="login-container">
         <div class="login-header">
             <h1>🔐 系统登录</h1>
-            <p>Enhanced v3.0-Web-SSE 股票分析系统</p>
+            <p>Enhanced v3.0-Web-SSE 系统</p>
         </div>
 
         {% if error %}
@@ -423,7 +423,7 @@ MAIN_TEMPLATE_SSE = r"""<!DOCTYPE html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>现代股票分析系统 - Enhanced v3.0-Web-SSE</title>
+    <title>Enhanced v3.0-Web-SSE</title>
     <style>
         * {
             margin: 0;
@@ -1014,7 +1014,7 @@ MAIN_TEMPLATE_SSE = r"""<!DOCTYPE html>
     <div class="container">
         <!-- Header -->
         <div class="header">
-            <h1>🚀 现代股票分析系统 - SSE流式版</h1>
+            <h1>🚀 系统 - SSE流式版</h1>
             <div class="header-info">
                 <div class="version-info">
                     Enhanced v3.0-Web-SSE | WebStockAnalyzer | 完整LLM API支持 {% if auth_enabled %}| 🔐 已认证{% endif %}
@@ -1042,9 +1042,9 @@ MAIN_TEMPLATE_SSE = r"""<!DOCTYPE html>
                 <!-- Single Stock Analysis -->
                 <div id="singleTab" class="tab-content active">
                     <div class="form-group">
-                        <label for="stockCode">股票代码</label>
+                        <label for="stockCode">代码</label>
                         <input type="text" id="stockCode" class="form-control" 
-                               placeholder="输入股票代码（如：000001、600036、300019）">
+                               placeholder="输入代码（如：000001、600036、300019）">
                     </div>
                     
                     <div class="form-group">
@@ -1066,9 +1066,9 @@ MAIN_TEMPLATE_SSE = r"""<!DOCTYPE html>
                 <!-- Batch Analysis -->
                 <div id="batchTab" class="tab-content">
                     <div class="form-group">
-                        <label for="stockList">股票代码列表</label>
+                        <label for="stockList"代码列表</label>
                         <textarea id="stockList" class="form-control textarea" 
-                                  placeholder="输入多个股票代码，每行一个&#10;例如：&#10;000001&#10;000002&#10;600036&#10;300019"></textarea>
+                                  placeholder="输入多个代码，每行一个&#10;例如：&#10;000001&#10;000002&#10;600036&#10;300019"></textarea>
                     </div>
                     
                     <button id="batchAnalyzeBtn" class="btn btn-success" onclick="analyzeBatchStocks()">
@@ -1155,7 +1155,7 @@ MAIN_TEMPLATE_SSE = r"""<!DOCTYPE html>
                 <div id="resultsContent" class="results-content">
                     <div class="empty-state">
                         <h3>📊 等待分析</h3>
-                        <p>请在左侧输入股票代码并开始分析</p>
+                        <p>请在左侧输入代码并开始分析</p>
                         <p style="margin-top: 8px; font-size: 12px; color: #9ba2ab;">🌊 支持SSE实时推送</p>
                     </div>
                 </div>
@@ -1513,7 +1513,7 @@ MAIN_TEMPLATE_SSE = r"""<!DOCTYPE html>
                         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px;">
                             <div style="background: #f8f9fa; padding: 16px; border-radius: 8px;">
                                 <h4 style="color: #495057; margin-bottom: 8px;">基本信息</h4>
-                                <p><strong>股票代码:</strong> ${data.stock_code}</p>
+                                <p><strong>代码:</strong> ${data.stock_code}</p>
                                 <p><strong>当前价格:</strong> ¥${(data.current_price || 0).toFixed(2)}</p>
                                 <p><strong>涨跌幅:</strong> ${(data.price_change || 0).toFixed(2)}%</p>
                             </div>
@@ -1590,7 +1590,7 @@ MAIN_TEMPLATE_SSE = r"""<!DOCTYPE html>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px;">
                         <div style="background: #f8f9fa; padding: 16px; border-radius: 8px;">
                             <h4 style="color: #495057; margin-bottom: 8px;">基本信息</h4>
-                            <p><strong>股票代码:</strong> ${report.stock_code}</p>
+                            <p><strong>代码:</strong> ${report.stock_code}</p>
                             <p><strong>当前价格:</strong> ¥${(report.price_info?.current_price || 0).toFixed(2)}</p>
                             <p><strong>涨跌幅:</strong> ${(report.price_info?.price_change || 0).toFixed(2)}%</p>
                         </div>
@@ -1644,7 +1644,7 @@ MAIN_TEMPLATE_SSE = r"""<!DOCTYPE html>
                 basicInfoDiv.innerHTML = `
                     <div style="background: #f8f9fa; padding: 16px; border-radius: 8px;">
                         <h4 style="color: #495057; margin-bottom: 8px;">基本信息</h4>
-                        <p><strong>股票代码:</strong> ${report.stock_code}</p>
+                        <p><strong>代码:</strong> ${report.stock_code}</p>
                         <p><strong>当前价格:</strong> ¥${(report.price_info?.current_price || 0).toFixed(2)}</p>
                         <p><strong>涨跌幅:</strong> ${(report.price_info?.price_change || 0).toFixed(2)}%</p>
                     </div>
@@ -1739,7 +1739,7 @@ MAIN_TEMPLATE_SSE = r"""<!DOCTYPE html>
             const html = `
                 <div style="line-height: 1.6;">
                     <h2 style="color: #2c3e50; border-bottom: 2px solid #e9ecef; padding-bottom: 12px; margin-bottom: 20px;">
-                        📊 批量分析报告 (${reports.length} 只股票)
+                        📊 批量分析报告 (${reports.length} 只)
                         <span style="font-size: 12px; color: #28a745; font-weight: normal;">✅ 流式分析完成</span>
                     </h2>
                     
@@ -1748,8 +1748,8 @@ MAIN_TEMPLATE_SSE = r"""<!DOCTYPE html>
                         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px;">
                             <div><strong>分析数量:</strong> ${reports.length} 只</div>
                             <div><strong>平均得分:</strong> ${avgScores.comprehensive.toFixed(1)}</div>
-                            <div><strong>优秀股票:</strong> ${reports.filter(r => r.scores.comprehensive >= 80).length} 只</div>
-                            <div><strong>良好股票:</strong> ${reports.filter(r => r.scores.comprehensive >= 60).length} 只</div>
+                            <div><strong>优秀:</strong> ${reports.filter(r => r.scores.comprehensive >= 80).length} 只</div>
+                            <div><strong>良好:</strong> ${reports.filter(r => r.scores.comprehensive >= 60).length} 只</div>
                         </div>
                     </div>
                     
@@ -1816,7 +1816,7 @@ MAIN_TEMPLATE_SSE = r"""<!DOCTYPE html>
         async function analyzeSingleStock() {
             const stockCode = document.getElementById('stockCode').value.trim();
             if (!stockCode) {
-                addLog('请输入股票代码', 'warning');
+                addLog('请输入代码', 'warning');
                 return;
             }
 
@@ -1830,7 +1830,7 @@ MAIN_TEMPLATE_SSE = r"""<!DOCTYPE html>
             document.getElementById('systemStatus').className = 'status-indicator status-analyzing';
             document.getElementById('systemStatus').textContent = '分析中';
 
-            addLog(`🚀 开始流式分析股票: ${stockCode}`, 'header');
+            addLog(`🚀 开始流式分析: ${stockCode}`, 'header');
             showLoading();
             showProgress('singleProgress');
 
@@ -1865,7 +1865,7 @@ MAIN_TEMPLATE_SSE = r"""<!DOCTYPE html>
         async function analyzeBatchStocks() {
             const stockListText = document.getElementById('stockList').value.trim();
             if (!stockListText) {
-                addLog('请输入股票代码列表', 'warning');
+                addLog('请输入代码列表', 'warning');
                 return;
             }
 
@@ -1876,7 +1876,7 @@ MAIN_TEMPLATE_SSE = r"""<!DOCTYPE html>
 
             const stockList = stockListText.split('\n').map(s => s.trim()).filter(s => s);
             if (stockList.length === 0) {
-                addLog('股票代码列表为空', 'warning');
+                addLog('代码列表为空', 'warning');
                 return;
             }
 
@@ -1885,7 +1885,7 @@ MAIN_TEMPLATE_SSE = r"""<!DOCTYPE html>
             document.getElementById('systemStatus').className = 'status-indicator status-analyzing';
             document.getElementById('systemStatus').textContent = '批量分析中';
 
-            addLog(`📊 开始流式批量分析 ${stockList.length} 只股票`, 'header');
+            addLog(`📊 开始流式批量分析 ${stockList.length} 只`, 'header');
             showLoading();
             showProgress('batchProgress');
             document.getElementById('currentStock').style.display = 'block';
@@ -2024,11 +2024,11 @@ ${status} ${api}: ${version}`;
                 let content, filename, reportType;
 
                 if (Array.isArray(currentAnalysis)) {
-                    reportType = `批量分析(${currentAnalysis.length}只股票)`;
+                    reportType = `批量分析(${currentAnalysis.length}只)`;
                     filename = `batch_analysis_sse_${timestamp}.md`;
                     content = generateBatchMarkdown(currentAnalysis);
                 } else {
-                    reportType = `单个股票(${currentAnalysis.stock_code})`;
+                    reportType = `单个(${currentAnalysis.stock_code})`;
                     filename = `stock_analysis_sse_${currentAnalysis.stock_code}_${timestamp}.md`;
                     content = generateSingleMarkdown(currentAnalysis);
                 }
@@ -2058,13 +2058,13 @@ ${status} ${api}: ${version}`;
         function generateSingleMarkdown(report) {
             const aiAnalysis = report.ai_analysis || '分析数据准备中...';
             
-            return `# 📈 股票分析报告 (Enhanced v3.0-Web-SSE)
+            return `# 📈 分析报告 (Enhanced v3.0-Web-SSE)
 
 ## 🏢 基本信息
 | 项目 | 值 |
 |------|-----|
-| **股票代码** | ${report.stock_code} |
-| **股票名称** | ${report.stock_name} |
+| **代码** | ${report.stock_code} |
+| **名称** | ${report.stock_name} |
 | **分析时间** | ${report.analysis_date} |
 | **当前价格** | ¥${report.price_info.current_price.toFixed(2)} |
 | **价格变动** | ${report.price_info.price_change.toFixed(2)}% |
@@ -2097,17 +2097,17 @@ ${aiAnalysis}
         }
 
         function generateBatchMarkdown(reports) {
-            let content = `# 📊 批量股票分析报告 - Enhanced v3.0-Web-SSE
+            let content = `# 📊 批量分析报告 - Enhanced v3.0-Web-SSE
 
 **分析时间：** ${new Date().toLocaleString('zh-CN')}
-**分析数量：** ${reports.length} 只股票
+**分析数量：** ${reports.length} 只
 **分析器版本：** Enhanced v3.0-Web-SSE
 **分析器类：** WebStockAnalyzer (SSE流式版)
 **推送方式：** Server-Sent Events 实时流式
 
 ## 📋 分析汇总
 
-| 排名 | 股票代码 | 股票名称 | 综合得分 | 技术面 | 基本面 | 情绪面 | 投资建议 |
+| 排名 | 代码 | 名称 | 综合得分 | 技术面 | 基本面 | 情绪面 | 投资建议 |
 |------|----------|----------|----------|--------|--------|--------|----------|
 `;
 
@@ -2135,13 +2135,13 @@ ${aiAnalysis}
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
-            addLog('🚀 现代股票分析系统已启动 (SSE流式版)', 'success');
+            addLog('🚀 现代分析系统已启动 (SSE流式版)', 'success');
             addLog('📋 Enhanced v3.0-Web-SSE | WebStockAnalyzer (SSE版)', 'info');
             addLog('🌊 SSE流式推送：实时进度显示', 'info');
             addLog('🔥 高并发优化：线程池 + 异步处理 + 任务队列', 'info');
             addLog('🤖 AI分析：支持OpenAI/Claude/智谱AI智能切换', 'info');
             addLog('🔐 安全特性：密码鉴权 + 会话管理', 'info');
-            addLog('💡 支持股票代码：000001, 600036, 300019等', 'info');
+            addLog('💡 支持代码：000001, 600036, 300019等', 'info');
             
             // 初始化SSE连接
             initSSE();
@@ -2389,16 +2389,16 @@ class StreamingAnalyzer:
         })
 
 def analyze_stock_streaming(stock_code, enable_streaming, client_id):
-    """流式股票分析"""
+    """流式分析"""
     streamer = StreamingAnalyzer(client_id)
     
     try:
-        streamer.send_log(f"🚀 开始流式分析股票: {stock_code}", 'header')
-        streamer.send_progress('singleProgress', 5, "正在获取股票基本信息...")
+        streamer.send_log(f"🚀 开始流式分析: {stock_code}", 'header')
+        streamer.send_progress('singleProgress', 5, "正在获取基本信息...")
         
-        # 获取股票名称
+        # 获取名称
         stock_name = analyzer.get_stock_name(stock_code)
-        streamer.send_log(f"✓ 股票名称: {stock_name}", 'success')
+        streamer.send_log(f"✓ 名称: {stock_name}", 'success')
         
         # 发送基本信息
         streamer.send_partial_result({
@@ -2415,7 +2415,7 @@ def analyze_stock_streaming(stock_code, enable_streaming, client_id):
         
         price_data = analyzer.get_stock_data(stock_code)
         if price_data.empty:
-            raise ValueError(f"无法获取股票 {stock_code} 的价格数据")
+            raise ValueError(f"无法获取 {stock_code} 的价格数据")
         
         price_info = analyzer.get_price_info(price_data)
         streamer.send_log(f"✓ 当前价格: {price_info['current_price']:.2f}元", 'success')
@@ -2561,12 +2561,12 @@ def analyze_stock_streaming(stock_code, enable_streaming, client_id):
         raise
 
 def analyze_batch_streaming(stock_codes, client_id):
-    """流式批量股票分析"""
+    """流式批量分析"""
     streamer = StreamingAnalyzer(client_id)
     
     try:
         total_stocks = len(stock_codes)
-        streamer.send_log(f"📊 开始流式批量分析 {total_stocks} 只股票", 'header')
+        streamer.send_log(f"📊 开始流式批量分析 {total_stocks} 只", 'header')
         
         results = []
         failed_stocks = []
@@ -2575,11 +2575,11 @@ def analyze_batch_streaming(stock_codes, client_id):
             try:
                 progress = int((i / total_stocks) * 100)
                 streamer.send_progress('batchProgress', progress, 
-                    f"正在分析第 {i+1}/{total_stocks} 只股票", stock_code)
+                    f"正在分析第 {i+1}/{total_stocks} 只", stock_code)
                 
                 streamer.send_log(f"🔍 开始分析 {stock_code} ({i+1}/{total_stocks})", 'info')
                 
-                # 分析单只股票（简化版，不发送中间进度）
+                # 分析单只（简化版，不发送中间进度）
                 report = analyzer.analyze_stock(stock_code, False)
                 results.append(report)
                 
@@ -2615,7 +2615,7 @@ def analyze_batch_streaming(stock_codes, client_id):
         streamer.send_batch_result(results)
         
         success_count = len(results)
-        message = f"🎉 批量分析完成！成功分析 {success_count}/{total_stocks} 只股票"
+        message = f"🎉 批量分析完成！成功分析 {success_count}/{total_stocks} 只"
         if failed_stocks:
             message += f"，失败: {', '.join(failed_stocks)}"
         
@@ -2632,7 +2632,7 @@ def analyze_batch_streaming(stock_codes, client_id):
 @app.route('/api/analyze_stream', methods=['POST'])
 @require_auth
 def analyze_stock_stream():
-    """单只股票流式分析接口"""
+    """单只流式分析接口"""
     try:
         if not analyzer:
             return jsonify({
@@ -2648,7 +2648,7 @@ def analyze_stock_stream():
         if not stock_code:
             return jsonify({
                 'success': False,
-                'error': '股票代码不能为空'
+                'error': '代码不能为空'
             }), 400
         
         if not client_id:
@@ -2662,7 +2662,7 @@ def analyze_stock_stream():
             if stock_code in analysis_tasks:
                 return jsonify({
                     'success': False,
-                    'error': f'股票 {stock_code} 正在分析中，请稍候'
+                    'error': f' {stock_code} 正在分析中，请稍候'
                 }), 429
             
             analysis_tasks[stock_code] = {
@@ -2671,7 +2671,7 @@ def analyze_stock_stream():
                 'client_id': client_id
             }
         
-        logger.info(f"开始流式分析股票: {stock_code}, 客户端: {client_id}")
+        logger.info(f"开始流式分析: {stock_code}, 客户端: {client_id}")
         
         # 异步执行分析
         def run_analysis():
@@ -2679,9 +2679,9 @@ def analyze_stock_stream():
                 global currentAnalysis
                 report = analyze_stock_streaming(stock_code, enable_streaming, client_id)
                 currentAnalysis = report
-                logger.info(f"股票流式分析完成: {stock_code}")
+                logger.info(f"流式分析完成: {stock_code}")
             except Exception as e:
-                logger.error(f"股票流式分析失败: {stock_code}, 错误: {e}")
+                logger.error(f"流式分析失败: {stock_code}, 错误: {e}")
             finally:
                 with task_lock:
                     analysis_tasks.pop(stock_code, None)
@@ -2691,12 +2691,12 @@ def analyze_stock_stream():
         
         return jsonify({
             'success': True,
-            'message': f'股票 {stock_code} 流式分析已启动',
+            'message': f' {stock_code} 流式分析已启动',
             'client_id': client_id
         })
         
     except Exception as e:
-        logger.error(f"启动股票流式分析失败: {e}")
+        logger.error(f"启动流式分析失败: {e}")
         return jsonify({
             'success': False,
             'error': str(e)
@@ -2705,7 +2705,7 @@ def analyze_stock_stream():
 @app.route('/api/batch_analyze_stream', methods=['POST'])
 @require_auth
 def batch_analyze_stream():
-    """批量股票流式分析接口"""
+    """批量流式分析接口"""
     try:
         if not analyzer:
             return jsonify({
@@ -2720,7 +2720,7 @@ def batch_analyze_stream():
         if not stock_codes:
             return jsonify({
                 'success': False,
-                'error': '股票代码列表不能为空'
+                'error': '代码列表不能为空'
             }), 400
         
         if not client_id:
@@ -2733,10 +2733,10 @@ def batch_analyze_stream():
         if len(stock_codes) > 10:
             return jsonify({
                 'success': False,
-                'error': '批量分析最多支持10只股票'
+                'error': '批量分析最多支持10只'
             }), 400
         
-        logger.info(f"开始流式批量分析 {len(stock_codes)} 只股票, 客户端: {client_id}")
+        logger.info(f"开始流式批量分析 {len(stock_codes)} 只, 客户端: {client_id}")
         
         # 异步执行批量分析
         def run_batch_analysis():
@@ -2744,7 +2744,7 @@ def batch_analyze_stream():
                 global currentAnalysis
                 results = analyze_batch_streaming(stock_codes, client_id)
                 currentAnalysis = results
-                logger.info(f"批量流式分析完成，成功分析 {len(results)}/{len(stock_codes)} 只股票")
+                logger.info(f"批量流式分析完成，成功分析 {len(results)}/{len(stock_codes)} 只")
             except Exception as e:
                 logger.error(f"批量流式分析失败: {e}")
         
@@ -2753,7 +2753,7 @@ def batch_analyze_stream():
         
         return jsonify({
             'success': True,
-            'message': f'批量分析已启动，共 {len(stock_codes)} 只股票',
+            'message': f'批量分析已启动，共 {len(stock_codes)} 只',
             'client_id': client_id
         })
         
@@ -2772,7 +2772,7 @@ def status():
         return jsonify({
             'success': True,
             'status': 'ready',
-            'message': 'Web股票分析系统运行正常 (SSE流式版)',
+            'message': 'Web分析系统运行正常 (SSE流式版)',
             'analyzer_available': analyzer is not None,
             'auth_enabled': auth_enabled,
             'sse_support': True,
@@ -2787,7 +2787,7 @@ def status():
 @app.route('/api/analyze', methods=['POST'])
 @require_auth
 def analyze_stock():
-    """单只股票分析 - 兼容接口（非流式）"""
+    """单只分析 - 兼容接口（非流式）"""
     try:
         if not analyzer:
             return jsonify({
@@ -2802,7 +2802,7 @@ def analyze_stock():
         if not stock_code:
             return jsonify({
                 'success': False,
-                'error': '股票代码不能为空'
+                'error': '代码不能为空'
             }), 400
         
         # 检查是否有相同的分析正在进行
@@ -2810,7 +2810,7 @@ def analyze_stock():
             if stock_code in analysis_tasks:
                 return jsonify({
                     'success': False,
-                    'error': f'股票 {stock_code} 正在分析中，请稍候'
+                    'error': f' {stock_code} 正在分析中，请稍候'
                 }), 429
             
             analysis_tasks[stock_code] = {
@@ -2818,7 +2818,7 @@ def analyze_stock():
                 'status': 'analyzing'
             }
         
-        logger.info(f"开始分析股票: {stock_code}")
+        logger.info(f"开始分析: {stock_code}")
         
         try:
             # 执行分析
@@ -2827,12 +2827,12 @@ def analyze_stock():
             # 清理数据中的NaN值
             cleaned_report = clean_data_for_json(report)
             
-            logger.info(f"股票分析完成: {stock_code}")
+            logger.info(f"分析完成: {stock_code}")
             
             return jsonify({
                 'success': True,
                 'data': cleaned_report,
-                'message': f'股票 {stock_code} 分析完成'
+                'message': f' {stock_code} 分析完成'
             })
             
         finally:
@@ -2843,7 +2843,7 @@ def analyze_stock():
         with task_lock:
             analysis_tasks.pop(stock_code, None)
         
-        logger.error(f"股票分析失败: {e}")
+        logger.error(f"分析失败: {e}")
         return jsonify({
             'success': False,
             'error': str(e)
@@ -2852,7 +2852,7 @@ def analyze_stock():
 @app.route('/api/batch_analyze', methods=['POST'])
 @require_auth
 def batch_analyze():
-    """批量股票分析 - 兼容接口（非流式）"""
+    """批量分析 - 兼容接口（非流式）"""
     try:
         if not analyzer:
             return jsonify({
@@ -2866,16 +2866,16 @@ def batch_analyze():
         if not stock_codes:
             return jsonify({
                 'success': False,
-                'error': '股票代码列表不能为空'
+                'error': '代码列表不能为空'
             }), 400
         
         if len(stock_codes) > 10:
             return jsonify({
                 'success': False,
-                'error': '批量分析最多支持10只股票'
+                'error': '批量分析最多支持10只'
             }), 400
         
-        logger.info(f"开始批量分析 {len(stock_codes)} 只股票")
+        logger.info(f"开始批量分析 {len(stock_codes)} 只")
         
         results = []
         failed_stocks = []
@@ -2903,17 +2903,17 @@ def batch_analyze():
         success_count = len(results)
         total_count = len(stock_codes)
         
-        logger.info(f"批量分析完成，成功分析 {success_count}/{total_count} 只股票")
+        logger.info(f"批量分析完成，成功分析 {success_count}/{total_count} 只")
         
         response_data = {
             'success': True,
             'data': cleaned_results,
-            'message': f'批量分析完成，成功分析 {success_count}/{total_count} 只股票'
+            'message': f'批量分析完成，成功分析 {success_count}/{total_count} 只'
         }
         
         if failed_stocks:
             response_data['failed_stocks'] = failed_stocks
-            response_data['message'] += f'，失败股票: {", ".join(failed_stocks)}'
+            response_data['message'] += f'，失败: {", ".join(failed_stocks)}'
         
         return jsonify(response_data)
         
@@ -2936,7 +2936,7 @@ def get_task_status(stock_code):
             return jsonify({
                 'success': True,
                 'status': 'not_found',
-                'message': f'未找到股票 {stock_code} 的分析任务'
+                'message': f'未找到 {stock_code} 的分析任务'
             })
         
         # 计算分析时长
@@ -2947,7 +2947,7 @@ def get_task_status(stock_code):
             'status': task_info['status'],
             'elapsed_time': elapsed_time,
             'client_id': task_info.get('client_id'),
-            'message': f'股票 {stock_code} 正在分析中'
+            'message': f' {stock_code} 正在分析中'
         })
         
     except Exception as e:
@@ -3042,7 +3042,7 @@ def internal_error(error):
 
 def main():
     """主函数"""
-    print("🚀 启动Web版现代股票分析系统（SSE流式版）...")
+    print("🚀 启动Web版现代分析系统（SSE流式版）...")
     print("🌊 Server-Sent Events | 实时流式推送 | 完整LLM API支持")
     print("=" * 70)
     
@@ -3112,8 +3112,18 @@ def main():
             with open('config.json', 'r', encoding='utf-8') as f:
                 config = json.load(f)
                 api_keys = config.get('api_keys', {})
-                configured_apis = [name for name, key in api_keys.items() 
-                                 if name != 'notes' and key and key.strip()]
+                # configured_apis = [name for name, key in api_keys.items() 
+                #                  if name != 'notes' and key and key.strip()]
+                configured_apis = []
+                for name, key in api_keys.items():
+                    if name == 'notes':
+                        continue
+                    # 如果是字符串，检查是否为空
+                    if isinstance(key, str) and key.strip():
+                        configured_apis.append(name)
+                    # 如果是字典（如 longport），检查里面是否有内容
+                    elif isinstance(key, dict) and any(key.values()):
+                        configured_apis.append(name)
                 if configured_apis:
                     print(f"   🔑 已配置API: {', '.join(configured_apis)}")
                 else:
@@ -3184,8 +3194,18 @@ def main():
     print("🤖 AI分析特性:")
     if analyzer:
         api_keys = analyzer.api_keys
-        configured_apis = [name for name, key in api_keys.items() 
-                          if name != 'notes' and key and key.strip()]
+        # configured_apis = [name for name, key in api_keys.items() 
+        #                   if name != 'notes' and key and key.strip()]
+        configured_apis = []
+        for name, key in api_keys.items():
+            if name == 'notes':
+                continue
+            # 如果是字符串，检查是否为空
+            if isinstance(key, str) and key.strip():
+                configured_apis.append(name)
+            # 如果是字典（如 longport），检查里面是否有内容
+            elif isinstance(key, dict) and any(key.values()):
+                configured_apis.append(name)
         if configured_apis:
             print(f"   - 已配置API: {', '.join(configured_apis)}")
             primary_api = analyzer.config.get('ai', {}).get('model_preference', 'openai')
@@ -3238,10 +3258,10 @@ def main():
     print("🔧 API接口文档:")
     print("   - GET  /api/status - 系统状态")
     print("   - GET  /api/sse?client_id=xxx - SSE流式接口")
-    print("   - POST /api/analyze_stream - 单只股票流式分析")
-    print("   - POST /api/batch_analyze_stream - 批量股票流式分析")
-    print("   - POST /api/analyze - 单只股票分析 (兼容)")
-    print("   - POST /api/batch_analyze - 批量股票分析 (兼容)")
+    print("   - POST /api/analyze_stream - 单只流式分析")
+    print("   - POST /api/batch_analyze_stream - 批量流式分析")
+    print("   - POST /api/analyze - 单只分析 (兼容)")
+    print("   - POST /api/batch_analyze - 批量分析 (兼容)")
     print("   - GET  /api/task_status/<code> - 任务状态")
     print("   - GET  /api/system_info - 系统信息")
     print("   - GET  /login - 登录页面 (如启用鉴权)")
