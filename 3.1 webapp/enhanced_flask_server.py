@@ -2843,7 +2843,7 @@ def analyze_stock_streaming(stock_code, enable_streaming, client_id, target_mark
             streamer.send_ai_stream(content)
         
         # 执行AI分析，支持流式输出
-        ai_analysis = analyzer.generate_ai_analysis({
+        ai_analysis, used_prompt = analyzer.generate_ai_analysis({
             'stock_code': normalized_code,
             'stock_name': stock_name,
             'price_info': price_info,
@@ -2858,6 +2858,23 @@ def analyze_stock_streaming(stock_code, enable_streaming, client_id, target_mark
         if not ai_analysis and ai_content_buffer:
             ai_analysis = ai_content_buffer
         
+        # ==========================================
+        # 👉 修改点2：【新增】在服务器端调用保存历史
+        # ==========================================
+        if ai_analysis:
+            try:
+                saved_path = analyzer.save_analysis_history(
+                    stock_code=normalized_code,
+                    prompt=used_prompt,  # 传入真实的 Prompt
+                    ai_response=ai_analysis,
+                    scores=scores
+                )
+                streamer.send_log(f"📝 历史报告已归档: {os.path.basename(saved_path)}", 'success')
+            except Exception as e:
+                # 只是保存失败，不要中断流程，记录警告即可
+                logger.warning(f"保存历史记录失败: {e}")
+        # ==========================================
+
         streamer.send_log(f"✅ {market.upper()}AI深度分析完成", 'success')
         
         # 7. 生成最终报告

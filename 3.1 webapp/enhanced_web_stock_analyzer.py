@@ -101,6 +101,18 @@ class EnhancedWebStockAnalyzer:
         self.logger.info("增强版Web分析器初始化完成（支持A/g/m + AI流式输出）")
         self._log_config_status()
 
+        # === 新增：初始化本地存储目录 ===
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        self.cache_dir =  os.path.join(script_dir, "data_cache")
+        self.history_dir = os.path.join(script_dir, "analysis_history")
+        
+        if not os.path.exists(self.cache_dir):
+            os.makedirs(self.cache_dir)
+        if not os.path.exists(self.history_dir):
+            os.makedirs(self.history_dir)
+            
+        self.logger.info(f"📁 本地缓存目录已就绪: {self.cache_dir}, {self.history_dir}")
+
     def _load_config(self):
         """加载JSON配置文件"""
         try:
@@ -308,15 +320,44 @@ class EnhancedWebStockAnalyzer:
         return stock_code, market
 
     def get_stock_data(self, stock_code, period='1y'):
-        """获取价格数据（支持多市场）"""
+        """获取股票数据（带本地缓存 + 内存缓存 + 网络请求）"""
+        # 1. 标准化代码
         stock_code, market = self.normalize_stock_code(stock_code)
-        cache_key = f"{market}_{stock_code}"
         
+        # --- 第一层：本地文件缓存检查 ---
+        # 缓存文件名: us_stock_QQQ_20251225.csv
+        today_str = datetime.now().strftime('%Y%m%d')
+        cache_filename = f"{market}_{stock_code}_{today_str}.csv"
+        cache_path = os.path.join(self.cache_dir, cache_filename)
+        
+        # 如果本地有今天的文件，直接读
+        if os.path.exists(cache_path):
+            self.logger.info(f"📦 命中本地文件缓存: {cache_filename}")
+            try:
+                df = pd.read_csv(cache_path)
+                # 尝试恢复日期索引
+                if 'date' in df.columns:
+                    df['date'] = pd.to_datetime(df['date'])
+                    df.set_index('date', inplace=True)
+                # 兼容不同CSV格式，如果第一列是日期但叫 'Unnamed: 0'
+                elif df.index.name != 'date' and 'date' not in df.columns:
+                    df.index = pd.to_datetime(df.iloc[:, 0])
+                    df = df.iloc[:, 1:] 
+                return df
+            except Exception as e:
+                self.logger.warning(f"读取本地缓存失败，准备重新下载: {e}")
+                # 读取失败不返回，继续往下走网络请求
+
+        # --- 第二层：内存缓存检查 (兼容你原有逻辑) ---
+        cache_key = f"{market}_{stock_code}"
         if cache_key in self.price_cache:
             cache_time, data = self.price_cache[cache_key]
             if datetime.now() - cache_time < self.cache_duration:
-                self.logger.info(f"使用缓存的价格数据: {cache_key}")
+                self.logger.info(f"⚡ 使用内存缓存数据: {cache_key}")
                 return data
+
+        # --- 第三层：网络请求 (核心逻辑) ---
+        self.logger.info(f"🌐 正在从网络下载 {stock_code} 数据...")
         
         try:
             import akshare as ak
@@ -325,95 +366,67 @@ class EnhancedWebStockAnalyzer:
             days = self.analysis_params.get('technical_period_days', 180)
             start_date = (datetime.now() - timedelta(days=days)).strftime('%Y%m%d')
             
-            self.logger.info(f"正在获取 {market.upper()} {stock_code} 的历史数据 (过去{days}天)...")
-            
             stock_data = None
             
+            # === A股 ===
             if market == 'a_stock':
-                # A数据
                 stock_data = ak.stock_zh_a_hist(
-                    symbol=stock_code,
-                    period="daily",
-                    start_date=start_date,
-                    end_date=end_date,
-                    adjust="qfq"
+                    symbol=stock_code, period="daily", start_date=start_date, end_date=end_date, adjust="qfq"
                 )
+            
+            # === 港股 ===
             elif market == 'hk_stock':
-                # g数据
                 try:
                     stock_data = ak.stock_hk_hist(
-                        symbol=stock_code,
-                        period="daily",
-                        start_date=start_date,
-                        end_date=end_date,
-                        adjust="qfq"
+                        symbol=stock_code, period="daily", start_date=start_date, end_date=end_date, adjust="qfq"
                     )
-                except Exception as e:
-                    self.logger.warning(f"使用g历史数据接口失败: {e}，尝试备用接口...")
+                except:
                     # 备用接口
                     stock_data = ak.stock_hk_daily(symbol=stock_code, adjust="qfq")
                     if not stock_data.empty:
-                        # 过滤日期范围
                         stock_data = stock_data[stock_data.index >= start_date]
-            elif market == 'us_stock':
-                # m数据
-                # session = requests.Session()
-                # # 设置 User-Agent，假装自己是 Windows 上的 Chrome 浏览器
-                # session.headers.update({
-                #     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-                # })
-                try:
-                    start_dt = datetime.now() - timedelta(days=180)
-                    end_dt = datetime.now()
 
-                    df = web.DataReader(stock_code, 'stooq', start=start_dt, end=end_dt)
-                    if df is None or df.empty:
-                            self.logger.warning(f"警告: Stooq 返回 {stock_code} 数据为空")
-                            stock_data = None
-                    else:
-                        df = df.sort_index(ascending=True)
-                        
-                        df = df.reset_index()
-                        
-                        # 重命名列以适配你的系统
+            # === 美股 (Stooq源) ===
+            elif market == 'us_stock':
+                try:
+                    start_dt = datetime.now() - timedelta(days=days)
+                    df = web.DataReader(stock_code, 'stooq', start=start_dt, end=datetime.now())
+                    
+                    if df is not None and not df.empty:
+                        df = df.sort_index(ascending=True).reset_index()
                         df = df.rename(columns={
-                            "Date": "date", 
-                            "Open": "open", 
-                            "High": "high", 
-                            "Low": "low", 
-                            "Close": "close", 
-                            "Volume": "volume"
+                            "Date": "date", "Open": "open", "High": "high", 
+                            "Low": "low", "Close": "close", "Volume": "volume"
                         })
-                        
-                        # 处理时区和格式
                         df['date'] = pd.to_datetime(df['date'])
                         if df['date'].dt.tz is not None:
                             df['date'] = df['date'].dt.tz_localize(None)
-                        
-                        # 再次确保只取最近 180 天（Stooq 有时会返回更多）
                         stock_data = df[df['date'] >= pd.to_datetime(start_date)]
-                        
-                        self.logger.info(f"✓ 成功从 Stooq 获取数据: {len(stock_data)} 条")
-
                 except Exception as e:
                     self.logger.error(f"Stooq 获取失败: {e}")
-                    stock_data = None
-            
+
+            # 检查数据有效性
             if stock_data is None or stock_data.empty:
                 raise ValueError(f"无法获取 {market.upper()} {stock_code} 的数据")
-            
+
             # 标准化列名
             stock_data = self._standardize_price_data_columns(stock_data, market)
-            
-            # 缓存数据
+
+            # --- 保存缓存 (内存 + 本地文件) ---
+            # 1. 存内存
             self.price_cache[cache_key] = (datetime.now(), stock_data)
             
-            self.logger.info(f"✓ 成功获取 {market.upper()} {stock_code} 的价格数据，共 {len(stock_data)} 条记录")
-            
+            # 2. 存本地文件
+            try:
+                stock_data.to_csv(cache_path)
+                self.logger.info(f"💾 数据已保存至本地: {cache_path}")
+            except Exception as e:
+                self.logger.error(f"写入本地文件失败: {e}")
+
             return stock_data
-            
+
         except Exception as e:
-            self.logger.error(f"获取数据失败: {str(e)}")
+            self.logger.error(f"获取数据全流程失败: {str(e)}")
             return pd.DataFrame()
 
     def _standardize_price_data_columns(self, stock_data, market):
@@ -489,6 +502,23 @@ class EnhancedWebStockAnalyzer:
     def get_comprehensive_fundamental_data(self, stock_code):
         """获取综合财务指标数据（支持多市场）"""
         stock_code, market = self.normalize_stock_code(stock_code)
+
+        # === 1. 生成缓存文件名 ===
+        # 按月缓存基本面 (因为财报更新慢，没必要每天下)
+        month_str = datetime.now().strftime('%Y%m') 
+        cache_filename = f"fund_{market}_{stock_code}_{month_str}.json"
+        cache_path = os.path.join(self.cache_dir, cache_filename)
+        # === 2. 检查本地文件 ===
+        if os.path.exists(cache_path):
+            try:
+                with open(cache_path, 'r', encoding='utf-8') as f:
+                    data = json.load(f)
+                self.logger.info(f"📦 命中基本面文件缓存: {cache_filename}")
+                return data
+            except Exception as e:
+                self.logger.warning(f"读取基本面缓存失败: {e}")
+
+
         cache_key = f"{market}_{stock_code}"
         
         if cache_key in self.fundamental_cache:
@@ -509,7 +539,13 @@ class EnhancedWebStockAnalyzer:
                 fundamental_data = self._get_hk_stock_fundamental_data(stock_code)
             elif market == 'us_stock':
                 fundamental_data = self._get_us_stock_fundamental_data(stock_code)
-            
+            # === 4. 保存到硬盘 ===
+            try:
+                with open(cache_path, 'w', encoding='utf-8') as f:
+                    json.dump(fundamental_data, f, ensure_ascii=False, indent=2)
+                self.logger.info(f"💾 基本面数据已缓存至: {cache_path}")
+            except Exception as e:
+                self.logger.error(f"写入基本面缓存失败: {e}")
             # 缓存数据
             self.fundamental_cache[cache_key] = (datetime.now(), fundamental_data)
             self.logger.info(f"✓ {market.upper()} {stock_code} 综合基本面数据获取完成并已缓存")
@@ -558,24 +594,33 @@ class EnhancedWebStockAnalyzer:
         # 3. 估值指标 (修复点：替换失效接口 stock_a_indicator_lg)
         try:
             # 使用百度接口获取个股估值，包含PE, PB, 市值等
-            valuation_data = ak.stock_zh_a_valuation_baidu(symbol=stock_code)
-            if not valuation_data.empty:
-                # 百度接口返回字段：date, pe(ttm), pb, etc. 取最后一行
-                latest_valuation = valuation_data.iloc[-1].to_dict()
-                
-                # 映射字段名为通用名称
-                mapped_valuation = {
-                    '市盈率(TTM)': latest_valuation.get('pe_ttm'),
-                    '市净率': latest_valuation.get('pb'),
-                    '股息率': latest_valuation.get('dividend_yield'),
-                    '总市值': latest_valuation.get('total_market_cap')
-                }
-                fundamental_data['valuation'] = self._clean_financial_data(mapped_valuation)
-                self.logger.info("✓ A股估值指标获取成功")
+            # 优先检查接口是否存在（防止版本过低报错）
+            if hasattr(ak, 'stock_zh_a_valuation_baidu'):
+                valuation_data = ak.stock_zh_a_valuation_baidu(symbol=stock_code)
+                if not valuation_data.empty:
+                    latest_valuation = valuation_data.iloc[-1].to_dict()
+                    fundamental_data['valuation'] = self._clean_financial_data({
+                        '市盈率(TTM)': latest_valuation.get('pe_ttm'),
+                        '市净率': latest_valuation.get('pb'),
+                        '股息率': latest_valuation.get('dividend_yield'),
+                        '总市值': latest_valuation.get('total_market_cap')
+                    })
+                    self.logger.info("✓ A股估值指标获取成功")
+                else:
+                    fundamental_data['valuation'] = {}
             else:
-                fundamental_data['valuation'] = {}
+                # 备用方案：如果新接口不存在，尝试从基本信息里找（旧版本兼容）
+                self.logger.warning("AkShare版本较低，使用备用估值获取方式")
+                if 'basic_info' in fundamental_data:
+                    info = fundamental_data['basic_info']
+                    fundamental_data['valuation'] = {
+                        '市盈率(TTM)': info.get('市盈率-动态'), # 只有部分接口有
+                        '市净率': info.get('市净率'),
+                        '总市值': info.get('总市值')
+                    }
         except Exception as e:
-            self.logger.warning(f"获取A股估值指标失败: {e} (已跳过)")
+            # 降级为 DEBUG 级别日志，避免刷屏吓人，因为这不是致命错误
+            self.logger.debug(f"A股估值指标获取受限: {e} (已跳过)")
             fundamental_data['valuation'] = {}
         
         # 4. 业绩预告
@@ -947,15 +992,55 @@ class EnhancedWebStockAnalyzer:
     def get_comprehensive_news_data(self, stock_code, days=15):
         """获取综合新闻数据（支持多市场）"""
         stock_code, market = self.normalize_stock_code(stock_code)
-        cache_key = f"{market}_{stock_code}_{days}"
+       # === 1. 生成缓存文件名 (核心修改点) ===
+        utc_now = datetime.utcnow()
+        beijing_now = utc_now + timedelta(hours=8)
+        date_str = beijing_now.strftime('%Y%m%d')
+        current_time_str = beijing_now.strftime('%H%M')
+
+        if current_time_str < "1000":
+            # 00:00 - 09:59 -> 使用盘前缓存
+            period_suffix = "PRE"
+        elif current_time_str < "1330":
+            # 10:00 - 13:29 -> 使用10点更新的缓存
+            period_suffix = "1000"
+        else:
+            # 13:30 - 23:59 -> 使用13点半更新的缓存
+            period_suffix = "1330"
+            
+        # 文件名示例: news_us_stock_AAPL_20251225_1000.json
+        cache_filename = f"news_{market}_{stock_code}_{date_str}_{period_suffix}.json"
+        cache_path = os.path.join(self.cache_dir, cache_filename)
         
-        if cache_key in self.news_cache:
-            cache_time, data = self.news_cache[cache_key]
-            if datetime.now() - cache_time < self.news_cache_duration:
-                self.logger.info(f"使用缓存的新闻数据: {cache_key}")
+        # # 判断当前是 上午(AM) 还是 下午(PM)
+        # # 0-11点为 AM，12-23点为 PM
+        # period_str = "AM" if now.hour < 12 else "PM"
+        
+        # # 文件名示例: news_us_stock_AAPL_20251225_AM.json
+        # # 这样每天 00:00 和 12:00 会各更新一次
+        # cache_filename = f"news_{market}_{stock_code}_{date_str}_{period_str}.json"
+        # cache_path = os.path.join(self.cache_dir, cache_filename)
+        
+        # === 2. 检查本地文件 ===
+        if os.path.exists(cache_path):
+            try:
+                with open(cache_path, 'r', encoding='utf-8') as f:
+                    data = json.load(f)
+                self.logger.info(f"📦 命中新闻文件缓存: {cache_filename}")
                 return data
+            except Exception as e:
+                self.logger.warning(f"读取新闻缓存失败: {e}")
+        self.logger.info(f"🌐 正在下载 {market.upper()} {stock_code} 的新闻数据...")
+
+        # cache_key = f"{market}_{stock_code}_{days}"
         
-        self.logger.info(f"开始获取 {market.upper()} {stock_code} 的综合新闻数据（最近{days}天）...")
+        # if cache_key in self.news_cache:
+        #     cache_time, data = self.news_cache[cache_key]
+        #     if datetime.now() - cache_time < self.news_cache_duration:
+        #         self.logger.info(f"使用缓存的新闻数据: {cache_key}")
+        #         return data
+        
+        # self.logger.info(f"开始获取 {market.upper()} {stock_code} 的综合新闻数据（最近{days}天）...")
         
         try:
             import akshare as ak
@@ -968,7 +1053,7 @@ class EnhancedWebStockAnalyzer:
                 'market_sentiment': {},
                 'news_summary': {}
             }
-            
+            all_news_data = {}
             if market == 'a_stock':
                 all_news_data = self._get_a_stock_news_data(stock_code, days)
             elif market == 'hk_stock':
@@ -976,6 +1061,16 @@ class EnhancedWebStockAnalyzer:
             elif market == 'us_stock':
                 all_news_data = self._get_us_stock_news_data(stock_code, days)
             
+            # === 3. 保存到硬盘 ===
+            try:
+                with open(cache_path, 'w', encoding='utf-8') as f:
+                    json.dump(all_news_data, f, ensure_ascii=False, indent=2)
+                self.logger.info(f"💾 新闻数据已缓存至: {cache_path}")
+            except Exception as e:
+                self.logger.error(f"写入新闻缓存失败: {e}")
+
+            # 内存缓存
+            cache_key = f"{market}_{stock_code}_{days}"
             # 缓存数据
             self.news_cache[cache_key] = (datetime.now(), all_news_data)
             
@@ -1749,7 +1844,7 @@ class EnhancedWebStockAnalyzer:
                     financial_text += f"{i}. {key}: {value}\n"
         
         # 构建完整的提示词
-        prompt = """
+        prompt = f"""
 # Role
 你是一位拥有20年实战经验的**资深全球量化交易员**。你的风格是**结论先行、数据驱动、拒绝废话**。
 你不需要向我解释什么是ETF或，也不需要科普监管环境。你需要基于我提供的详细数据，像写**交易日志**一样，给出直击要害的分析和操作计划。
@@ -1843,17 +1938,22 @@ class EnhancedWebStockAnalyzer:
             
             # 调用AI API（支持流式）
             ai_response = self._call_ai_api(prompt, enable_streaming, stream_callback)
-            
+
             if ai_response:
                 self.logger.info("✅ AI深度分析完成（多市场）")
-                return ai_response
+                # 👉 修改点：返回元组 (ai_response, prompt)
+                return ai_response, prompt
             else:
                 self.logger.warning("⚠️ AI API不可用，使用高级分析模式")
-                return self._advanced_rule_based_analysis(analysis_data, market)
+                fallback = self._advanced_rule_based_analysis(analysis_data, market)
+                # 👉 修改点：返回元组 (fallback, 说明文字)
+                return fallback, "（API不可用，使用规则引擎分析）"
                 
         except Exception as e:
             self.logger.error(f"AI分析失败: {e}")
-            return self._advanced_rule_based_analysis(analysis_data, self.detect_market(stock_code))
+            fallback = self._advanced_rule_based_analysis(analysis_data, self.detect_market(stock_code))
+            # 👉 修改点：返回元组
+            return fallback, f"（分析出错: {e}，使用规则引擎）"
 
     def _call_ai_api(self, prompt, enable_streaming=False, stream_callback=None):
         """调用AI API - 支持流式输出（多市场通用）"""
@@ -2328,7 +2428,7 @@ class EnhancedWebStockAnalyzer:
             recommendation = self.generate_recommendation(scores, market)
             
             # 6. AI增强分析（支持多市场 + 流式输出）
-            ai_analysis = self.generate_ai_analysis({
+            ai_analysis, used_prompt = self.generate_ai_analysis({
                 'stock_code': normalized_code,
                 'stock_name': stock_name,
                 'price_info': price_info,
@@ -2339,6 +2439,22 @@ class EnhancedWebStockAnalyzer:
                 'market': market
             }, enable_streaming, stream_callback)
             
+            # ==========================================
+            # 👉 【插入在这里】 保存历史记录 👈
+            # ==========================================
+            if ai_analysis:
+                try:
+                    saved_path = self.save_analysis_history(
+                        stock_code=stock_code,
+                        prompt=used_prompt,  # 👉 这里传入真实的 prompt 变量
+                        ai_response=ai_analysis,
+                        scores=scores
+                    )
+                    self.logger.info(f"📝 历史记录已保存: {saved_path}")
+                except Exception as e:
+                    self.logger.warning(f"保存历史记录失败: {e}")
+            # ==========================================
+
             # 7. 生成最终报告
             report = {
                 'stock_code': normalized_code,
@@ -2375,6 +2491,46 @@ class EnhancedWebStockAnalyzer:
         except Exception as e:
             self.logger.error(f"增强版分析失败 {stock_code}: {str(e)}")
             raise
+
+    def save_analysis_history(self, stock_code, prompt, ai_response, scores):
+        """保存分析问答历史到本地 Markdown"""
+        
+        stock_code, market = self.normalize_stock_code(stock_code)
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        
+        # 文件名: 20251225_120000_QQQ_us_stock.md
+        filename = f"{timestamp}_{stock_code}_{market}.md"
+        filepath = os.path.join(self.history_dir, filename)
+        
+        # 构建 Markdown 内容
+        content = f"""# 📈 股票分析报告: {stock_code} ({market})
+
+**分析时间**: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+**综合评分**: {scores.get('comprehensive', 0):.1f} 分
+
+---
+
+## 🙋‍♂️ 你的问题 (Prompt Context)
+> 这是一个基于自动数据的分析请求。
+*(为节省空间，此处通常不保存完整的庞大 Prompt，只保存关键输入)*
+
+## 🤖 AI 的深度分析
+{ai_response}
+
+---
+*Generated by EnhancedWebStockAnalyzer*
+"""
+        
+        # 写入文件
+        try:
+            with open(filepath, 'w', encoding='utf-8') as f:
+                f.write(content)
+            self.logger.info(f"📝 分析报告已归档: {filename}")
+            return filepath
+        except Exception as e:
+            self.logger.error(f"保存历史失败: {e}")
+            return None
+
 
     def analyze_stock_with_streaming(self, stock_code, streamer):
         """带流式回调的分析方法"""
