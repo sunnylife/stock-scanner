@@ -330,23 +330,28 @@ class EnhancedWebStockAnalyzer:
         cache_filename = f"{market}_{stock_code}_{today_str}.csv"
         cache_path = os.path.join(self.cache_dir, cache_filename)
         
-        # 如果本地有今天的文件，直接读
+        # 2. 检查缓存是否有效 (30分钟内有效)
+        use_cache = False
         if os.path.exists(cache_path):
-            self.logger.info(f"📦 命中本地文件缓存: {cache_filename}")
+            try:
+                file_mtime = datetime.fromtimestamp(os.path.getmtime(cache_path))
+                if datetime.now() - file_mtime < timedelta(minutes=30):
+                    use_cache = True
+                    self.logger.info(f"📦 命中本地缓存: {cache_filename}")
+            except:
+                pass
+
+        if use_cache:
             try:
                 df = pd.read_csv(cache_path)
-                # 尝试恢复日期索引
                 if 'date' in df.columns:
                     df['date'] = pd.to_datetime(df['date'])
                     df.set_index('date', inplace=True)
-                # 兼容不同CSV格式，如果第一列是日期但叫 'Unnamed: 0'
-                elif df.index.name != 'date' and 'date' not in df.columns:
-                    df.index = pd.to_datetime(df.iloc[:, 0])
-                    df = df.iloc[:, 1:] 
                 return df
-            except Exception as e:
-                self.logger.warning(f"读取本地缓存失败，准备重新下载: {e}")
-                # 读取失败不返回，继续往下走网络请求
+            except:
+                pass
+
+    
 
         # --- 第二层：内存缓存检查 (兼容你原有逻辑) ---
         cache_key = f"{market}_{stock_code}"
@@ -361,18 +366,84 @@ class EnhancedWebStockAnalyzer:
         
         try:
             import akshare as ak
-            
+            stock_data = pd.DataFrame()
+
+            # end_date = datetime.now().strftime('%Y%m%d')
+            # start_date = (datetime.now() - timedelta(days=self.analysis_params.get('technical_period_days', 180))).strftime('%Y%m%d')
+            # try:
+            #     hist_df = ak.stock_zh_a_hist(symbol=stock_code, period="daily", start_date=start_date, end_date=end_date, adjust="qfq")
+            # except:
+            #     hist_df = pd.DataFrame()
+
+            # stock_data = None
+
             end_date = datetime.now().strftime('%Y%m%d')
             days = self.analysis_params.get('technical_period_days', 180)
             start_date = (datetime.now() - timedelta(days=days)).strftime('%Y%m%d')
-            
-            stock_data = None
-            
+
             # === A股 ===
             if market == 'a_stock':
-                stock_data = ak.stock_zh_a_hist(
-                    symbol=stock_code, period="daily", start_date=start_date, end_date=end_date, adjust="qfq"
-                )
+                # end_date = datetime.now().strftime('%Y%m%d')
+                # start_date = (datetime.now() - timedelta(days=self.analysis_params.get('technical_period_days', 180))).strftime('%Y%m%d')
+                
+                try:
+                    hist_df = ak.stock_zh_a_hist(symbol=stock_code, period="daily", start_date=start_date, end_date=end_date, adjust="qfq")
+                except:
+                    hist_df = pd.DataFrame()
+                
+                try:
+                    # 注意：spot_em返回所有A股实时数据，我们需要筛选
+                    spot_df = ak.stock_zh_a_spot_em()
+                    realtime_row = spot_df[spot_df['代码'] == stock_code]
+                    
+                    if not realtime_row.empty:
+                        # 提取关键数据
+                        rt_close = float(realtime_row.iloc[0]['最新价'])
+                        rt_open = float(realtime_row.iloc[0]['今开'])
+                        rt_high = float(realtime_row.iloc[0]['最高'])
+                        rt_low = float(realtime_row.iloc[0]['最低'])
+                        rt_vol = float(realtime_row.iloc[0]['成交量'])
+                        rt_amount = float(realtime_row.iloc[0]['成交额'])
+                        rt_date = datetime.now().strftime('%Y-%m-%d')
+                        print(f"最新股价：{rt_close}")
+                        # C. 数据缝合
+                        # 如果历史数据为空，直接用实时数据造一行
+                        if hist_df.empty:
+                             hist_df = pd.DataFrame({
+                                '日期': [rt_date], '开盘': [rt_open], '收盘': [rt_close], 
+                                '最高': [rt_high], '最低': [rt_low], '成交量': [rt_vol], 
+                                '成交额': [rt_amount]
+                            })
+                        else:
+                            # 检查历史数据最后一行是不是今天
+                            last_hist_date = pd.to_datetime(hist_df.iloc[-1]['日期']).strftime('%Y-%m-%d')
+                            
+                            if last_hist_date == rt_date:
+                                # 如果日期一样，用实时数据覆盖历史数据 (因为实时更准)
+                                self.logger.info(f"⚡ 用实时数据覆盖今日历史: {rt_close}")
+                                idx = hist_df.index[-1]
+                                hist_df.at[idx, '收盘'] = rt_close
+                                hist_df.at[idx, '最高'] = rt_high
+                                hist_df.at[idx, '最低'] = rt_low
+                                hist_df.at[idx, '成交量'] = rt_vol
+                            else:
+                                # 如果日期不一样(历史数据还没更新今天)，把实时数据追加到最后
+                                self.logger.info(f"➕ 追加今日实时数据: {rt_close}")
+                                new_row = pd.DataFrame({
+                                    '日期': [rt_date], '开盘': [rt_open], '收盘': [rt_close], 
+                                    '最高': [rt_high], '最低': [rt_low], '成交量': [rt_vol], 
+                                    '成交额': [rt_amount]
+                                })
+                                hist_df = pd.concat([hist_df, new_row], ignore_index=True)
+                
+                    stock_data = hist_df
+
+                except Exception as e:
+                    self.logger.warning(f"获取实时数据失败，降级使用历史数据: {e}")
+                    stock_data = hist_df
+                # stock_data = ak.stock_zh_a_hist(
+                #     symbol=stock_code, period="daily", start_date=start_date, end_date=end_date, adjust="qfq"
+                # )
             
             # === 港股 ===
             elif market == 'hk_stock':
@@ -384,7 +455,9 @@ class EnhancedWebStockAnalyzer:
                     # 备用接口
                     stock_data = ak.stock_hk_daily(symbol=stock_code, adjust="qfq")
                     if not stock_data.empty:
-                        stock_data = stock_data[stock_data.index >= start_date]
+                        # stock_data = stock_data[stock_data.index >= start_date]
+                        stock_data.index = pd.to_datetime(stock_data.index)
+                        stock_data = stock_data[stock_data.index >= pd.to_datetime(start_date)]
 
             # === 美股 (Stooq源) ===
             elif market == 'us_stock':
@@ -430,73 +503,65 @@ class EnhancedWebStockAnalyzer:
             return pd.DataFrame()
 
     def _standardize_price_data_columns(self, stock_data, market):
-        """标准化价格数据列名"""
+        """标准化价格数据列名 (基于列名映射，稳健版)"""
         try:
-            actual_columns = len(stock_data.columns)
-            self.logger.info(f"获取到 {actual_columns} 列数据，列名: {list(stock_data.columns)}")
+            # 记录原始列名以供调试
+            self.logger.info(f"处理前列名: {list(stock_data.columns)}")
             
-            # 根据市场和实际列数进行映射
+            # === A股处理逻辑 (核心修复) ===
             if market == 'a_stock':
-                # A列名映射
-                if actual_columns >= 11:
-                    standard_columns = ['date', 'open', 'close', 'high', 'low', 'volume', 'turnover', 'amplitude', 'change_pct', 'change_amount', 'turnover_rate']
-                else:
-                    standard_columns = [f'col_{i}' for i in range(actual_columns)]
-                    
-            elif market == 'hk_stock':
-                # g列名映射
-                if actual_columns >= 6:
-                    standard_columns = ['date', 'open', 'close', 'high', 'low', 'volume']
-                    if actual_columns > 6:
-                        standard_columns.extend([f'extra_{i}' for i in range(actual_columns - 6)])
-                else:
-                    standard_columns = [f'col_{i}' for i in range(actual_columns)]
-                    
-            elif market == 'us_stock':
-                # m列名映射
-                if actual_columns >= 6:
-                    standard_columns = ['date', 'open', 'close', 'high', 'low', 'volume']
-                    if actual_columns > 6:
-                        standard_columns.extend([f'extra_{i}' for i in range(actual_columns - 6)])
-                else:
-                    standard_columns = [f'col_{i}' for i in range(actual_columns)]
-            
-            # 创建列名映射
-            column_mapping = dict(zip(stock_data.columns, standard_columns))
-            stock_data = stock_data.rename(columns=column_mapping)
-            
-            # 确保必要的列存在
-            required_columns = ['close', 'open', 'high', 'low', 'volume']
-            for col in required_columns:
-                if col not in stock_data.columns:
-                    similar_cols = [c for c in stock_data.columns if col in c.lower() or c.lower() in col]
-                    if similar_cols:
-                        stock_data[col] = stock_data[similar_cols[0]]
-                        self.logger.info(f"✓ 映射列 {similar_cols[0]} -> {col}")
-            
-            # 处理日期列
-            try:
-                if 'date' in stock_data.columns:
-                    stock_data['date'] = pd.to_datetime(stock_data['date'])
-                    stock_data = stock_data.set_index('date')
-                else:
+                # 1. 定义明确的中文到英文映射表
+                rename_map = {
+                    '日期': 'date',
+                    '开盘': 'open',
+                    '收盘': 'close',
+                    '最高': 'high',
+                    '最低': 'low',
+                    '成交量': 'volume',
+                    '成交额': 'turnover',
+                    '振幅': 'amplitude',
+                    '涨跌幅': 'change_pct',
+                    '涨跌额': 'change_amount',
+                    '换手率': 'turnover_rate',
+                    # 即使akshare返回了'股票代码'这一列，它不在map里就不会被错误重命名，会被保留原名
+                }
+                # 2. 使用 rename 方法进行精准替换
+                stock_data = stock_data.rename(columns=rename_map)
+
+            # === 港股/美股处理逻辑 (保持兼容性) ===
+            elif market in ['hk_stock', 'us_stock']:
+                # 如果已经是英文列名(date, close等)，不需要处理
+                # 如果不是，才使用原来的位置映射作为备选
+                if 'close' not in stock_data.columns:
+                    actual_columns = len(stock_data.columns)
+                    if actual_columns >= 6:
+                        cols = ['date', 'open', 'close', 'high', 'low', 'volume']
+                        if actual_columns > 6:
+                            cols.extend([f'extra_{i}' for i in range(actual_columns - 6)])
+                        stock_data.columns = cols[:actual_columns]
+
+            # === 通用数据清洗 (必做) ===
+            # 1. 处理时间索引
+            if 'date' in stock_data.columns:
+                stock_data['date'] = pd.to_datetime(stock_data['date'])
+                stock_data = stock_data.set_index('date')
+            elif stock_data.index.name != 'date':
+                try:
                     stock_data.index = pd.to_datetime(stock_data.index)
-            except Exception as e:
-                self.logger.warning(f"日期处理失败: {e}")
-            
-            # 确保数值列为数值类型
-            numeric_columns = ['open', 'close', 'high', 'low', 'volume']
-            for col in numeric_columns:
+                    stock_data.index.name = 'date'
+                except:
+                    pass
+
+            # 2. 强制转换数值类型 (防止字符串干扰计算)
+            numeric_cols = ['open', 'close', 'high', 'low', 'volume']
+            for col in numeric_cols:
                 if col in stock_data.columns:
-                    try:
-                        stock_data[col] = pd.to_numeric(stock_data[col], errors='coerce')
-                    except:
-                        pass
-            
+                    stock_data[col] = pd.to_numeric(stock_data[col], errors='coerce')
+
             return stock_data
             
         except Exception as e:
-            self.logger.warning(f"列名标准化失败: {e}")
+            self.logger.error(f"列名标准化失败: {e}")
             return stock_data
 
     def get_comprehensive_fundamental_data(self, stock_code):
@@ -1490,6 +1555,54 @@ class EnhancedWebStockAnalyzer:
             self.logger.error(f"技术指标计算失败: {str(e)}")
             return self._get_default_technical_analysis()
 
+    # === 新增方法：计算 ATR 止损位和支撑阻力 ===
+    def calculate_trade_levels(self, df):
+        """
+        使用 ATR (平均真实波幅) 计算科学的止损位和止盈位
+        """
+        try:
+            if df.empty or len(df) < 20:
+                return {}
+
+            # 确保数据是数值型
+            high = pd.to_numeric(df['high'], errors='coerce')
+            low = pd.to_numeric(df['low'], errors='coerce')
+            close = pd.to_numeric(df['close'], errors='coerce')
+            
+            # 计算 ATR (14天)
+            high_low = high - low
+            high_close = np.abs(high - close.shift())
+            low_close = np.abs(low - close.shift())
+            
+            ranges = pd.concat([high_low, high_close, low_close], axis=1)
+            true_range = np.max(ranges, axis=1)
+            atr = true_range.rolling(14).mean().iloc[-1]
+            
+            current_price = close.iloc[-1]
+            
+            # 策略逻辑：
+            # 止损位 = 现价 - 2倍 ATR (留出波动空间)
+            stop_loss = current_price - (2.0 * atr)
+            
+            # 止盈位 = 现价 + 3倍 ATR (追求 1.5:1 的盈亏比)
+            take_profit = current_price + (3.0 * atr)
+            
+            # 支撑位/阻力位 (最近20天的最高最低点)
+            support_20d = low.tail(20).min()
+            resistance_20d = high.tail(20).max()
+            
+            return {
+                "atr": round(atr, 2),
+                "stop_loss": round(stop_loss, 2),
+                "take_profit": round(take_profit, 2),
+                "support_20d": round(support_20d, 2),
+                "resistance_20d": round(resistance_20d, 2),
+                "risk_reward_ratio": "1:1.5"
+            }
+        except Exception as e:
+            self.logger.warning(f"ATR计算失败: {e}")
+            return {}
+
     def _get_default_technical_analysis(self):
         """获取默认技术分析结果"""
         return {
@@ -1819,7 +1932,7 @@ class EnhancedWebStockAnalyzer:
             return "数据不足，建议谨慎"
 
     def _build_enhanced_ai_analysis_prompt(self, stock_code, stock_name, scores, technical_analysis, 
-                                        fundamental_data, sentiment_analysis, price_info, market=None):
+                                        fundamental_data, sentiment_analysis, price_info, market=None,trade_levels=None):
         """构建增强版AI分析提示词（支持多市场）"""
         
         market_info = ""
@@ -1843,6 +1956,17 @@ class EnhancedWebStockAnalyzer:
                 if isinstance(value, (int, float)) and value != 0:
                     financial_text += f"{i}. {key}: {value}\n"
         
+        trade_levels_text = ""
+        if trade_levels:
+            trade_levels_text = f"""
+**量化风控模型 (基于ATR波动率计算)**：
+- 波动率(ATR-14)：{trade_levels.get('atr', 'N/A')}
+- 建议止损位：{trade_levels.get('stop_loss', 'N/A')} (现价下浮2倍ATR)
+- 建议止盈位：{trade_levels.get('take_profit', 'N/A')} (现价上浮3倍ATR)
+- 20日强支撑：{trade_levels.get('support_20d', 'N/A')}
+- 20日强阻力：{trade_levels.get('resistance_20d', 'N/A')}
+"""
+
         # 构建完整的提示词
         prompt = f"""
 # Role
@@ -1854,6 +1978,8 @@ class EnhancedWebStockAnalyzer:
 - 代码：{stock_code} ({stock_name})
 - 现价：{price_info.get('current_price', 0):.2f} (涨跌: {price_info.get('price_change', 0):.2f}%)
 - 波动率：{price_info.get('volatility', 0):.2f}% | 量比：{price_info.get('volume_ratio', 1):.2f}
+
+{trade_levels_text}  
 
 **技术信号**：
 - 趋势：{technical_analysis.get('ma_trend', '未知')}
@@ -1890,8 +2016,8 @@ class EnhancedWebStockAnalyzer:
     * MACD: {technical_analysis.get('macd_signal')} (解读其含义，如“多头趋势确认”或“顶背离警示”)
     * RSI ({technical_analysis.get('rsi'):.1f}): (解读是否超买/超卖，结合布林带位置 {technical_analysis.get('bb_position'):.2f} 判断反弹或回调压力。)
 * **关键点位预测**：
-    * 🔴 **强阻力位**：[基于波动率和布林带估算价格]
-    * 🟢 **强支撑位**：[基于波动率和布林带估算价格]
+    * 🔴 **强阻力位**：参考量化模型提供的 {trade_levels.get('resistance_20d') if trade_levels else '阻力位'}，结合布林带分析。
+    * 🟢 **强支撑位**：参考量化模型提供的 {trade_levels.get('support_20d') if trade_levels else '支撑位'}，结合均线分析。
 
 ### 3. 多空博弈与风险 (Risk & Opportunity)
 * **多头逻辑**：(上涨的催化剂是什么？)
@@ -1930,6 +2056,8 @@ class EnhancedWebStockAnalyzer:
             # 检测市场
             _, market = self.normalize_stock_code(stock_code)
             
+            trade_levels = analysis_data.get('trade_levels', {})
+
             # 构建增强版AI分析提示词
             prompt = self._build_enhanced_ai_analysis_prompt(
                 stock_code, stock_name, scores, technical_analysis, 
@@ -2397,6 +2525,10 @@ class EnhancedWebStockAnalyzer:
             price_info = self.get_price_info(price_data)
             technical_analysis = self.calculate_technical_indicators(price_data)
             technical_score = self.calculate_technical_score(technical_analysis)
+
+            # === 新增：计算量化交易点位 ===
+            trade_levels = self.calculate_trade_levels(price_data)
+            self.logger.info(f"量化点位计算完成: 止损 {trade_levels.get('stop_loss')}")
             
             # 2. 获取财务指标和基本面分析
             self.logger.info(f"正在进行 {market.upper()} 财务指标分析...")
@@ -2436,7 +2568,8 @@ class EnhancedWebStockAnalyzer:
                 'fundamental_data': fundamental_data,
                 'sentiment_analysis': sentiment_analysis,
                 'scores': scores,
-                'market': market
+                'market': market,
+                'trade_levels': trade_levels
             }, enable_streaming, stream_callback)
             
             # ==========================================
