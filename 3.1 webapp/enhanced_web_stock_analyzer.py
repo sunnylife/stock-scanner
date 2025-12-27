@@ -1555,6 +1555,82 @@ class EnhancedWebStockAnalyzer:
             self.logger.error(f"技术指标计算失败: {str(e)}")
             return self._get_default_technical_analysis()
 
+    def analyze_smart_money_flow(self, df):
+        """
+        主力资金流向分析 (Smart Money Flow)
+        检测机构建仓、洗盘和出货信号
+        """
+        try:
+            if df.empty or len(df) < 30:
+                return {}
+            
+            analysis = {}
+            
+            # 1. 计算 OBV (能量潮) - 核心资金指标
+            # 逻辑：收阳线成交量加，收阴线成交量减。
+            # 机构建仓特征：股价不涨，OBV 持续上涨
+            df['obv'] = (np.sign(df['close'].diff()) * df['volume']).fillna(0).cumsum()
+            
+            # 2. 计算主力吸筹信号 (Stealth Accumulation)
+            # 定义：当日量比 > 1.5 且 涨幅在 -1% 到 2% 之间 (放量不涨，多为主力吸筹)
+            vol_ma20 = df['volume'].rolling(20).mean()
+            df['vol_ratio'] = df['volume'] / vol_ma20
+            
+            # 标记吸筹日
+            accumulation_days = df[
+                (df['vol_ratio'] > 1.5) & 
+                (df['change_pct'] > -1.0) & 
+                (df['change_pct'] < 2.5) &
+                (df['close'] > df['open']) # 阳线吸筹更可信
+            ]
+            
+            # 统计最近 30 天有多少个吸筹日
+            recent_acc_days = len(accumulation_days[accumulation_days.index > df.index[-30]])
+            
+            # 3. 资金流向打分
+            flow_score = 50
+            status = "资金观望"
+            
+            # OBV 趋势判断
+            obv_ma10 = df['obv'].rolling(10).mean().iloc[-1]
+            obv_ma30 = df['obv'].rolling(30).mean().iloc[-1]
+            current_obv = df['obv'].iloc[-1]
+            
+            if current_obv > obv_ma10 > obv_ma30:
+                flow_score += 20
+                status = "资金持续流入"
+            elif current_obv < obv_ma10 < obv_ma30:
+                flow_score -= 20
+                status = "资金持续流出"
+                
+            # 吸筹力度加分
+            if recent_acc_days >= 3:
+                flow_score += 15
+                status = "机构隐蔽建仓"
+            elif recent_acc_days >= 5:
+                flow_score += 25
+                status = "机构强势抢筹"
+                
+            # 4. 筹码稳定性 (波动率收缩 VCP)
+            # 建仓末期通常波动率极低
+            volatility_5d = df['change_pct'].tail(5).std()
+            if volatility_5d < 1.5 and flow_score > 60:
+                status += " (即将爆发)"
+                
+            analysis = {
+                'money_flow_score': flow_score,
+                'flow_status': status,
+                'accumulation_days': recent_acc_days, # 最近30天吸筹天数
+                'obv_trend': '向上' if current_obv > obv_ma30 else '向下',
+                'volatility_status': '极低' if volatility_5d < 1.5 else '正常'
+            }
+            
+            return analysis
+            
+        except Exception as e:
+            self.logger.warning(f"主力资金分析失败: {e}")
+            return {'money_flow_score': 50, 'flow_status': '数据不足'}
+
     # === 新增方法：计算 ATR 止损位和支撑阻力 ===
     def calculate_trade_levels(self, df):
         """
@@ -1932,7 +2008,7 @@ class EnhancedWebStockAnalyzer:
             return "数据不足，建议谨慎"
 
     def _build_enhanced_ai_analysis_prompt(self, stock_code, stock_name, scores, technical_analysis, 
-                                        fundamental_data, sentiment_analysis, price_info, market=None,trade_levels=None):
+                                        fundamental_data, sentiment_analysis, price_info, market=None,trade_levels=None,money_flow=None):
         """构建增强版AI分析提示词（支持多市场）"""
         
         market_info = ""
@@ -1967,6 +2043,16 @@ class EnhancedWebStockAnalyzer:
 - 20日强阻力：{trade_levels.get('resistance_20d', 'N/A')}
 """
 
+        money_flow_text = ""
+        if money_flow:
+            money_flow_text = f"""
+**主力资金监控 (Smart Money)**：
+- 资金状态：{money_flow.get('flow_status', '未知')} (得分: {money_flow.get('money_flow_score', 50)})
+- 隐蔽吸筹：最近30天出现 {money_flow.get('accumulation_days', 0)} 次主力吸筹信号
+- OBV趋势：{money_flow.get('obv_trend', '未知')}
+- 爆发潜力：{'高 (波动率收缩+资金流入)' if money_flow.get('volatility_status') == '极低' and money_flow.get('money_flow_score', 0) > 70 else '一般'}
+"""
+
         # 构建完整的提示词
         prompt = f"""
 # Role
@@ -1981,6 +2067,8 @@ class EnhancedWebStockAnalyzer:
 
 {trade_levels_text}  
 
+{money_flow_text}
+
 **技术信号**：
 - 趋势：{technical_analysis.get('ma_trend', '未知')}
 - 指标：RSI={technical_analysis.get('rsi', 50):.1f} | MACD={technical_analysis.get('macd_signal', '未知')}
@@ -1994,7 +2082,6 @@ class EnhancedWebStockAnalyzer:
 **补充情报**：
 {market_info}
 {financial_text}
-
 ---
 
 # Output Requirement (输出要求)
@@ -2526,6 +2613,10 @@ class EnhancedWebStockAnalyzer:
             technical_analysis = self.calculate_technical_indicators(price_data)
             technical_score = self.calculate_technical_score(technical_analysis)
 
+            # === 新增：主力资金分析 ===
+            money_flow = self.analyze_smart_money_flow(price_data)
+            self.logger.info(f"资金分析完成: {money_flow.get('flow_status')}")
+
             # === 新增：计算量化交易点位 ===
             trade_levels = self.calculate_trade_levels(price_data)
             self.logger.info(f"量化点位计算完成: 止损 {trade_levels.get('stop_loss')}")
@@ -2569,6 +2660,7 @@ class EnhancedWebStockAnalyzer:
                 'sentiment_analysis': sentiment_analysis,
                 'scores': scores,
                 'market': market,
+                'money_flow': money_flow,
                 'trade_levels': trade_levels
             }, enable_streaming, stream_callback)
             
