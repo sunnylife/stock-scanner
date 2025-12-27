@@ -1418,7 +1418,7 @@ class EnhancedWebStockAnalyzer:
             }
 
     def calculate_technical_indicators(self, price_data):
-        """计算技术指标（通用于多市场）"""
+        """计算技术指标（增加 MA200 趋势线）"""
         try:
             if price_data.empty:
                 return self._get_default_technical_analysis()
@@ -1443,11 +1443,16 @@ class EnhancedWebStockAnalyzer:
                 price_data['ma10'] = price_data['close'].rolling(window=10, min_periods=1).mean()
                 price_data['ma20'] = price_data['close'].rolling(window=20, min_periods=1).mean()
                 price_data['ma60'] = price_data['close'].rolling(window=60, min_periods=1).mean()
+                price_data['ma200'] = price_data['close'].rolling(window=200, min_periods=1).mean()
                 
                 latest_price = safe_float(price_data['close'].iloc[-1])
                 ma5 = safe_float(price_data['ma5'].iloc[-1], latest_price)
                 ma10 = safe_float(price_data['ma10'].iloc[-1], latest_price)
                 ma20 = safe_float(price_data['ma20'].iloc[-1], latest_price)
+                ma200 = safe_float(price_data['ma200'].iloc[-1], latest_price) # 获取最新 MA200
+
+                technical_analysis['ma200'] = ma200 
+                technical_analysis['price_above_ma200'] = latest_price > ma200
                 
                 if latest_price > ma5 > ma10 > ma20:
                     technical_analysis['ma_trend'] = '多头排列'
@@ -1632,51 +1637,65 @@ class EnhancedWebStockAnalyzer:
             return {'money_flow_score': 50, 'flow_status': '数据不足'}
 
     # === 新增方法：计算 ATR 止损位和支撑阻力 ===
-    def calculate_trade_levels(self, df):
+    def calculate_trade_levels(self, df, total_capital=100000, risk_per_trade=0.02):
         """
-        使用 ATR (平均真实波幅) 计算科学的止损位和止盈位
+        计算交易点位及仓位管理 (ATR风控 + 2%资金风险模型)
         """
         try:
             if df.empty or len(df) < 20:
                 return {}
 
-            # 确保数据是数值型
+            # 数据转换
             high = pd.to_numeric(df['high'], errors='coerce')
             low = pd.to_numeric(df['low'], errors='coerce')
             close = pd.to_numeric(df['close'], errors='coerce')
+            current_price = close.iloc[-1]
             
-            # 计算 ATR (14天)
+            # 1. 计算 ATR (波动率)
             high_low = high - low
             high_close = np.abs(high - close.shift())
             low_close = np.abs(low - close.shift())
-            
             ranges = pd.concat([high_low, high_close, low_close], axis=1)
             true_range = np.max(ranges, axis=1)
             atr = true_range.rolling(14).mean().iloc[-1]
             
-            current_price = close.iloc[-1]
+            # 2. 确定止损位 (ATR吊灯止损)
+            # 止损距离 = 2倍 ATR (给波动留出呼吸空间)
+            stop_loss_distance = 2.0 * atr
+            stop_loss_price = current_price - stop_loss_distance
             
-            # 策略逻辑：
-            # 止损位 = 现价 - 2倍 ATR (留出波动空间)
-            stop_loss = current_price - (2.0 * atr)
+            # 3. 仓位管理 (核心治愈代码)
+            # 这是一个铁律：每笔交易最多只允许亏掉总资金的 2%
+            # 比如 10万本金，最多亏 2000块。
+            max_risk_amount = total_capital * risk_per_trade
             
-            # 止盈位 = 现价 + 3倍 ATR (追求 1.5:1 的盈亏比)
-            take_profit = current_price + (3.0 * atr)
-            
-            # 支撑位/阻力位 (最近20天的最高最低点)
-            support_20d = low.tail(20).min()
-            resistance_20d = high.tail(20).max()
-            
+            # 计算买入股数 = 允许亏损金额 / 单股亏损金额
+            # 比如：允许亏2000 / (现价100 - 止损90) = 买200股
+            if stop_loss_distance > 0:
+                suggested_shares = int(max_risk_amount / stop_loss_distance)
+                # 针对A股/港股调整为 100 的倍数 (手)
+                suggested_shares = (suggested_shares // 100) * 100
+            else:
+                suggested_shares = 0
+                
+            # 计算建议投入本金
+            suggested_position_value = suggested_shares * current_price
+            position_percent = (suggested_position_value / total_capital) * 100
+
             return {
                 "atr": round(atr, 2),
-                "stop_loss": round(stop_loss, 2),
-                "take_profit": round(take_profit, 2),
-                "support_20d": round(support_20d, 2),
-                "resistance_20d": round(resistance_20d, 2),
-                "risk_reward_ratio": "1:1.5"
+                "stop_loss": round(stop_loss_price, 2),
+                "take_profit": round(current_price + (3.0 * atr), 2), # 1:3 盈亏比
+                "support_20d": round(low.tail(20).min(), 2),
+                "resistance_20d": round(high.tail(20).max(), 2),
+                # === 新增：仓位建议 ===
+                "suggested_shares": suggested_shares,
+                "suggested_position_value": round(suggested_position_value, 2),
+                "position_percent": round(position_percent, 1),
+                "max_risk_money": max_risk_amount
             }
         except Exception as e:
-            self.logger.warning(f"ATR计算失败: {e}")
+            self.logger.warning(f"风控计算失败: {e}")
             return {}
 
     def _get_default_technical_analysis(self):
@@ -1694,20 +1713,35 @@ class EnhancedWebStockAnalyzer:
         try:
             score = 50
             
+            # 1. 趋势得分 (权重最高)
+            # 如果股价在 200 日均线之上，说明处于长期牛市，基础分直接给高
+            if technical_analysis.get('price_above_ma200', False):
+                score += 10
+            else:
+                score -= 10
+
+            # 2. 均线形态
             ma_trend = technical_analysis.get('ma_trend', '数据不足')
             if ma_trend == '多头排列':
-                score += 20
+                score += 15
             elif ma_trend == '空头排列':
-                score -= 20
+                score -= 15
             
+            # 3. RSI (核心修改：结合趋势判断)
             rsi = technical_analysis.get('rsi', 50)
-            if 30 <= rsi <= 70:
-                score += 10
-            elif rsi < 30:
-                score += 5
-            elif rsi > 70:
-                score -= 5
+            is_bull_market = technical_analysis.get('price_above_ma200', False)
             
+            if is_bull_market:
+                # 牛市里，RSI低位是买点 (回调)
+                if rsi < 40: score += 15  # 黄金坑
+                elif 40 <= rsi <= 70: score += 5
+                elif rsi > 80: score -= 5 # 只有极度超买才减分
+            else:
+                # 熊市里，RSI低位可能是陷阱 (阴跌)，不加分
+                if rsi < 30: score += 0   # 甚至可以不加分
+                elif rsi > 60: score -= 10 # 熊市反弹一波就要跑
+            
+            # 4. MACD
             macd_signal = technical_analysis.get('macd_signal', '横盘整理')
             if macd_signal == '金叉向上':
                 score += 15
@@ -1736,58 +1770,72 @@ class EnhancedWebStockAnalyzer:
             return 50
 
     def calculate_fundamental_score(self, fundamental_data):
-        """计算基本面得分（支持多市场）"""
+        """计算基本面得分（引入 PEG 和 动态估值）"""
         try:
             score = 50
+            financials = fundamental_data.get('financial_indicators', {})
             
-            # 财务指标评分
-            financial_indicators = fundamental_data.get('financial_indicators', {})
-            if len(financial_indicators) >= 10:  # 调整阈值以适应不同市场
-                score += 15
-                
-                # 通用盈利能力评分（适应不同市场的指标名称）
-                roe = (financial_indicators.get('净资产收益率', 0) or 
-                      financial_indicators.get('ROE', 0) or 
-                      financial_indicators.get('roe', 0))
-                if roe > 15:
-                    score += 10
-                elif roe > 10:
-                    score += 5
-                elif roe < 5:
-                    score -= 5
-                
-                # 通用估值指标
-                pe_ratio = (financial_indicators.get('市盈率', 0) or 
-                           financial_indicators.get('PE_Ratio', 0) or 
-                           financial_indicators.get('pe_ratio', 0))
-                if 0 < pe_ratio < 20:
-                    score += 10
-                elif pe_ratio > 50:
-                    score -= 5
-                
-                # 债务水平评估
-                debt_ratio = (financial_indicators.get('资产负债率', 50) or 
-                             financial_indicators.get('debt_ratio', 50))
-                if debt_ratio < 30:
-                    score += 5
-                elif debt_ratio > 70:
-                    score -= 10
+            # 数据提取 (兼容中英文key)
+            def get_val(keys, default=0):
+                for k in keys:
+                    if k in financials and financials[k] is not None:
+                        try:
+                            return float(financials[k])
+                        except: pass
+                return default
+
+            # 关键指标获取
+            pe = get_val(['市盈率', 'PE_Ratio', '市盈率(TTM)'])
+            roe = get_val(['净资产收益率', 'ROE'])
+            growth = get_val(['净利润同比增长率', 'Net_Income_Growth', '营业收入同比增长率'])
             
-            # 估值评分
-            valuation = fundamental_data.get('valuation', {})
-            if valuation:
-                score += 10
+            # === 1. 盈利能力 (ROE) ===
+            # ROE 是公司的底色，依然重要
+            if roe > 20: score += 15
+            elif roe > 15: score += 10
+            elif roe > 10: score += 5
+            elif roe < 5: score -= 10
+
+            # === 2. 核心修改：PEG 估值法 (取代死板的 PE<20) ===
+            # PEG = 市盈率 / (净利润增长率 * 100)
+            # 彼得·林奇法则：PEG < 1 低估，PEG > 1 合理，PEG > 2 高估
             
-            # 业绩预告评分
-            performance_forecast = fundamental_data.get('performance_forecast', [])
-            if performance_forecast:
-                score += 10
+            if pe > 0 and growth > 0:
+                peg = pe / growth
+                if peg < 0.8: score += 20     # 极度低估 (成长快且便宜)
+                elif 0.8 <= peg <= 1.2: score += 10 # 合理估值
+                elif 1.2 < peg <= 2.0: score += 0   # 略贵但可接受
+                elif peg > 2.0: score -= 15         # 泡沫严重
+            else:
+                # 如果没有增长数据，回退到动态 PE 逻辑
+                # 逻辑：如果增速快(>20%)，允许高PE；否则必须低PE
+                if growth > 20:
+                    if pe < 40: score += 10
+                elif growth > 10:
+                    if pe < 25: score += 10
+                else:
+                    # 龟速增长股，PE必须低
+                    if 0 < pe < 15: score += 10
+                    elif pe > 25: score -= 10
+
+            # === 3. 避雷指标 (一票否决项) ===
+            # 扣分项：如果这些指标很烂，哪怕 PEG 很好也要扣分
             
+            # 负债率过高 > 70%
+            debt_ratio = get_val(['资产负债率', 'Debt_Ratio'], 50)
+            if debt_ratio > 80: score -= 15
+            elif debt_ratio > 70: score -= 5
+            
+            # 现金流为负 (赚假钱)
+            # 假设有一个指标叫 '经营现金流占比' 或者简单判断现金流是否为负
+            # 这里简单判断：如果 ROE < 0 (亏损)，直接扣分
+            if roe < 0: score -= 10
+
             score = max(0, min(100, score))
             return score
             
         except Exception as e:
-            self.logger.error(f"基本面评分失败: {str(e)}")
+            self.logger.error(f"基本面评分失败: {e}")
             return 50
 
     def calculate_sentiment_score(self, sentiment_analysis):
@@ -2035,12 +2083,11 @@ class EnhancedWebStockAnalyzer:
         trade_levels_text = ""
         if trade_levels:
             trade_levels_text = f"""
-**量化风控模型 (基于ATR波动率计算)**：
-- 波动率(ATR-14)：{trade_levels.get('atr', 'N/A')}
-- 建议止损位：{trade_levels.get('stop_loss', 'N/A')} (现价下浮2倍ATR)
-- 建议止盈位：{trade_levels.get('take_profit', 'N/A')} (现价上浮3倍ATR)
-- 20日强支撑：{trade_levels.get('support_20d', 'N/A')}
-- 20日强阻力：{trade_levels.get('resistance_20d', 'N/A')}
+**量化风控与仓位建议 (基于2%本金风险模型)**：
+- 波动率(ATR)：{trade_levels.get('atr', 'N/A')}
+- 🛑 刚性止损位：{trade_levels.get('stop_loss', 'N/A')} (触及必须无条件离场)
+- 💰 建议仓位：{trade_levels.get('suggested_shares', 0)} 股 (约占本金 {trade_levels.get('position_percent', 0)}%)
+- ⚠️ 最大风险敞口：-{trade_levels.get('max_risk_money', 0)} 元 (即使止损离场，也只损失本金的2%)
 """
 
         money_flow_text = ""
