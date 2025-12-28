@@ -2056,7 +2056,7 @@ class EnhancedWebStockAnalyzer:
             return "数据不足，建议谨慎"
 
     def _build_enhanced_ai_analysis_prompt(self, stock_code, stock_name, scores, technical_analysis, 
-                                        fundamental_data, sentiment_analysis, price_info, market=None,trade_levels=None,money_flow=None):
+                                        fundamental_data, sentiment_analysis, price_info, market=None,trade_levels=None,money_flow=None,ai_trade_decision=None):
         """构建增强版AI分析提示词（支持多市场）"""
         
         market_info = ""
@@ -2100,6 +2100,21 @@ class EnhancedWebStockAnalyzer:
 - 爆发潜力：{'高 (波动率收缩+资金流入)' if money_flow.get('volatility_status') == '极低' and money_flow.get('money_flow_score', 0) > 70 else '一般'}
 """
 
+        # === 👇 新增：构建量化信号文本 👇 ===
+        quant_signal_text = ""
+        if ai_trade_decision:
+            action = ai_trade_decision.get('action', 'HOLD')
+            conf = ai_trade_decision.get('confidence', 0)
+            reason = ai_trade_decision.get('reason', '无')
+            
+            quant_signal_text = f"""
+**核心量化信号 (最高优先级参考)**：
+- 🤖 策略引擎建议：{action} (置信度 {conf}%)
+- 🎯 信号逻辑：{reason}
+- ⚠️ 写作要求：你的“实战操作建议”必须与此量化信号保持一致！如果量化模型建议 BUY，你必须解释为何买入；如果建议 HOLD，你必须解释为何观望。
+"""
+        # =================================
+
         # 构建完整的提示词
         prompt = f"""
 # Role
@@ -2115,6 +2130,8 @@ class EnhancedWebStockAnalyzer:
 {trade_levels_text}  
 
 {money_flow_text}
+
+{quant_signal_text}
 
 **技术信号**：
 - 趋势：{technical_analysis.get('ma_trend', '未知')}
@@ -2191,11 +2208,14 @@ class EnhancedWebStockAnalyzer:
             _, market = self.normalize_stock_code(stock_code)
             
             trade_levels = analysis_data.get('trade_levels', {})
+            money_flow = analysis_data.get('money_flow', {})
+            ai_trade_decision = analysis_data.get('ai_trade_decision', {})
 
             # 构建增强版AI分析提示词
             prompt = self._build_enhanced_ai_analysis_prompt(
                 stock_code, stock_name, scores, technical_analysis, 
-                fundamental_data, sentiment_analysis, price_info, market
+                fundamental_data, sentiment_analysis, price_info, market,
+                trade_levels,money_flow, ai_trade_decision
             )
             
             # 调用AI API（支持流式）
@@ -2664,6 +2684,8 @@ class EnhancedWebStockAnalyzer:
             money_flow = self.analyze_smart_money_flow(price_data)
             self.logger.info(f"资金分析完成: {money_flow.get('flow_status')}")
 
+            ai_trade_decision = analysis_data.get('ai_trade_decision', {})
+
             # === 新增：计算量化交易点位 ===
             trade_levels = self.calculate_trade_levels(price_data)
             self.logger.info(f"量化点位计算完成: 止损 {trade_levels.get('stop_loss')}")
@@ -2693,7 +2715,42 @@ class EnhancedWebStockAnalyzer:
                     'sentiment': sentiment_score
                 })
             }
+            # ============================================================
+            # 👇👇👇 [新增] 插入 AI 策略决策逻辑 👇👇👇
+            # ============================================================
+            ai_decision = {"action": "HOLD", "confidence": 0, "reason": "初始化"}
             
+            if not price_data.empty and len(price_data) > 30:
+                # A. 计算策略专用数据
+                df_strategy = self._calculate_strategy_features(price_data)
+                
+                # B. 运行硬规则风控
+                is_valid, reject_reason = self._check_v5_rules(df_strategy)
+                
+                if not is_valid:
+                    ai_decision = {
+                        "action": "HOLD",
+                        "confidence": 0,
+                        "reason": f"风控拦截: {reject_reason}"
+                    }
+                else:
+                    # C. 调用 AI
+                    # 如果开启流式，发送通知
+                    if enable_streaming and stream_callback:
+                        stream_callback(f"\n🤖 [策略] 风控通过，正在进行交易决策...\n")
+                    
+                    prompt = self._build_strategy_prompt(df_strategy)
+                    ai_res_text = self._call_strategy_ai(prompt) 
+                    
+                    try:
+                        match = re.search(r"(\{.*\})", ai_res_text, re.DOTALL)
+                        if match:
+                            ai_decision = json.loads(match.group(1))
+                        else:
+                            ai_decision = json.loads(ai_res_text)
+                    except:
+                        ai_decision = {"action": "HOLD", "confidence": 0, "reason": "AI解析失败"}
+            # ============================================================
             # 5. 生成投资建议
             recommendation = self.generate_recommendation(scores, market)
             
@@ -2725,8 +2782,7 @@ class EnhancedWebStockAnalyzer:
                     self.logger.info(f"📝 历史记录已保存: {saved_path}")
                 except Exception as e:
                     self.logger.warning(f"保存历史记录失败: {e}")
-            # ==========================================
-
+        
             # 7. 生成最终报告
             report = {
                 'stock_code': normalized_code,
@@ -2749,7 +2805,8 @@ class EnhancedWebStockAnalyzer:
                     'total_news_count': sentiment_analysis.get('total_analyzed', 0),
                     'analysis_completeness': '完整' if len(fundamental_data.get('financial_indicators', {})) >= 10 else '部分',
                     'market_coverage': market.upper()
-                }
+                },
+                'ai_trade_decision': ai_decision
             }
             
             self.logger.info(f"✓ 增强版分析完成: {normalized_code} ({market.upper()})")
@@ -2869,6 +2926,155 @@ class EnhancedWebStockAnalyzer:
         news_data = self.get_comprehensive_news_data(stock_code)
         return self.calculate_advanced_sentiment_analysis(news_data)
 
+    # ============================================================
+    # 👇👇👇 [新增] V5.3 策略组件 (已适配您的 config.json) 👇👇👇
+    # ============================================================
+
+    def _calculate_strategy_features(self, df):
+        """策略专用指标计算"""
+        try:
+            df = df.copy()
+            df['MA5'] = df['close'].rolling(5).mean()
+            df['MA20'] = df['close'].rolling(20).mean()
+            df['MA20_slope'] = df['MA20'].diff()
+            
+            std = df['close'].rolling(20).std()
+            mid = df['MA20']
+            upper = mid + 2 * std
+            lower = mid - 2 * std
+            range_bb = upper - lower
+            
+            df['bb_pos'] = 0.5
+            mask = range_bb > 0
+            df.loc[mask, 'bb_pos'] = (df.loc[mask, 'close'] - lower[mask]) / range_bb[mask]
+            
+            delta = df['close'].diff()
+            gain = (delta.where(delta > 0, 0)).rolling(14).mean()
+            loss = (-delta.where(delta < 0, 0)).rolling(14).mean()
+            rs = gain / loss
+            df['RSI'] = 100 - (100 / (1 + rs))
+            
+            exp12 = df['close'].ewm(span=12, adjust=False).mean()
+            exp26 = df['close'].ewm(span=26, adjust=False).mean()
+            df['DIF'] = exp12 - exp26
+            df['DEA'] = df['DIF'].ewm(span=9, adjust=False).mean()
+            df['MACD_Bar'] = 2 * (df['DIF'] - df['DEA'])
+            
+            vol_ma20 = df['volume'].rolling(20).mean()
+            df['Vol_Ratio'] = df['volume'] / vol_ma20
+            
+            return df
+        except Exception as e:
+            self.logger.error(f"策略指标计算错误: {e}")
+            return df
+
+    def _check_v5_rules(self, df_slice):
+        """V5.3 哑铃策略风控"""
+        if df_slice.empty: return False, "数据不足"
+        curr = df_slice.iloc[-1]
+        prev = df_slice.iloc[-2]
+        
+        rsi = curr.get('RSI', 50)
+        close = curr['close']
+        ma5 = curr.get('MA5', 0)
+        ma20 = curr.get('MA20', 0)
+        ma20_slope = curr.get('MA20_slope', 0)
+        bb_pos = curr.get('bb_pos', 0.5)
+        
+        if rsi > 70: return False, f"RSI过热({rsi:.1f}>70)"
+
+        is_uptrend = close > ma20 
+        if is_uptrend:
+            if ma20_slope < -0.01: return False, f"MA20趋势向下({ma20_slope:.3f})"
+            bias = (close - ma20) / ma20 * 100
+            if bias > 8: return False, f"乖离率过大({bias:.1f}%)"
+            if close < ma5 and curr.get('change_pct', 0) < -3: return False, "破位大跌"
+        else:
+            is_oversold = rsi < 35 
+            is_boll_low = bb_pos < 0.15
+            is_shrink = curr.get('Vol_Ratio', 1.0) < 0.8
+            if not ((is_oversold or is_boll_low) and is_shrink):
+                return False, "左侧条件不足(需超跌+缩量)"
+
+        try:
+            macd_val = curr.get('MACD_Bar', 0)
+            prev_macd = prev.get('MACD_Bar', 0)
+            if macd_val < -0.2 and macd_val < prev_macd: return False, "MACD加速下跌"
+        except: pass
+
+        return True, "符合策略"
+
+    def _build_strategy_prompt(self, df_enriched):
+        """构建策略 Prompt"""
+        curr = df_enriched.iloc[-1]
+        recent = df_enriched.tail(10)
+        table = "| 日期 | 收盘 | 涨跌% | MA20 | MACD | 量比 |\n|---|---|---|---|---|---|\n"
+        for d, r in recent.iterrows():
+            d_str = d.strftime('%m-%d')
+            mac_icon = "🔴" if r['MACD_Bar'] > 0 else "🟢"
+            table += f"| {d_str} | {r['close']:.2f} | {r.get('change_pct',0):.2f} | {r['MA20']:.2f} | {mac_icon} | {r.get('Vol_Ratio',0):.1f} |\n"
+
+        return f"""
+你是一名资深量化交易员，擅长【哑铃策略】。
+【近期数据】
+{table}
+【当前指标】
+- 价格: {curr['close']} (MA20: {curr.get('MA20',0):.2f})
+- 布林位置: {curr.get('bb_pos',0.5):.2f}
+- RSI: {curr.get('RSI',50):.1f}
+【任务】
+判断当前是**右侧顺势**还是**左侧震荡**，并给出操作建议。
+输出JSON: action (BUY/HOLD/SELL), confidence (0-100), reason (简短理由)。
+"""
+
+    def _call_strategy_ai(self, prompt):
+        """
+        [关键修改] 策略专用 AI 调用
+        兼容您的 config.json 格式 (简单的字符串 key)
+        """
+        try:
+            import openai
+            
+            # === 直接获取字符串格式的 Key ===
+            api_key = self.api_keys.get('openai')
+            if not api_key:
+                return '{"action": "HOLD", "confidence": 0, "reason": "No API Key"}'
+
+            # 设置 Key 和 Base URL
+            openai.api_key = api_key
+            api_base = self.config.get('ai', {}).get('api_base_urls', {}).get('openai')
+            if api_base:
+                openai.api_base = api_base
+            
+            # 获取模型配置
+            model = self.config.get('ai', {}).get('models', {}).get('openai', 'gpt-4o-mini')
+
+            # 调用
+            if hasattr(openai, 'OpenAI'): # 新版 SDK
+                client = openai.OpenAI(api_key=api_key, base_url=api_base)
+                response = client.chat.completions.create(
+                    model=model,
+                    messages=[
+                        {"role": "system", "content": "You are a professional trader. Output JSON only."},
+                        {"role": "user", "content": prompt}
+                    ],
+                    temperature=0.1
+                )
+                return response.choices[0].message.content
+            else: # 旧版 SDK 兼容
+                response = openai.ChatCompletion.create(
+                    model=model,
+                    messages=[
+                        {"role": "system", "content": "You are a professional trader. Output JSON only."},
+                        {"role": "user", "content": prompt}
+                    ],
+                    temperature=0.1
+                )
+                return response.choices[0].message.content
+
+        except Exception as e:
+            self.logger.error(f"策略AI调用出错: {e}")
+            return '{"action": "HOLD", "confidence": 0, "reason": "API Error"}'
 
 # 为了保持向后兼容，创建一个别名
 WebStockAnalyzer = EnhancedWebStockAnalyzer

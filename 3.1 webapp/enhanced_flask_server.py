@@ -3101,7 +3101,7 @@ def batch_analyze_stream():
             }), 400
         
         # 限制批量分析数量
-        if len(stock_codes) > 10:
+        if len(stock_codes) > 50:
             return jsonify({
                 'success': False,
                 'error': '批量分析最多支持10只'
