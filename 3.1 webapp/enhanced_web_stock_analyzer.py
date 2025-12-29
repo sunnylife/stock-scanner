@@ -2684,7 +2684,7 @@ class EnhancedWebStockAnalyzer:
             money_flow = self.analyze_smart_money_flow(price_data)
             self.logger.info(f"资金分析完成: {money_flow.get('flow_status')}")
 
-            ai_trade_decision = analysis_data.get('ai_trade_decision', {})
+            # ai_trade_decision = analysis_data.get('ai_trade_decision', {})
 
             # === 新增：计算量化交易点位 ===
             trade_levels = self.calculate_trade_levels(price_data)
@@ -2765,7 +2765,8 @@ class EnhancedWebStockAnalyzer:
                 'scores': scores,
                 'market': market,
                 'money_flow': money_flow,
-                'trade_levels': trade_levels
+                'trade_levels': trade_levels,
+                'ai_trade_decision': ai_decision
             }, enable_streaming, stream_callback)
             
             # ==========================================
