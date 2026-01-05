@@ -1,0 +1,622 @@
+📝 本次运行日志将存储于: backtest_logs/run_20260105_000721.log
+DEBUG: 正在加载模块...
+/home/ad/miniconda3/envs/lh/lib/python3.10/site-packages/py_mini_racer/py_mini_racer.py:15: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+DEBUG: 进入主函数...
+DEBUG: 初始化系统组件...
+
+============================================================
+🌍 启动市场流程: US_STOCK | 目标筛选: Top 10 | 回测周期: 近20天
+============================================================
+2026-01-05 00:07:23,325 - 📡 正在扫描美股市场 (US)...
+  0%|          | 0/127 [00:00<?, ?it/s]  1%|          | 1/127 [00:00<00:40,  3.08it/s]  2%|1         | 2/127 [00:00<00:40,  3.12it/s]  2%|2         | 3/127 [00:00<00:38,  3.24it/s]  3%|3         | 4/127 [00:01<00:34,  3.56it/s]  4%|3         | 5/127 [00:01<00:35,  3.42it/s]  5%|4         | 6/127 [00:01<00:35,  3.37it/s]  6%|5         | 7/127 [00:02<00:36,  3.29it/s]  6%|6         | 8/127 [00:02<00:35,  3.38it/s]  7%|7         | 9/127 [00:02<00:34,  3.47it/s]  8%|7         | 10/127 [00:02<00:33,  3.48it/s]  9%|8         | 11/127 [00:03<00:34,  3.38it/s]  9%|9         | 12/127 [00:03<00:34,  3.33it/s] 10%|#         | 13/127 [00:03<00:33,  3.41it/s] 11%|#1        | 14/127 [00:04<00:33,  3.40it/s] 12%|#1        | 15/127 [00:04<00:32,  3.46it/s] 13%|#2        | 16/127 [00:04<00:32,  3.36it/s] 13%|#3        | 17/127 [00:05<00:33,  3.33it/s] 14%|#4        | 18/127 [00:05<00:33,  3.25it/s] 15%|#4        | 19/127 [00:05<00:33,  3.22it/s] 16%|#5        | 20/127 [00:05<00:32,  3.28it/s] 17%|#6        | 21/127 [00:06<00:32,  3.31it/s] 17%|#7        | 22/127 [00:06<00:31,  3.29it/s] 18%|#8        | 23/127 [00:06<00:30,  3.40it/s] 19%|#8        | 24/127 [00:07<00:31,  3.25it/s] 20%|#9        | 25/127 [00:07<00:28,  3.58it/s] 20%|##        | 26/127 [00:07<00:29,  3.48it/s] 21%|##1       | 27/127 [00:07<00:28,  3.53it/s] 22%|##2       | 28/127 [00:08<00:27,  3.58it/s] 23%|##2       | 29/127 [00:08<00:27,  3.59it/s] 24%|##3       | 30/127 [00:08<00:28,  3.46it/s] 24%|##4       | 31/127 [00:09<00:28,  3.34it/s] 25%|##5       | 32/127 [00:09<00:29,  3.25it/s] 26%|##5       | 33/127 [00:09<00:29,  3.15it/s] 27%|##6       | 34/127 [00:10<00:29,  3.20it/s] 28%|##7       | 35/127 [00:10<00:27,  3.39it/s] 28%|##8       | 36/127 [00:10<00:28,  3.25it/s] 29%|##9       | 37/127 [00:10<00:25,  3.55it/s] 30%|##9       | 38/127 [00:11<00:26,  3.32it/s] 31%|###       | 39/127 [00:11<00:25,  3.49it/s] 31%|###1      | 40/127 [00:11<00:24,  3.60it/s] 32%|###2      | 41/127 [00:12<00:25,  3.32it/s] 33%|###3      | 42/127 [00:12<00:27,  3.11it/s] 34%|###3      | 43/127 [00:12<00:26,  3.18it/s] 35%|###4      | 44/127 [00:13<00:26,  3.14it/s] 35%|###5      | 45/127 [00:13<00:24,  3.37it/s] 36%|###6      | 46/127 [00:13<00:24,  3.33it/s] 37%|###7      | 47/127 [00:14<00:24,  3.30it/s] 38%|###7      | 48/127 [00:14<00:23,  3.40it/s] 39%|###8      | 49/127 [00:14<00:23,  3.32it/s] 39%|###9      | 50/127 [00:14<00:20,  3.73it/s] 40%|####      | 51/127 [00:15<00:18,  4.05it/s] 41%|####      | 52/127 [00:15<00:17,  4.29it/s] 42%|####1     | 53/127 [00:15<00:19,  3.87it/s] 43%|####2     | 54/127 [00:15<00:19,  3.67it/s] 43%|####3     | 55/127 [00:16<00:18,  4.00it/s] 44%|####4     | 56/127 [00:16<00:18,  3.75it/s] 45%|####4     | 57/127 [00:16<00:19,  3.56it/s] 46%|####5     | 58/127 [00:16<00:17,  3.93it/s] 46%|####6     | 59/127 [00:17<00:16,  4.22it/s] 47%|####7     | 60/127 [00:17<00:17,  3.74it/s] 48%|####8     | 61/127 [00:17<00:18,  3.59it/s] 49%|####8     | 62/127 [00:17<00:16,  3.92it/s] 50%|####9     | 63/127 [00:18<00:17,  3.73it/s] 50%|#####     | 64/127 [00:18<00:17,  3.56it/s] 51%|#####1    | 65/127 [00:18<00:16,  3.83it/s] 52%|#####1    | 66/127 [00:18<00:15,  3.87it/s] 53%|#####2    | 67/127 [00:19<00:15,  3.92it/s] 54%|#####3    | 68/127 [00:19<00:17,  3.44it/s] 54%|#####4    | 69/127 [00:19<00:17,  3.39it/s] 55%|#####5    | 70/127 [00:20<00:15,  3.71it/s] 56%|#####5    | 71/127 [00:20<00:16,  3.48it/s] 57%|#####6    | 72/127 [00:20<00:14,  3.73it/s] 57%|#####7    | 73/127 [00:21<00:16,  3.36it/s] 58%|#####8    | 74/127 [00:21<00:16,  3.16it/s] 59%|#####9    | 75/127 [00:21<00:15,  3.35it/s] 60%|#####9    | 76/127 [00:21<00:14,  3.44it/s] 61%|######    | 77/127 [00:22<00:14,  3.49it/s] 61%|######1   | 78/127 [00:22<00:13,  3.73it/s] 62%|######2   | 79/127 [00:22<00:13,  3.57it/s] 63%|######2   | 80/127 [00:22<00:12,  3.76it/s] 64%|######3   | 81/127 [00:23<00:12,  3.68it/s] 65%|######4   | 82/127 [00:23<00:12,  3.53it/s] 65%|######5   | 83/127 [00:23<00:11,  3.86it/s] 66%|######6   | 84/127 [00:23<00:10,  4.26it/s] 67%|######6   | 85/127 [00:24<00:10,  3.93it/s] 68%|######7   | 86/127 [00:24<00:11,  3.70it/s] 69%|######8   | 87/127 [00:24<00:11,  3.58it/s] 69%|######9   | 88/127 [00:25<00:09,  3.98it/s] 70%|#######   | 89/127 [00:25<00:09,  4.11it/s] 71%|#######   | 90/127 [00:25<00:09,  3.74it/s] 72%|#######1  | 91/127 [00:25<00:09,  3.85it/s] 72%|#######2  | 92/127 [00:26<00:09,  3.53it/s] 73%|#######3  | 93/127 [00:26<00:08,  3.79it/s] 74%|#######4  | 94/127 [00:26<00:09,  3.51it/s] 75%|#######4  | 95/127 [00:26<00:08,  3.84it/s] 76%|#######5  | 96/127 [00:27<00:07,  4.18it/s] 76%|#######6  | 97/127 [00:27<00:09,  3.31it/s] 77%|#######7  | 98/127 [00:27<00:09,  3.04it/s] 78%|#######7  | 99/127 [00:28<00:07,  3.59it/s] 79%|#######8  | 100/127 [00:28<00:06,  3.96it/s] 80%|#######9  | 101/127 [00:28<00:06,  3.85it/s] 80%|########  | 102/127 [00:28<00:05,  4.34it/s] 81%|########1 | 103/127 [00:28<00:05,  4.61it/s] 82%|########1 | 104/127 [00:29<00:04,  5.06it/s] 83%|########2 | 105/127 [00:29<00:05,  4.08it/s] 83%|########3 | 106/127 [00:29<00:04,  4.83it/s] 84%|########4 | 107/127 [00:29<00:03,  5.72it/s] 85%|########5 | 108/127 [00:29<00:03,  6.04it/s] 86%|########5 | 109/127 [00:29<00:02,  6.26it/s] 87%|########6 | 110/127 [00:30<00:04,  4.05it/s] 87%|########7 | 111/127 [00:30<00:04,  3.33it/s] 88%|########8 | 112/127 [00:30<00:03,  3.99it/s] 89%|########8 | 113/127 [00:31<00:04,  3.49it/s] 90%|########9 | 114/127 [00:31<00:03,  4.18it/s] 91%|######### | 115/127 [00:31<00:02,  4.76it/s] 91%|#########1| 116/127 [00:31<00:02,  3.76it/s] 92%|#########2| 117/127 [00:32<00:03,  2.72it/s] 93%|#########2| 118/127 [00:32<00:02,  3.28it/s] 94%|#########3| 119/127 [00:33<00:02,  3.16it/s] 94%|#########4| 120/127 [00:34<00:04,  1.57it/s] 95%|#########5| 121/127 [00:34<00:02,  2.02it/s] 96%|#########6| 122/127 [00:35<00:02,  1.90it/s] 97%|#########6| 123/127 [00:35<00:01,  2.37it/s] 98%|#########7| 124/127 [00:35<00:01,  2.88it/s] 98%|#########8| 125/127 [00:35<00:00,  3.25it/s] 99%|#########9| 126/127 [00:35<00:00,  3.88it/s]100%|##########| 127/127 [00:36<00:00,  3.38it/s]                                                 📋 扫描结果: ['SPY', 'QQQ', 'TSLA', 'NVDA', 'MU', 'MSFT', 'AMZN', 'PLTR', 'AAPL', 'GOOGL']
+
+🚀 [并行加速模式] 启动 5 个线程处理 10 只股票...
+2026-01-05 00:08:00,083 - ✅ 成功加载配置文件: config.json
+2026-01-05 00:08:00,084 - ✅ 成功加载配置文件: config.json
+2026-01-05 00:08:00,084 - ✅ 成功加载配置文件: config.json
+2026-01-05 00:08:00,084 - ✅ 成功加载配置文件: config.json
+2026-01-05 00:08:00,084 - 增强版Web分析器初始化完成（支持A/g/m + AI流式输出）
+2026-01-05 00:08:00,085 - 增强版Web分析器初始化完成（支持A/g/m + AI流式输出）
+2026-01-05 00:08:00,085 - ✅ 成功加载配置文件: config.json
+2026-01-05 00:08:00,085 - 增强版Web分析器初始化完成（支持A/g/m + AI流式输出）
+2026-01-05 00:08:00,085 - 增强版Web分析器初始化完成（支持A/g/m + AI流式输出）
+2026-01-05 00:08:00,085 - === 增强版系统配置状态（支持A/g/m + AI流式输出）===
+2026-01-05 00:08:00,085 - === 增强版系统配置状态（支持A/g/m + AI流式输出）===
+2026-01-05 00:08:00,085 - 增强版Web分析器初始化完成（支持A/g/m + AI流式输出）
+2026-01-05 00:08:00,085 - === 增强版系统配置状态（支持A/g/m + AI流式输出）===
+2026-01-05 00:08:00,085 - === 增强版系统配置状态（支持A/g/m + AI流式输出）===
+2026-01-05 00:08:00,086 - 🤖 可用AI API: openai
+2026-01-05 00:08:00,086 - 🤖 可用AI API: openai
+2026-01-05 00:08:00,086 - === 增强版系统配置状态（支持A/g/m + AI流式输出）===
+2026-01-05 00:08:00,086 - 🤖 可用AI API: openai
+2026-01-05 00:08:00,086 - 🤖 可用AI API: openai
+2026-01-05 00:08:00,086 - 🎯 主要API: openai
+2026-01-05 00:08:00,086 - 🎯 主要API: openai
+2026-01-05 00:08:00,086 - 🤖 可用AI API: openai
+2026-01-05 00:08:00,086 - 🎯 主要API: openai
+2026-01-05 00:08:00,086 - 🎯 主要API: openai
+2026-01-05 00:08:00,087 - 🌊 AI流式输出: 支持
+2026-01-05 00:08:00,087 - 🌊 AI流式输出: 支持
+2026-01-05 00:08:00,087 - 🎯 主要API: openai
+2026-01-05 00:08:00,087 - 🌊 AI流式输出: 支持
+2026-01-05 00:08:00,087 - 🌊 AI流式输出: 支持
+2026-01-05 00:08:00,087 - 🔗 自定义API地址: https://api.vectorengine.ai/v1
+2026-01-05 00:08:00,087 - 🔗 自定义API地址: https://api.vectorengine.ai/v1
+2026-01-05 00:08:00,087 - 🌊 AI流式输出: 支持
+2026-01-05 00:08:00,087 - 🔗 自定义API地址: https://api.vectorengine.ai/v1
+2026-01-05 00:08:00,087 - 🔗 自定义API地址: https://api.vectorengine.ai/v1
+2026-01-05 00:08:00,087 - 🌍 支持市场: ASTOCK, HKSTOCK, USSTOCK
+2026-01-05 00:08:00,087 - 🌍 支持市场: ASTOCK, HKSTOCK, USSTOCK
+2026-01-05 00:08:00,088 - 🔗 自定义API地址: https://api.vectorengine.ai/v1
+2026-01-05 00:08:00,088 - 🌍 支持市场: ASTOCK, HKSTOCK, USSTOCK
+2026-01-05 00:08:00,088 - 🌍 支持市场: ASTOCK, HKSTOCK, USSTOCK
+2026-01-05 00:08:00,088 - 📊 财务指标数量: 25
+2026-01-05 00:08:00,088 - 📊 财务指标数量: 25
+2026-01-05 00:08:00,088 - 🌍 支持市场: ASTOCK, HKSTOCK, USSTOCK
+2026-01-05 00:08:00,088 - 📊 财务指标数量: 25
+2026-01-05 00:08:00,088 - 📊 财务指标数量: 25
+2026-01-05 00:08:00,088 - 📰 最大新闻数量: 100
+2026-01-05 00:08:00,088 - 📰 最大新闻数量: 100
+2026-01-05 00:08:00,088 - 📊 财务指标数量: 25
+2026-01-05 00:08:00,089 - 📰 最大新闻数量: 100
+2026-01-05 00:08:00,089 - 📰 最大新闻数量: 100
+2026-01-05 00:08:00,089 - 📈 技术分析周期: 180 天
+2026-01-05 00:08:00,089 - 📈 技术分析周期: 180 天
+2026-01-05 00:08:00,089 - 📰 最大新闻数量: 100
+2026-01-05 00:08:00,089 - 📈 技术分析周期: 180 天
+2026-01-05 00:08:00,089 - 📈 技术分析周期: 180 天
+2026-01-05 00:08:00,089 - 🔐 Web鉴权: 已启用
+2026-01-05 00:08:00,089 - 🔐 Web鉴权: 已启用
+2026-01-05 00:08:00,089 - 📈 技术分析周期: 180 天
+2026-01-05 00:08:00,089 - 🔐 Web鉴权: 已启用
+2026-01-05 00:08:00,089 - 🔐 Web鉴权: 已启用
+2026-01-05 00:08:00,090 - ==================================================
+2026-01-05 00:08:00,090 - ==================================================
+2026-01-05 00:08:00,090 - 🔐 Web鉴权: 已启用
+2026-01-05 00:08:00,090 - ==================================================
+2026-01-05 00:08:00,090 - ==================================================
+2026-01-05 00:08:00,090 - 📁 本地缓存目录已就绪: /home/ad/code/stock/stock-scanner/3.2webapp/data_cache, /home/ad/code/stock/stock-scanner/3.2webapp/analysis_history
+
+🔍 线程启动检查: TSLA🔒 [TSLA] 排队下载数据中...2026-01-05 00:08:00,090 - 📁 本地缓存目录已就绪: /home/ad/code/stock/stock-scanner/3.2webapp/data_cache, /home/ad/code/stock/stock-scanner/3.2webapp/analysis_history
+
+
+🔍 线程启动检查: SPY2026-01-05 00:08:00,090 - ==================================================
+🔒 [SPY] 排队下载数据中...
+2026-01-05 00:08:00,090 - 📁 本地缓存目录已就绪: /home/ad/code/stock/stock-scanner/3.2webapp/data_cache, /home/ad/code/stock/stock-scanner/3.2webapp/analysis_history
+
+🔍 线程启动检查: QQQ2026-01-05 00:08:00,091 - 📁 本地缓存目录已就绪: /home/ad/code/stock/stock-scanner/3.2webapp/data_cache, /home/ad/code/stock/stock-scanner/3.2webapp/analysis_history
+🔒 [QQQ] 排队下载数据中...2026-01-05 00:08:00,091 - 🌐 正在下载 US_STOCK TSLA...
+
+
+🔍 线程启动检查: NVDA🔒 [NVDA] 排队下载数据中...2026-01-05 00:08:00,092 - 📁 本地缓存目录已就绪: /home/ad/code/stock/stock-scanner/3.2webapp/data_cache, /home/ad/code/stock/stock-scanner/3.2webapp/analysis_history
+
+
+🔍 线程启动检查: MU🔒 [MU] 排队下载数据中...
+   ✅ Stooq 源下载成功
+2026-01-05 00:08:01,391 - 处理前列名: ['open', 'high', 'low', 'close', 'volume', 'change_pct']
+2026-01-05 00:08:01,396 - 处理后列名: ['open', 'high', 'low', 'close', 'volume', 'change_pct']
+2026-01-05 00:08:01,904 - 🌐 正在下载 US_STOCK SPY...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+   ✅ Stooq 源下载成功
+2026-01-05 00:08:02,895 - 处理前列名: ['open', 'high', 'low', 'close', 'volume', 'change_pct']
+2026-01-05 00:08:02,901 - 处理后列名: ['open', 'high', 'low', 'close', 'volume', 'change_pct']
+2026-01-05 00:08:03,410 - 🌐 正在下载 US_STOCK QQQ...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+   ✅ Stooq 源下载成功
+2026-01-05 00:08:04,341 - 处理前列名: ['open', 'high', 'low', 'close', 'volume', 'change_pct']
+2026-01-05 00:08:04,346 - 处理后列名: ['open', 'high', 'low', 'close', 'volume', 'change_pct']
+2026-01-05 00:08:04,680 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，信号冲突，资金强度不足", "risk_warning": "威廉指标超买，警惕回调风险"}...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:04,855 - 🌐 正在下载 US_STOCK NVDA...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+   ✅ Stooq 源下载成功
+2026-01-05 00:08:05,769 - 处理前列名: ['open', 'high', 'low', 'close', 'volume', 'change_pct']
+2026-01-05 00:08:05,775 - 处理后列名: ['open', 'high', 'low', 'close', 'volume', 'change_pct']
+2026-01-05 00:08:05,996 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，信号冲突，资金强度不足", "risk_warning": "威廉指标进入超买区，警惕回调"}...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:06,285 - 🌐 正在下载 US_STOCK MU...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:06,895 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，资金强度不足，信号冲突", "risk_warning": "威廉指标进入超买区，警惕回调"}...
+2026-01-05 00:08:06,972 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，指标超买但资金未配合，信号冲突。", "risk_warning": "RSI与威廉指标均处超...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+   ✅ Stooq 源下载成功
+2026-01-05 00:08:07,255 - 处理前列名: ['open', 'high', 'low', 'close', 'volume', 'change_pct']
+2026-01-05 00:08:07,260 - 处理后列名: ['open', 'high', 'low', 'close', 'volume', 'change_pct']
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:08,106 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 55, "reason": "趋势走平，资金强度不足，信号冲突", "risk_warning": "威廉指标进入超买区，警惕回调"}...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:08,403 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，信号中性，资金强度不足", "risk_warning": "趋势不明，资金未确认方向"}...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:09,619 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，资金强度不足，信号冲突", "risk_warning": "威廉指标超买，存在回调风险"}...2026-01-05 00:08:09,621 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+
+   📥 AI原始响应: {
+    "action": "HOLD",
+    "confidence": 50,
+    "reason": "趋势走平，资金强度不足，信号冲突",
+    "risk_warning": ...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:09,898 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，信号冲突且资金不配合", "risk_warning": "趋势不明，ATR波动率偏高"}...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:10,236 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，信号冲突，资金未有效配合。", "risk_warning": "威廉指标进入超买区，警惕回调...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:10,446 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，信号中性，资金强度不足", "risk_warning": "趋势不明，量能不足，易受市场情绪...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:11,787 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 55, "reason": "趋势走平，信号冲突，资金强度一般", "risk_warning": "威廉指标进入超买区，警惕回调"}...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:11,877 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，信号冲突，资金强度一般", "risk_warning": "RSI与WR均处超买区，警惕回调...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:12,208 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，信号中性且无共振，资金强度不足。", "risk_warning": "趋势不明，资金未确认方...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:12,699 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，信号中性，资金强度不足", "risk_warning": "趋势不明，量能萎缩，缺乏方向性驱...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:13,413 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，信号冲突，资金强度不足", "risk_warning": "威廉指标超买，存在回调风险"}...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:13,825 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 55, "reason": "趋势走平，信号冲突，资金强度一般", "risk_warning": "威廉指标进入超买区，警惕回调"}...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:14,665 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，资金强度不足，信号冲突", "risk_warning": "威廉指标超买，警惕回调"}...
+2026-01-05 00:08:14,712 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 55, "reason": "趋势走平，指标超买但资金尚可，信号冲突需观望。", "risk_warning": "RSI与威廉指标均...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:14,956 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，资金强度不足，信号冲突", "risk_warning": "资金强度弱，突破有效性存疑"}...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:15,605 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，指标超买但资金尚可，信号冲突", "risk_warning": "RSI与威廉指标均处超买区...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:16,029 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，指标超买但资金尚可，信号冲突需观望。", "risk_warning": "RSI与威廉指标均...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:16,892 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，信号冲突，资金强度不足", "risk_warning": "RSI与威廉指标均处超买区，警惕...
+2026-01-05 00:08:16,954 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，资金强度不足，信号中性", "risk_warning": "量能萎缩，缺乏有效突破动力"}...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:17,092 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 55, "reason": "趋势走平，资金强度不足，信号冲突", "risk_warning": "威廉指标超买，存在回调风险"}...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:17,841 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，RSI与WR超买，资金强度一般", "risk_warning": "动量指标严重超买，存在回...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:18,072 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，信号冲突，资金强度不足", "risk_warning": "RSI接近超买，但无趋势与资金支...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:18,892 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，资金强度不足，信号冲突", "risk_warning": "威廉指标超买，存在回调风险"}...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:19,631 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，信号冲突，资金未确认突破", "risk_warning": "WR进入超买区，警惕回调"}...
+2026-01-05 00:08:19,666 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 55, "reason": "趋势走平，指标超买，资金强度尚可但信号冲突", "risk_warning": "RSI与威廉指标均处超...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:19,832 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，信号中性，资金强度不足", "risk_warning": "趋势不明，缺乏明确方向信号"}...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:20,455 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，指标中性，信号无共振", "risk_warning": "趋势不明，资金强度一般，缺乏明确方...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:20,997 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，资金不足，信号冲突", "risk_warning": "威廉指标超买，量能低迷"}...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:21,837 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，指标超买但资金尚可，信号冲突。", "risk_warning": "RSI与威廉指标均处超买...
+2026-01-05 00:08:21,877 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，指标超买但资金不足，信号矛盾。", "risk_warning": "RSI与威廉指标均处超买...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:23,034 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，资金强度不足，信号冲突", "risk_warning": "威廉指标超买，存在回调风险"}...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:23,699 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {
+    "action": "HOLD",
+    "confidence": 45,
+    "reason": "趋势走平，信号中性，资金强度不足",
+    "risk_warning": ...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:23,859 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，信号冲突，资金强度不足", "risk_warning": "趋势不明，量能不足，可能为诱多信...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:24,742 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，信号中性，资金强度不足", "risk_warning": "趋势不明，ATR波动率较高"}...2026-01-05 00:08:24,745 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，指标超买但资金尚可，信号冲突。", "risk_warning": "RSI与威廉指标均处超买...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:25,125 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，信号冲突，资金强度不足。", "risk_warning": "威廉指标进入超买区，警惕回调风...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:26,114 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，信号中性，资金强度不足", "risk_warning": "趋势不明，量能未确认方向"}...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:26,371 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，信号中性，资金未形成有效配合。", "risk_warning": "趋势不明，量能不足，缺乏...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:27,034 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，信号中性，资金强度不足", "risk_warning": "量价背离，资金强度弱，突破有效性...
+2026-01-05 00:08:27,121 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，信号冲突且资金不配合", "risk_warning": "趋势不明，量能不足，易陷入震荡"}...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:27,245 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，指标超买但资金尚可，信号冲突需观望。", "risk_warning": "威廉指标进入超买区...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:28,305 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，信号冲突，资金强度一般", "risk_warning": "趋势不明，量能不足，突破有效性存...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:29,632 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，信号中性，资金强度不足", "risk_warning": "趋势不明，量能萎缩，缺乏明确方向...
+2026-01-05 00:08:29,635 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，信号冲突，资金强度一般。", "risk_warning": "威廉指标进入超买区，警惕回调风...2026-01-05 00:08:29,636 - ✅ 成功加载配置文件: config.json
+
+2026-01-05 00:08:29,639 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 60, "reason": "趋势走平，资金虽强但WR超买，信号矛盾", "risk_warning": "威廉指标进入超买区，警惕回...2026-01-05 00:08:29,643 - 增强版Web分析器初始化完成（支持A/g/m + AI流式输出）
+
+2026-01-05 00:08:29,681 - === 增强版系统配置状态（支持A/g/m + AI流式输出）===
+2026-01-05 00:08:29,681 - 🤖 可用AI API: openai
+2026-01-05 00:08:29,681 - 🎯 主要API: openai
+2026-01-05 00:08:29,681 - 🌊 AI流式输出: 支持
+2026-01-05 00:08:29,683 - 🔗 自定义API地址: https://api.vectorengine.ai/v1
+2026-01-05 00:08:29,685 - 🌍 支持市场: ASTOCK, HKSTOCK, USSTOCK
+2026-01-05 00:08:29,685 - 📊 财务指标数量: 25
+2026-01-05 00:08:29,688 - 📰 最大新闻数量: 100
+2026-01-05 00:08:29,688 - 📈 技术分析周期: 180 天
+2026-01-05 00:08:29,691 - 🔐 Web鉴权: 已启用
+2026-01-05 00:08:29,693 - ==================================================
+2026-01-05 00:08:29,699 - 📁 本地缓存目录已就绪: /home/ad/code/stock/stock-scanner/3.2webapp/data_cache, /home/ad/code/stock/stock-scanner/3.2webapp/analysis_history
+
+🔍 线程启动检查: MSFT🔒 [MSFT] 排队下载数据中...
+2026-01-05 00:08:29,699 - 🌐 正在下载 US_STOCK MSFT...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:30,394 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，信号冲突，资金强度一般", "risk_warning": "威廉指标进入超买区，警惕回调"}...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:30,552 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {
+    "action": "HOLD",
+    "confidence": 55,
+    "reason": "趋势走平，信号冲突，资金强度不足",
+    "risk_warning": ...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+   ✅ Stooq 源下载成功
+2026-01-05 00:08:30,626 - 处理前列名: ['open', 'high', 'low', 'close', 'volume', 'change_pct']
+2026-01-05 00:08:30,628 - 处理后列名: ['open', 'high', 'low', 'close', 'volume', 'change_pct']
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:31,749 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 55, "reason": "趋势走平，信号冲突，资金强度一般", "risk_warning": "威廉指标进入超买区，警惕回调"}...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:32,142 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，指标超买但资金尚可，信号冲突需观望。", "risk_warning": "RSI与WR均处超...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:32,602 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，资金强度高但量能不足，信号冲突", "risk_warning": "威廉指标进入超买区，警惕...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:32,835 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，信号冲突，资金不配合。", "risk_warning": "威廉指标超买，存在回调风险。"}...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:33,287 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，信号中性且无共振，资金强度不足", "risk_warning": "趋势不明，量能不足，易陷...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:33,917 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 55, "reason": "趋势走平，信号冲突，资金强度一般", "risk_warning": "威廉指标进入超买区，警惕回调"}...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:34,629 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，资金强度不足，信号中性无共振", "risk_warning": "量能低迷，缺乏有效突破动力...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:34,941 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，信号冲突且资金不配合", "risk_warning": "趋势不明，量能不足，易陷入震荡"}...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:35,268 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，资金强度不足，信号冲突", "risk_warning": "威廉指标超买，存在回调风险"}...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:36,715 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {
+    "action": "HOLD",
+    "confidence": 45,
+    "reason": "趋势走平，资金偏弱，信号冲突",
+    "risk_warning": "威...
+2026-01-05 00:08:36,734 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，资金强度不足，指标超买需警惕", "risk_warning": "RSI与威廉指标均处超买区...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:37,124 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，信号中性且无共振，资金强度一般", "risk_warning": "趋势不明，量能不足，缺乏...
+2026-01-05 00:08:37,171 - ✅ 成功加载配置文件: config.json
+2026-01-05 00:08:37,171 - 增强版Web分析器初始化完成（支持A/g/m + AI流式输出）
+2026-01-05 00:08:37,171 - === 增强版系统配置状态（支持A/g/m + AI流式输出）===
+2026-01-05 00:08:37,171 - 🤖 可用AI API: openai
+2026-01-05 00:08:37,172 - 🎯 主要API: openai
+2026-01-05 00:08:37,172 - 🌊 AI流式输出: 支持
+2026-01-05 00:08:37,172 - 🔗 自定义API地址: https://api.vectorengine.ai/v1
+2026-01-05 00:08:37,172 - 🌍 支持市场: ASTOCK, HKSTOCK, USSTOCK
+2026-01-05 00:08:37,172 - 📊 财务指标数量: 25
+2026-01-05 00:08:37,172 - 📰 最大新闻数量: 100
+2026-01-05 00:08:37,172 - 📈 技术分析周期: 180 天
+2026-01-05 00:08:37,172 - 🔐 Web鉴权: 已启用
+2026-01-05 00:08:37,172 - ==================================================
+2026-01-05 00:08:37,172 - 📁 本地缓存目录已就绪: /home/ad/code/stock/stock-scanner/3.2webapp/data_cache, /home/ad/code/stock/stock-scanner/3.2webapp/analysis_history
+
+🔍 线程启动检查: AMZN🔒 [AMZN] 排队下载数据中...
+2026-01-05 00:08:37,172 - 🌐 正在下载 US_STOCK AMZN...
+2026-01-05 00:08:37,397 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 55, "reason": "趋势走平，信号冲突，资金强度一般", "risk_warning": "趋势不明，ATR显示日内波动风险...
+2026-01-05 00:08:37,432 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，信号中性且无共振，资金强度不足。", "risk_warning": "趋势不明，量能不足，缺...
+2026-01-05 00:08:37,491 - ✅ 成功加载配置文件: config.json
+2026-01-05 00:08:37,491 - 增强版Web分析器初始化完成（支持A/g/m + AI流式输出）
+2026-01-05 00:08:37,491 - === 增强版系统配置状态（支持A/g/m + AI流式输出）===
+2026-01-05 00:08:37,491 - 🤖 可用AI API: openai
+2026-01-05 00:08:37,491 - 🎯 主要API: openai
+2026-01-05 00:08:37,491 - 🌊 AI流式输出: 支持
+2026-01-05 00:08:37,491 - 🔗 自定义API地址: https://api.vectorengine.ai/v1
+2026-01-05 00:08:37,491 - 🌍 支持市场: ASTOCK, HKSTOCK, USSTOCK
+2026-01-05 00:08:37,491 - 📊 财务指标数量: 25
+2026-01-05 00:08:37,491 - 📰 最大新闻数量: 100
+2026-01-05 00:08:37,491 - 📈 技术分析周期: 180 天
+2026-01-05 00:08:37,491 - 🔐 Web鉴权: 已启用
+2026-01-05 00:08:37,492 - ==================================================
+2026-01-05 00:08:37,492 - 📁 本地缓存目录已就绪: /home/ad/code/stock/stock-scanner/3.2webapp/data_cache, /home/ad/code/stock/stock-scanner/3.2webapp/analysis_history
+
+🔍 线程启动检查: PLTR🔒 [PLTR] 排队下载数据中...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+   ✅ Stooq 源下载成功
+2026-01-05 00:08:38,145 - 处理前列名: ['open', 'high', 'low', 'close', 'volume', 'change_pct']
+2026-01-05 00:08:38,150 - 处理后列名: ['open', 'high', 'low', 'close', 'volume', 'change_pct']
+2026-01-05 00:08:38,699 - 🌐 正在下载 US_STOCK PLTR...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+   ✅ Stooq 源下载成功
+2026-01-05 00:08:39,613 - 处理前列名: ['open', 'high', 'low', 'close', 'volume', 'change_pct']
+2026-01-05 00:08:39,620 - 处理后列名: ['open', 'high', 'low', 'close', 'volume', 'change_pct']
+2026-01-05 00:08:39,622 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 55, "reason": "趋势走平，资金不配合，超买信号需警惕", "risk_warning": "WR进入超买区，ATR显示波...
+2026-01-05 00:08:39,630 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，信号中性，资金虽强但无明确方向共振。", "risk_warning": "趋势不明，量价配合...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:40,428 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，信号冲突且无共振，资金强度一般", "risk_warning": "威廉指标进入超买区，警惕...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:40,975 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，信号中性且无共振，资金强度一般", "risk_warning": "趋势不明，缺乏明确方向性...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:41,717 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，信号中性，资金强度不足", "risk_warning": "量能萎缩，缺乏有效突破动力"}...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:41,972 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 55, "reason": "趋势走平，指标超买但资金尚可，信号冲突需观望。", "risk_warning": "RSI与威廉指标均...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:42,555 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，信号中性且无共振，资金强度一般。", "risk_warning": "趋势不明，量能不足，缺...
+2026-01-05 00:08:42,596 - ✅ 成功加载配置文件: config.json
+2026-01-05 00:08:42,596 - 增强版Web分析器初始化完成（支持A/g/m + AI流式输出）
+2026-01-05 00:08:42,596 - === 增强版系统配置状态（支持A/g/m + AI流式输出）===
+2026-01-05 00:08:42,596 - 🤖 可用AI API: openai
+2026-01-05 00:08:42,596 - 🎯 主要API: openai
+2026-01-05 00:08:42,596 - 🌊 AI流式输出: 支持
+2026-01-05 00:08:42,596 - 🔗 自定义API地址: https://api.vectorengine.ai/v1
+2026-01-05 00:08:42,596 - 🌍 支持市场: ASTOCK, HKSTOCK, USSTOCK
+2026-01-05 00:08:42,596 - 📊 财务指标数量: 25
+2026-01-05 00:08:42,597 - 📰 最大新闻数量: 100
+2026-01-05 00:08:42,597 - 📈 技术分析周期: 180 天
+2026-01-05 00:08:42,597 - 🔐 Web鉴权: 已启用
+2026-01-05 00:08:42,597 - ==================================================
+2026-01-05 00:08:42,597 - 📁 本地缓存目录已就绪: /home/ad/code/stock/stock-scanner/3.2webapp/data_cache, /home/ad/code/stock/stock-scanner/3.2webapp/analysis_history
+
+🔍 线程启动检查: AAPL🔒 [AAPL] 排队下载数据中...
+2026-01-05 00:08:42,597 - 🌐 正在下载 US_STOCK AAPL...
+2026-01-05 00:08:43,149 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，信号冲突且资金不配合", "risk_warning": "威廉指标超买，存在回调风险"}...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:43,410 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，信号冲突且资金不配合", "risk_warning": "RSI接近超买但无趋势支撑，量能不...
+   ✅ Stooq 源下载成功
+2026-01-05 00:08:43,494 - 处理前列名: ['open', 'high', 'low', 'close', 'volume', 'change_pct']
+2026-01-05 00:08:43,498 - 处理后列名: ['open', 'high', 'low', 'close', 'volume', 'change_pct']
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:43,746 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，信号中性，资金强度不足", "risk_warning": "量能萎缩，突破有效性存疑"}...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:44,654 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，信号冲突，资金强度一般", "risk_warning": "威廉指标超买，存在回调风险"}...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:45,431 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，资金不足，信号冲突", "risk_warning": "威廉指标超买，存在回调风险"}...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:46,023 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，信号冲突，资金未有效配合。", "risk_warning": "威廉指标超买，警惕回调风险。...
+2026-01-05 00:08:46,034 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，资金强度高但量能不足，信号冲突", "risk_warning": "威廉指标进入超买区，警惕...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:46,250 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，信号冲突，资金未形成有效突破。", "risk_warning": "威廉指标进入超买区，警惕...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:46,635 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，信号冲突且资金强度不足", "risk_warning": "威廉指标超买，存在回调风险"}...
+2026-01-05 00:08:46,638 - ✅ 成功加载配置文件: config.json
+2026-01-05 00:08:46,638 - 增强版Web分析器初始化完成（支持A/g/m + AI流式输出）
+2026-01-05 00:08:46,638 - === 增强版系统配置状态（支持A/g/m + AI流式输出）===
+2026-01-05 00:08:46,639 - 🤖 可用AI API: openai
+2026-01-05 00:08:46,639 - 🎯 主要API: openai
+2026-01-05 00:08:46,639 - 🌊 AI流式输出: 支持
+2026-01-05 00:08:46,639 - 🔗 自定义API地址: https://api.vectorengine.ai/v1
+2026-01-05 00:08:46,639 - 🌍 支持市场: ASTOCK, HKSTOCK, USSTOCK
+2026-01-05 00:08:46,639 - 📊 财务指标数量: 25
+2026-01-05 00:08:46,639 - 📰 最大新闻数量: 100
+2026-01-05 00:08:46,639 - 📈 技术分析周期: 180 天
+2026-01-05 00:08:46,640 - 🔐 Web鉴权: 已启用
+2026-01-05 00:08:46,640 - ==================================================
+2026-01-05 00:08:46,640 - 📁 本地缓存目录已就绪: /home/ad/code/stock/stock-scanner/3.2webapp/data_cache, /home/ad/code/stock/stock-scanner/3.2webapp/analysis_history
+
+🔍 线程启动检查: GOOGL🔒 [GOOGL] 排队下载数据中...
+2026-01-05 00:08:46,640 - 🌐 正在下载 US_STOCK GOOGL...
+2026-01-05 00:08:47,387 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，资金不足，信号冲突", "risk_warning": "威廉指标超买，警惕回调"}...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+   ✅ Stooq 源下载成功
+2026-01-05 00:08:47,518 - 处理前列名: ['open', 'high', 'low', 'close', 'volume', 'change_pct']
+2026-01-05 00:08:47,521 - 处理后列名: ['open', 'high', 'low', 'close', 'volume', 'change_pct']
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:48,155 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，信号冲突，资金强度不足", "risk_warning": "量能低迷，缺乏明确方向"}...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:48,275 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，资金强度不足，信号冲突", "risk_warning": "威廉指标超买，量能低迷"}...
+2026-01-05 00:08:48,317 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，信号冲突，资金强度一般", "risk_warning": "趋势不明，缺乏明确共振信号"}...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:49,825 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，资金不足，信号冲突", "risk_warning": "WR进入超买区，警惕回调"}...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:50,095 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，信号冲突，资金未确认突破", "risk_warning": "RSI与威廉指标均处超买区，警...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:50,352 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，资金强度不足，信号冲突", "risk_warning": "威廉指标超买，量能萎缩"}...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:50,460 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，信号冲突且资金强度不足", "risk_warning": "量能萎缩，缺乏明确方向"}...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:50,576 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，信号冲突且资金强度不足", "risk_warning": "RSI接近超买区，但无资金配合，...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:51,926 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，资金不足，超买信号需警惕", "risk_warning": "WR进入超买区，量能不足，存在...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:52,454 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，信号冲突，资金不配合", "risk_warning": "RSI与威廉指标均处超买区，警惕回...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:52,603 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，信号冲突，资金强度不足", "risk_warning": "威廉指标进入超买区，警惕回调"}...
+2026-01-05 00:08:52,614 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，资金强度高但量能不足，信号冲突", "risk_warning": "威廉指标超买，存在回调风...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:52,694 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，信号中性且无共振，资金强度不足。", "risk_warning": "趋势不明，量能不足，缺...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:54,654 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，信号冲突，资金强度不足", "risk_warning": "RSI与威廉指标均处超买区，警惕...2026-01-05 00:08:54,656 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，资金强度高但量能不足，信号冲突", "risk_warning": "威廉指标超买，存在回调风...2026-01-05 00:08:54,688 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，RSI超买但资金未配合，信号冲突。", "risk_warning": "RSI严重超买，威廉...
+2026-01-05 00:08:54,731 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，信号中性且无共振，资金强度不足", "risk_warning": "趋势不明，量能不足，缺乏...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:56,831 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，信号冲突且资金强度不足", "risk_warning": "RSI接近超买区，但无资金配合，...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:57,019 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，信号冲突，资金强度不足", "risk_warning": "威廉指标超买，存在回调风险"}...
+2026-01-05 00:08:57,062 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，信号冲突，资金强度不足", "risk_warning": "RSI接近超买，但无趋势与资金支...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:57,184 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 55, "reason": "趋势走平，RSI与WR严重超买，但资金强度不足", "risk_warning": "技术指标严重超买，...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:08:59,644 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，指标中性，资金强度不足，无明确共振信号。", "risk_warning": "RSI(6)处...
+2026-01-05 00:08:59,649 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，信号中性且无共振，资金强度不足。", "risk_warning": "趋势不明，资金未确认方...
+2026-01-05 00:08:59,651 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，信号冲突且资金不配合", "risk_warning": "RSI处于强弱分界，量能不足"}...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:09:01,750 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，信号冲突且资金不配合", "risk_warning": "RSI接近超买，但量能不足，易出现...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:09:01,953 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "超卖共振但趋势走平、资金不足", "risk_warning": "趋势不明，资金强度弱，反弹可能无力"...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:09:02,098 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，RSI与WR超买，但资金强度不足。", "risk_warning": "RSI与威廉指标均处...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:09:03,866 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，信号中性且无共振，资金强度一般。", "risk_warning": "趋势不明，ATR显示日...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:09:04,620 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，信号中性，资金强度不足", "risk_warning": "趋势不明，缺乏明确方向信号"}...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:09:06,329 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，信号冲突且资金强度不足", "risk_warning": "威廉指标超卖但无共振，量能低迷"...
+2026-01-05 00:09:06,477 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {
+    "action": "HOLD",
+    "confidence": 45,
+    "reason": "趋势走平，信号冲突，资金不配合",
+    "risk_warning": "...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:09:06,590 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，信号冲突且资金强度不足", "risk_warning": "威廉指标超买，警惕回调风险"}...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:09:08,412 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，超卖共振但资金强度不足", "risk_warning": "资金未确认，反弹可能失败"}...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:09:08,777 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 55, "reason": "趋势走平，信号冲突，资金强度尚可但需观察", "risk_warning": "RSI与威廉指标均处超买...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:09:11,002 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 55, "reason": "趋势走平，信号冲突，资金未确认突破。", "risk_warning": "RSI与威廉指标均处超买区，...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:09:11,333 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，信号中性，资金强度不足", "risk_warning": "量能不足，突破有效性存疑"}...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:09:13,097 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，资金不配合，信号冲突", "risk_warning": "威廉指标超买，存在回调风险"}...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:09:13,565 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，信号中性且无共振，资金强度不足", "risk_warning": "量能低迷，缺乏明确方向"...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:09:15,134 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，资金强度高但量能不足，信号中性", "risk_warning": "RSI接近超买，量价背离...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:09:17,211 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，信号中性，资金强度一般", "risk_warning": "趋势不明，缺乏明确方向信号"}...
+2026-01-05 00:09:17,235 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，信号中性，资金强度不足", "risk_warning": "量能低迷，缺乏明确方向"}...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:09:19,627 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，信号中性，资金强度一般，无明显共振方向。", "risk_warning": "趋势不明，量能...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:09:21,620 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，信号冲突且资金不配合", "risk_warning": "趋势不明，量能不足，易陷入震荡"}...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:09:23,864 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"action": "HOLD", "confidence": 50, "reason": "趋势走平，信号中性且无共振，资金未配合。", "risk_warning": "趋势不明，量能不足，方向...
+
+============================================================
+📊 AI 并行回测报告 | 耗时: 83.8秒
+🌍 市场分布: A股0 | 港股0 | 美股10
+💤 全程无符合条件的交易信号
+============================================================
+

@@ -1,0 +1,20 @@
+{
+  "basic_info": {
+    "代码": "SOPA",
+    "市场": "m"
+  },
+  "financial_indicators": {
+    "PE_Ratio": 0,
+    "PB_Ratio": 0,
+    "Dividend_Yield": 0,
+    "Market_Cap": 0,
+    "Data_Completeness": "Limited"
+  },
+  "valuation": {},
+  "performance_forecast": [],
+  "dividend_info": [],
+  "industry_analysis": {
+    "market": "m",
+    "currency": "USD"
+  }
+}
