@@ -1,6 +1,6 @@
 {
     "api_keys": {
-        "openai": "sk-55b5773c7e7f4f05b3d115c749ef4074",
+        "openai": "sk-55",
         "anthropic": "",
         "zhipu": "",
         "notes": "请填入您的API密钥，至少配置一个"
