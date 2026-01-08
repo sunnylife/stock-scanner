@@ -64,24 +64,82 @@ class GlobalMarketScanner:
         return fallback_list[:top_n]
 
     def get_us_candidates(self, top_n=30):
-        """获取美股候选池"""
-        logger.info("📡 正在扫描美股市场 (US)...")
-        fallback_list = ["NVDA", "TSLA", "AAPL", "MSFT", "AMD", "META", "AMZN", "GOOGL", "BABA", "PDD"]
+        """
+        [增强版] 获取美股候选池
+        策略：流动性 + 动量 + 盘口强势度
+        """
+        logger.info("📡 正在扫描美股市场 (US) [增强策略]...")
         
-        for attempt in range(3):
+        # 兜底名单：科技七巨头 + 热门股
+        fallback_list = ["NVDA", "TSLA", "AAPL", "MSFT", "AMD", "META", "AMZN", "GOOGL", "BABA", "PLTR"]
+        
+        max_retries = 3
+        for attempt in range(max_retries):
             try:
-                df = ak.stock_us_spot_em()
-                df = df[df['最新价'] > 10.0]
-                # 简单提取代码逻辑
-                df['symbol'] = df['代码'].apply(lambda x: str(x).split('.')[-1])
-                df = df[df['symbol'].str.match(r'^[A-Z]+$')] # 只留纯字母
+                if attempt > 0: logger.info(f"🔄 美股扫描重试第 {attempt+1} 次...")
                 
-                candidates = df.sort_values(by='成交额', ascending=False).head(top_n)
-                return candidates['symbol'].tolist()
-            except Exception:
+                # 1. 获取全市场实时数据
+                df = ak.stock_us_spot_em()
+                
+                # 2. 数据清洗：提取纯字母代码 (剔除窝轮、基金等)
+                # 代码格式通常为 "105.NVDA" 或 "NVDA"
+                df['symbol'] = df['代码'].apply(lambda x: str(x).split('.')[-1])
+                df = df[df['symbol'].str.match(r'^[A-Z]+$')]
+                
+                # 3. 硬性门槛过滤
+                # (1) 价格过滤: 剔除 < 5美元的仙股/毛票
+                df = df[df['最新价'] > 5.0]
+                
+                # (2) 流动性过滤: 成交额 > 5000万美元 (确保买得进卖得出)
+                # 注意：部分接口返回单位可能不同，需确保是数值型
+                df = df[df['成交额'] > 50000000]
+                
+                # (3) 趋势过滤: 
+                # - 涨跌幅 > 1% (有上涨动能)
+                # - 涨跌幅 < 15% (避免已经暴涨过头的妖股)
+                df = df[(df['涨跌幅'] > 1.0) & (df['涨跌幅'] < 15.0)]
+                
+                # (4) 盘口强势度: 最新价 > 开盘价 (即今日收红/阳线)
+                # 这一步非常关键，过滤掉高开低走的套人股票
+                if '开盘价' in df.columns:
+                    df = df[df['最新价'] > df['开盘价']]
+
+                # 4. 综合打分排序 (核心策略)
+                # 逻辑：我们需要找成交活跃且涨势不错的股票
+                # 归一化处理，防止成交额数量级过大主导分数
+                max_amount = df['成交额'].max()
+                max_chg = df['涨跌幅'].max()
+                
+                # 评分公式：成交额权重 0.4 + 涨幅权重 0.4 + 换手率权重 0.2
+                # (如果没有换手率数据，则忽略该项)
+                if '换手率' in df.columns:
+                    max_turnover = df['换手率'].max()
+                    df['score'] = (
+                        (df['成交额'] / max_amount) * 40 + 
+                        (df['涨跌幅'] / max_chg) * 40 +
+                        (df['换手率'] / max_turnover) * 20
+                    )
+                else:
+                    df['score'] = (df['成交额'] / max_amount) * 50 + (df['涨跌幅'] / max_chg) * 50
+
+                # 5. 取 Top N
+                candidates = df.sort_values(by='score', ascending=False).head(top_n)
+                
+                stock_list = candidates['symbol'].tolist()
+                logger.info(f"✅ 美股扫描成功，基于[量价综合评分]入选 {len(stock_list)} 只")
+                
+                # 打印前3名看看效果
+                if not candidates.empty:
+                    top3_info = candidates[['symbol', '最新价', '涨跌幅', '成交额']].head(3).to_dict('records')
+                    logger.info(f"🔥 热门前三: {top3_info}")
+
+                return stock_list
+
+            except Exception as e:
+                logger.warning(f"⚠️ 美股扫描异常: {e}")
                 time.sleep(3)
 
-        logger.error("❌ 接口超时，启动【美股兜底模式】")
+        logger.error("❌ 美股接口超时或失败，启动【兜底模式】")
         return fallback_list[:top_n]
     
     def get_a_candidates(self, top_n=30):

@@ -1,0 +1,80 @@
+{
+  "SLV": {
+    "code": "SLV",
+    "buy_price": 73.675,
+    "cost_price": 73.80375,
+    "shares": 8,
+    "highest_price": 73.71,
+    "buy_date": "2026-01-06 23:03:18"
+  },
+  "SMH": {
+    "code": "SMH",
+    "buy_price": 387.62,
+    "cost_price": 388.13,
+    "shares": 2,
+    "highest_price": 387.62,
+    "buy_date": "2026-01-06 23:03:19"
+  },
+  "LRCX": {
+    "code": "LRCX",
+    "buy_price": 206.96,
+    "cost_price": 207.29999999999998,
+    "shares": 3,
+    "highest_price": 206.96,
+    "buy_date": "2026-01-06 23:03:20"
+  },
+  "02628": {
+    "code": "02628",
+    "market": "hk_stock",
+    "buy_price": 31.84,
+    "shares": 100,
+    "highest_price": 31.84,
+    "buy_date": "2026-01-07 07:50:38",
+    "hold_days": 0
+  },
+  "01299": {
+    "code": "01299",
+    "market": "hk_stock",
+    "buy_price": 85.55,
+    "shares": 100,
+    "highest_price": 85.95,
+    "buy_date": "2026-01-07 07:51:14",
+    "hold_days": 0
+  },
+  "00020": {
+    "code": "00020",
+    "market": "hk_stock",
+    "buy_price": 2.38,
+    "shares": 400,
+    "highest_price": 2.38,
+    "buy_date": "2026-01-07 07:51:26",
+    "hold_days": 0
+  },
+  "02269": {
+    "code": "02269",
+    "market": "hk_stock",
+    "buy_price": 36.12,
+    "shares": 100,
+    "highest_price": 36.12,
+    "buy_date": "2026-01-07 07:51:47",
+    "hold_days": 0
+  },
+  "00386": {
+    "code": "00386",
+    "market": "hk_stock",
+    "buy_price": 4.74,
+    "shares": 200,
+    "highest_price": 4.74,
+    "buy_date": "2026-01-07 07:52:11",
+    "hold_days": 0
+  },
+  "01810": {
+    "code": "01810",
+    "market": "hk_stock",
+    "buy_price": 42.1,
+    "shares": 200,
+    "highest_price": 44.60,
+    "buy_date": "2025-11-07 07:52:11",
+    "hold_days": 60
+  }
+}

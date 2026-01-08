@@ -29,6 +29,7 @@ class LiveTrader:
         self.scanner = GlobalMarketScanner()
         self.analyzer = EnhancedWebStockAnalyzer()
         print("✅ 实盘交易系统已启动...")
+        print(f"📅 当前日期: {datetime.now().strftime('%Y-%m-%d')}")
 
     def _get_market_from_code(self, stock_code):
         if stock_code.isdigit():
@@ -50,7 +51,9 @@ class LiveTrader:
 
             # 2. 获取实时数据 (获取最近3个月数据以计算指标)
             # 注意：实盘时，最后一行 close 通常是当前最新价
-            df = self.analyzer.get_stock_data(stock_code, period='3mo')
+            # df = self.analyzer.get_stock_data(stock_code, period='3mo')
+            # 2. 获取数据 (⚠️ 修改点：改为 1y 以确保 MA200 能计算)
+            df = self.analyzer.get_stock_data(stock_code, period='1y')
             
             if df.empty or len(df) < 60:
                 print(f"⚠️ [{stock_code}] 数据不足，跳过")
@@ -80,8 +83,14 @@ class LiveTrader:
             # ==========================================
             if mode == 'sell_check' and holding_info:
                 buy_price = holding_info['buy_price']
+                highest_price = holding_info.get('highest_price', buy_price) # 获取历史最高
                 hold_days = holding_info['hold_days']
                 
+                # 更新最高价 (模拟盘中创新高)
+                if curr_close > highest_price:
+                    highest_price = curr_close
+                    print(f"📈 [{stock_code}] 创新高! 最高价更新为: {highest_price}")
+
                 # 预估收益率
                 profit_pct = (curr_close - buy_price) / buy_price * 100
                 
@@ -89,9 +98,15 @@ class LiveTrader:
                 should_sell = False
 
                 # 1. 硬止损
-                if profit_pct < -6.0:
+                if profit_pct < -5.0:
                     should_sell = True; sell_reason = f"硬止损触发 (当前{profit_pct:.2f}%)"
-                
+                # >>> 卖出规则 2: 移动止盈 (回测核心逻辑) <<<
+                # 逻辑：如果曾经赚超过 10%，现在从最高点回撤超过 3%，就走人
+                elif highest_price > buy_price * 1.10:
+                    drawdown = (curr_close - highest_price) / highest_price * 100
+                    if drawdown < -3.0:
+                        should_sell = True; sell_reason = f"移动止盈触发 (高点回撤 {drawdown:.2f}%)"
+
                 # 2. 时间止损/动能止损
                 elif market == 'hk_stock' and hold_days > 12 and profit_pct < 0.5:
                     should_sell = True; sell_reason = "港股动能耗尽(>12天滞涨)"
@@ -100,12 +115,19 @@ class LiveTrader:
                 elif market == 'a_stock' and hold_days > 5 and profit_pct < -2:
                     should_sell = True; sell_reason = "A股弱势整理"
 
+                # 输出结果
+                color = "🔴" if should_sell else "🟢"
+                print(f"{color} [持仓分析] {stock_code} | 现价:{curr_close} | 累计:{profit_pct:.2f}% | 持有:{hold_days}天")
                 if should_sell:
-                    print(f"🚨 [卖出信号] {stock_code} | 现价:{curr_close} | 盈亏:{profit_pct:.2f}% | 原因: {sell_reason}")
+                    print(f"   🚨 建议卖出! 原因: {sell_reason}")
                 else:
-                    print(f"✅ [继续持有] {stock_code} | 现价:{curr_close} | 盈亏:{profit_pct:.2f}% | 状态正常")
+                    # 如果没卖，检查是否有高风险提示
+                    if rsi > 80: print(f"   ⚠️ 警告: RSI过高({rsi:.1f})，注意随时止盈")
+                    else: print(f"   ✅ 状态健康，继续持有")
                 
                 return # 卖出检查结束
+                
+                # return # 卖出检查结束
 
             # ==========================================
             # 🔴 买入逻辑检查 (仅针对新机会)
@@ -115,22 +137,25 @@ class LiveTrader:
                 potential_signal = False
                 
                 if market == 'a_stock':
+                    # A股逻辑: 趋势向上 + 放量 OR 超跌
                     trend_ok = (curr_close > ma20) or (ma20_slope > -0.0005)
                     vol_ok = vol_ratio > 0.8
                     oversold = (rsi < 35)
                     if (trend_ok and vol_ok) or oversold: potential_signal = True
                 
                 elif market == 'hk_stock':
+                    # 港股逻辑: 价格>2 + 有流动性
                     if (curr_close > 2.0) and (vol_ratio > 0.6): potential_signal = True
                 
                 elif market == 'us_stock':
+                    # 美股逻辑: 趋势多头 + 动量不灭 OR 超跌
                     trend_ok = (curr_close > ma20) or (ma20_slope > 0)
                     momentum_ok = (rsi > 40) and (tech.get('kdj_signal') != '死叉')
                     oversold = (rsi < 30)
                     if (trend_ok and momentum_ok) or oversold: potential_signal = True
 
                 if not potential_signal:
-                    # print(f"   💤 {stock_code} 初筛未过")
+                    print(f"   💤 {stock_code} 初筛未过")
                     return None
 
                 # >>> 2. 准备 AI 数据 <<<
@@ -180,6 +205,8 @@ class LiveTrader:
                         print(f"   🌊 阶段: {phase}")
                         print(f"   💡 理由: {reason}")
                         print(f"   ⚠️ 风险: {ai_result.get('risk_warning')}")
+                        print(f"   📊 资金流: {money.get('flow_status', '未知')}")
+                        print(f"   🛑 建议止损位: {curr_close * 0.95:.2f} (-5%)")
                         print("-" * 40)
                     else:
                         print(f"   🛑 风控拦截: {risk_msg}")
@@ -202,12 +229,14 @@ class LiveTrader:
             print("⚠️ 未扫描到股票，请检查网络或现在是否休市。")
             return
 
-        print(f"📋 候选名单: {stock_list}\n")
+        # print(f"📋 候选名单: {stock_list}\n")
+        print(f"📋 候选名单({len(stock_list)}): {stock_list}\n")
 
         # 2. 逐个分析
-        for stock in stock_list:
+        for i, stock in enumerate(stock_list):
+            print(f"[{i+1}/{len(stock_list)}] ", end="")
             self.analyze_single_stock(stock, mode='buy_check')
-            time.sleep(1) # 防封
+            time.sleep(1.5) # 给 API 喘息时间
 
     def check_my_holdings(self):
         """检查当前持仓"""
@@ -218,6 +247,10 @@ class LiveTrader:
         print(f"\n💼 开始检查持仓 ({len(MY_HOLDINGS)}只)")
         print("=" * 50)
         for holding in MY_HOLDINGS:
+            # 补全 highest_price 字段 (防止用户没填报错)
+            if 'highest_price' not in holding:
+                holding['highest_price'] = holding['buy_price']
+                
             self.analyze_single_stock(holding['code'], mode='sell_check', holding_info=holding)
             time.sleep(1)
 
