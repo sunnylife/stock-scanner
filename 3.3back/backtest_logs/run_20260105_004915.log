@@ -1,0 +1,535 @@
+📝 本次运行日志将存储于: backtest_logs/run_20260105_004915.log
+DEBUG: 正在加载模块...
+/home/ad/miniconda3/envs/lh/lib/python3.10/site-packages/py_mini_racer/py_mini_racer.py:15: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+DEBUG: 进入主函数...
+DEBUG: 初始化系统组件...
+
+============================================================
+🌍 启动市场流程: HK_STOCK | 目标筛选: Top 10 | 回测周期: 近20天
+============================================================
+2026-01-05 00:49:16,348 - 📡 正在扫描港股市场 (HK) [已启用60秒超时补丁]...
+  0%|          | 0/46 [00:00<?, ?it/s]  2%|2         | 1/46 [00:01<00:56,  1.26s/it]  4%|4         | 2/46 [00:01<00:29,  1.48it/s]  7%|6         | 3/46 [00:03<00:49,  1.15s/it]  9%|8         | 4/46 [00:03<00:31,  1.34it/s] 11%|#         | 5/46 [00:03<00:22,  1.85it/s] 13%|#3        | 6/46 [00:06<00:48,  1.21s/it] 15%|#5        | 7/46 [00:06<00:36,  1.05it/s] 17%|#7        | 8/46 [00:06<00:30,  1.26it/s] 20%|#9        | 9/46 [00:07<00:27,  1.34it/s] 22%|##1       | 10/46 [00:08<00:25,  1.42it/s] 24%|##3       | 11/46 [00:08<00:24,  1.44it/s] 26%|##6       | 12/46 [00:08<00:17,  1.90it/s] 28%|##8       | 13/46 [00:09<00:18,  1.74it/s] 30%|###       | 14/46 [00:09<00:15,  2.07it/s] 33%|###2      | 15/46 [00:10<00:14,  2.11it/s] 35%|###4      | 16/46 [00:10<00:11,  2.71it/s] 37%|###6      | 17/46 [00:11<00:14,  2.01it/s] 39%|###9      | 18/46 [00:11<00:14,  1.92it/s] 41%|####1     | 19/46 [00:12<00:14,  1.80it/s] 43%|####3     | 20/46 [00:12<00:11,  2.28it/s] 46%|####5     | 21/46 [00:13<00:10,  2.35it/s] 48%|####7     | 22/46 [00:13<00:11,  2.09it/s] 50%|#####     | 23/46 [00:14<00:10,  2.25it/s] 52%|#####2    | 24/46 [00:14<00:12,  1.81it/s] 54%|#####4    | 25/46 [00:15<00:13,  1.56it/s] 57%|#####6    | 26/46 [00:16<00:15,  1.28it/s] 59%|#####8    | 27/46 [00:18<00:18,  1.01it/s] 61%|######    | 28/46 [00:18<00:13,  1.36it/s] 63%|######3   | 29/46 [00:18<00:10,  1.64it/s] 65%|######5   | 30/46 [00:19<00:08,  1.98it/s] 67%|######7   | 31/46 [00:19<00:07,  1.92it/s] 70%|######9   | 32/46 [00:20<00:11,  1.26it/s] 72%|#######1  | 33/46 [00:21<00:09,  1.30it/s] 74%|#######3  | 34/46 [00:21<00:07,  1.61it/s] 76%|#######6  | 35/46 [00:22<00:05,  2.04it/s] 78%|#######8  | 36/46 [00:22<00:04,  2.48it/s] 80%|########  | 37/46 [00:22<00:03,  2.77it/s] 83%|########2 | 38/46 [00:22<00:02,  3.23it/s] 85%|########4 | 39/46 [00:23<00:02,  3.30it/s] 87%|########6 | 40/46 [00:23<00:01,  3.79it/s] 89%|########9 | 41/46 [00:23<00:01,  4.08it/s] 91%|#########1| 42/46 [00:23<00:00,  4.14it/s] 93%|#########3| 43/46 [00:23<00:00,  4.19it/s] 96%|#########5| 44/46 [00:24<00:00,  4.03it/s] 98%|#########7| 45/46 [00:24<00:00,  4.12it/s]100%|##########| 46/46 [00:24<00:00,  4.40it/s]                                               2026-01-05 00:49:41,456 - ✅ 港股扫描成功，入选 10 只
+📋 扫描结果: ['02800', '00700', '02828', '09988', '03033', '06082', '09888', '00981', '03690', '01810']
+
+🚀 [并行加速模式] 启动 5 个线程处理 10 只股票...
+2026-01-05 00:49:41,457 - ✅ 成功加载配置文件: config.json
+2026-01-05 00:49:41,457 - 增强版Web分析器初始化完成（支持A/g/m + AI流式输出）
+2026-01-05 00:49:41,458 - ✅ 成功加载配置文件: config.json
+2026-01-05 00:49:41,458 - === 增强版系统配置状态（支持A/g/m + AI流式输出）===
+2026-01-05 00:49:41,458 - 增强版Web分析器初始化完成（支持A/g/m + AI流式输出）
+2026-01-05 00:49:41,458 - ✅ 成功加载配置文件: config.json
+2026-01-05 00:49:41,458 - 🤖 可用AI API: openai
+2026-01-05 00:49:41,459 - ✅ 成功加载配置文件: config.json
+2026-01-05 00:49:41,459 - ✅ 成功加载配置文件: config.json
+2026-01-05 00:49:41,459 - === 增强版系统配置状态（支持A/g/m + AI流式输出）===
+2026-01-05 00:49:41,459 - 增强版Web分析器初始化完成（支持A/g/m + AI流式输出）
+2026-01-05 00:49:41,459 - 🎯 主要API: openai
+2026-01-05 00:49:41,459 - 增强版Web分析器初始化完成（支持A/g/m + AI流式输出）
+2026-01-05 00:49:41,459 - 增强版Web分析器初始化完成（支持A/g/m + AI流式输出）
+2026-01-05 00:49:41,460 - 🤖 可用AI API: openai
+2026-01-05 00:49:41,460 - === 增强版系统配置状态（支持A/g/m + AI流式输出）===
+2026-01-05 00:49:41,460 - 🌊 AI流式输出: 支持
+2026-01-05 00:49:41,460 - === 增强版系统配置状态（支持A/g/m + AI流式输出）===
+2026-01-05 00:49:41,460 - === 增强版系统配置状态（支持A/g/m + AI流式输出）===
+2026-01-05 00:49:41,460 - 🎯 主要API: openai
+2026-01-05 00:49:41,460 - 🤖 可用AI API: openai
+2026-01-05 00:49:41,460 - 🔗 自定义API地址: https://api.vectorengine.ai/v1
+2026-01-05 00:49:41,460 - 🤖 可用AI API: openai
+2026-01-05 00:49:41,460 - 🤖 可用AI API: openai
+2026-01-05 00:49:41,460 - 🌊 AI流式输出: 支持
+2026-01-05 00:49:41,460 - 🎯 主要API: openai
+2026-01-05 00:49:41,461 - 🌍 支持市场: ASTOCK, HKSTOCK, USSTOCK
+2026-01-05 00:49:41,461 - 🎯 主要API: openai
+2026-01-05 00:49:41,461 - 🎯 主要API: openai
+2026-01-05 00:49:41,461 - 🔗 自定义API地址: https://api.vectorengine.ai/v1
+2026-01-05 00:49:41,461 - 🌊 AI流式输出: 支持
+2026-01-05 00:49:41,461 - 📊 财务指标数量: 25
+2026-01-05 00:49:41,461 - 🌊 AI流式输出: 支持
+2026-01-05 00:49:41,461 - 🌊 AI流式输出: 支持
+2026-01-05 00:49:41,461 - 🌍 支持市场: ASTOCK, HKSTOCK, USSTOCK
+2026-01-05 00:49:41,461 - 🔗 自定义API地址: https://api.vectorengine.ai/v1
+2026-01-05 00:49:41,461 - 📰 最大新闻数量: 100
+2026-01-05 00:49:41,462 - 🔗 自定义API地址: https://api.vectorengine.ai/v1
+2026-01-05 00:49:41,462 - 🔗 自定义API地址: https://api.vectorengine.ai/v1
+2026-01-05 00:49:41,462 - 📊 财务指标数量: 25
+2026-01-05 00:49:41,462 - 🌍 支持市场: ASTOCK, HKSTOCK, USSTOCK
+2026-01-05 00:49:41,462 - 📈 技术分析周期: 180 天
+2026-01-05 00:49:41,462 - 🌍 支持市场: ASTOCK, HKSTOCK, USSTOCK
+2026-01-05 00:49:41,462 - 🌍 支持市场: ASTOCK, HKSTOCK, USSTOCK
+2026-01-05 00:49:41,462 - 📰 最大新闻数量: 100
+2026-01-05 00:49:41,462 - 📊 财务指标数量: 25
+2026-01-05 00:49:41,462 - 🔐 Web鉴权: 已启用
+2026-01-05 00:49:41,462 - 📊 财务指标数量: 25
+2026-01-05 00:49:41,462 - 📊 财务指标数量: 25
+2026-01-05 00:49:41,463 - 📈 技术分析周期: 180 天
+2026-01-05 00:49:41,463 - 📰 最大新闻数量: 100
+2026-01-05 00:49:41,463 - ==================================================
+2026-01-05 00:49:41,463 - 📰 最大新闻数量: 100
+2026-01-05 00:49:41,463 - 📰 最大新闻数量: 100
+2026-01-05 00:49:41,463 - 🔐 Web鉴权: 已启用
+2026-01-05 00:49:41,463 - 📈 技术分析周期: 180 天
+2026-01-05 00:49:41,463 - 📈 技术分析周期: 180 天
+2026-01-05 00:49:41,463 - 📁 本地缓存目录已就绪: /home/ad/code/stock/stock-scanner/3.2webapp/data_cache, /home/ad/code/stock/stock-scanner/3.2webapp/analysis_history
+
+🔍 线程启动检查: 007002026-01-05 00:49:41,463 - 📈 技术分析周期: 180 天
+🔒 [00700] 排队下载数据中...2026-01-05 00:49:41,464 - 🔐 Web鉴权: 已启用
+
+2026-01-05 00:49:41,463 - 🔐 Web鉴权: 已启用
+2026-01-05 00:49:41,464 - 🔐 Web鉴权: 已启用
+2026-01-05 00:49:41,463 - ==================================================
+2026-01-05 00:49:41,464 - ==================================================
+2026-01-05 00:49:41,465 - ==================================================
+2026-01-05 00:49:41,465 - ==================================================
+2026-01-05 00:49:41,466 - 📁 本地缓存目录已就绪: /home/ad/code/stock/stock-scanner/3.2webapp/data_cache, /home/ad/code/stock/stock-scanner/3.2webapp/analysis_history
+
+🔍 线程启动检查: 028002026-01-05 00:49:41,466 - 📁 本地缓存目录已就绪: /home/ad/code/stock/stock-scanner/3.2webapp/data_cache, /home/ad/code/stock/stock-scanner/3.2webapp/analysis_history
+🔒 [02800] 排队下载数据中...2026-01-05 00:49:41,466 - 📁 本地缓存目录已就绪: /home/ad/code/stock/stock-scanner/3.2webapp/data_cache, /home/ad/code/stock/stock-scanner/3.2webapp/analysis_history
+
+
+🔍 线程启动检查: 099882026-01-05 00:49:41,466 - 📁 本地缓存目录已就绪: /home/ad/code/stock/stock-scanner/3.2webapp/data_cache, /home/ad/code/stock/stock-scanner/3.2webapp/analysis_history
+
+🔍 线程启动检查: 02828🔒 [02828] 排队下载数据中...2026-01-05 00:49:41,473 - 处理前列名: ['open', 'close', 'high', 'low', 'volume', 'turnover', 'amplitude', 'change_pct', 'change_amount', 'turnover_rate']
+
+
+🔍 线程启动检查: 030332026-01-05 00:49:41,476 - 处理后列名: ['open', 'close', 'high', 'low', 'volume', 'turnover', 'amplitude', 'change_pct', 'change_amount', 'turnover_rate']
+🔒 [09988] 排队下载数据中...
+2026-01-05 00:49:41,476 - 📦 命中本地缓存: hk_stock_00700_20260105.csv
+🔒 [03033] 排队下载数据中...
+2026-01-05 00:49:42,031 - 处理前列名: ['open', 'close', 'high', 'low', 'volume', 'turnover', 'amplitude', 'change_pct', 'change_amount', 'turnover_rate']
+2026-01-05 00:49:42,034 - 处理后列名: ['open', 'close', 'high', 'low', 'volume', 'turnover', 'amplitude', 'change_pct', 'change_amount', 'turnover_rate']
+2026-01-05 00:49:42,034 - 📦 命中本地缓存: hk_stock_02800_20260105.csv
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:49:42,577 - 处理前列名: ['open', 'close', 'high', 'low', 'volume', 'turnover', 'amplitude', 'change_pct', 'change_amount', 'turnover_rate']
+2026-01-05 00:49:42,586 - 处理后列名: ['open', 'close', 'high', 'low', 'volume', 'turnover', 'amplitude', 'change_pct', 'change_amount', 'turnover_rate']
+2026-01-05 00:49:42,586 - 📦 命中本地缓存: hk_stock_02828_20260105.csv
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:49:43,137 - 处理前列名: ['open', 'close', 'high', 'low', 'volume', 'turnover', 'amplitude', 'change_pct', 'change_amount', 'turnover_rate']
+2026-01-05 00:49:43,140 - 处理后列名: ['open', 'close', 'high', 'low', 'volume', 'turnover', 'amplitude', 'change_pct', 'change_amount', 'turnover_rate']
+2026-01-05 00:49:43,140 - 📦 命中本地缓存: hk_stock_09988_20260105.csv
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:49:43,698 - 处理前列名: ['open', 'close', 'high', 'low', 'volume', 'turnover', 'amplitude', 'change_pct', 'change_amount', 'turnover_rate']
+2026-01-05 00:49:43,701 - 处理后列名: ['open', 'close', 'high', 'low', 'volume', 'turnover', 'amplitude', 'change_pct', 'change_amount', 'turnover_rate']
+2026-01-05 00:49:43,701 - 📦 命中本地缓存: hk_stock_03033_20260105.csv
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:49:45,232 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "HOLD", "confidence": 60, "reason": "20日线走平，价格位于箱体内部，技术指标呈中性且无共振信号...
+2026-01-05 00:49:45,281 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "HOLD", "confidence": 60, "reason": "20日线走平，价格位于箱体中位，技术指标中性且无共振信号"...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:49:45,739 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "HOLD", "confidence": 60, "reason": "20日线走平，价格位于箱体中下部，技术指标中性且无共振信号...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:49:46,958 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "HOLD", "confidence": 65, "reason": "20日线走平，价格位于箱体中下部，技术指标中性且无共振信号...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:49:47,597 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "BUY", "confidence": 65, "reason": "处于震荡期底部，且出现超卖共振(RSI低位+WR超卖)", ...
+   🛒 [买入] 12-03 |  阶段: 震荡期 | 价格: 611.00 | 理由: 处于震荡期底部，且出现超卖共振(RSI低
+   💰 [卖出] 12-16 | 收益: -2.47% | 持有9天 | 原因: 港股磨叽(时间止损)
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:49:47,823 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "HOLD", "confidence": 55, "reason": "趋势走平，价格处于箱体中下部，技术指标中性且无共振信号，未...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:49:48,659 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "HOLD", "confidence": 60, "reason": "趋势走平，价格处于箱体中部偏低位置，技术指标中性且无共振信...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:49:48,990 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {
+    "market_phase": "震荡期",
+    "action": "HOLD",
+    "confidence": 65,
+    "reason": "20日线走平，价格位于箱...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:49:49,655 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "HOLD", "confidence": 60, "reason": "20日线走平，价格位于箱体中部，技术指标中性且无共振信号"...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:49:50,323 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "HOLD", "confidence": 60, "reason": "20日线走平，价格位于箱体中部，技术指标呈中性且无共振信号...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:49:51,026 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "HOLD", "confidence": 65, "reason": "20日线走平，价格位于箱体内部，技术指标呈中性且无共振信号...
+2026-01-05 00:49:51,044 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "HOLD", "confidence": 65, "reason": "20日线走平，价格处于箱体中下部，技术指标中性且无共振信号...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:49:51,536 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "HOLD", "confidence": 60, "reason": "20日线走平，价格在箱体中部，技术指标普遍中性，动量共振信...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:49:52,743 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "HOLD", "confidence": 60, "reason": "20日线走平，价格位于箱体中部，技术指标无明确共振信号",...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:49:53,251 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "HOLD", "confidence": 50, "reason": "20日线走平，价格位于箱体内部，技术指标无明显共振信号",...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:49:53,668 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "HOLD", "confidence": 55, "reason": "20日线走平，价格位于箱体中下部，技术指标信号中性且无共振...
+2026-01-05 00:49:53,695 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "HOLD", "confidence": 50, "reason": "趋势走平，价格位于箱体中下部，资金强度与动量共振偏弱，未触...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:49:54,652 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "HOLD", "confidence": 65, "reason": "20日线走平，价格位于箱体中部，技术指标中性且无共振信号，...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:49:56,036 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "HOLD", "confidence": 55, "reason": "20日线走平，价格位于箱体内部，技术指标呈中性且无明显共振...
+2026-01-05 00:49:56,060 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "HOLD", "confidence": 60, "reason": "20日线走平，价格位于箱体内部，技术指标呈中性且无明显共振...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:49:56,247 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "HOLD", "confidence": 60, "reason": "20日线走平，价格位于箱体中下部，技术指标普遍中性且无共振...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:49:56,474 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {
+    "market_phase": "震荡期",
+    "action": "HOLD",
+    "confidence": 55,
+    "reason": "20日线走平，价格处于箱...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:49:58,305 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "BUY", "confidence": 65, "reason": "处于震荡期底部，且出现威廉WR超卖信号", "risk_wa...
+   🛒 [买入] 12-09 |  阶段: 震荡期 | 价格: 91.50 | 理由: 处于震荡期底部，且出现威廉WR超卖信号
+   💰 [卖出] 12-22 | 收益: -0.08% | 持有9天 | 原因: 港股磨叽(时间止损)
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:49:58,839 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "HOLD", "confidence": 60, "reason": "20日线走平，价格位于箱体中下部，技术指标中性且无共振信号...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:49:59,550 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {
+    "market_phase": "震荡期",
+    "action": "HOLD",
+    "confidence": 65,
+    "reason": "20日线走平，价格位于箱...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:49:59,658 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "HOLD", "confidence": 60, "reason": "20日线走平，价格位于箱体中位，技术指标普遍中性，动量共振...
+2026-01-05 00:49:59,668 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "HOLD", "confidence": 60, "reason": "20日线走平，价格位于箱体内部，技术指标呈中性且无明显共振...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:50:01,376 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "HOLD", "confidence": 55, "reason": "趋势走平，价格处于箱体中位，技术指标中性，动量共振信号不足...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:50:02,048 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "HOLD", "confidence": 60, "reason": "20日线走平，价格在箱体内部波动，技术指标呈中性且无明显共...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:50:02,242 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "HOLD", "confidence": 60, "reason": "20日线走平，价格位于箱体内部，技术指标呈中性且无共振信号...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:50:02,412 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "HOLD", "confidence": 65, "reason": "20日线走平，价格处于箱体内部，技术指标普遍中性，动量共振...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:50:04,015 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {
+    "market_phase": "震荡期",
+    "action": "HOLD",
+    "confidence": 65,
+    "reason": "20日线走平，价格位于箱...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:50:04,655 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "HOLD", "confidence": 60, "reason": "20日线走平，价格位于箱体中下部，威廉指标超卖但无明确共振...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:50:04,794 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "HOLD", "confidence": 60, "reason": "20日线走平，价格位于箱体中上部，KDJ金叉但动量共振信号...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:50:04,963 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "HOLD", "confidence": 50, "reason": "20日线走平，价格位于箱体内部，技术指标呈中性且无共振信号...
+2026-01-05 00:50:04,995 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "HOLD", "confidence": 60, "reason": "20日线走平，价格位于箱体内部，威廉指标超卖但未形成多指标...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:50:06,252 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "HOLD", "confidence": 65, "reason": "20日线走平，价格位于箱体中位，技术指标中性且无共振信号"...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:50:07,196 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "HOLD", "confidence": 55, "reason": "20日线走平，价格位于箱体内部，威廉指标进入超卖区但未形成...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:50:07,466 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "HOLD", "confidence": 60, "reason": "20日线走平，价格位于箱体中位，技术指标普遍中性且无共振信...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:50:07,617 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "HOLD", "confidence": 60, "reason": "20日线走平，价格位于箱体中位，技术指标普遍中性，动量共振...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:50:08,732 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "HOLD", "confidence": 65, "reason": "20日线走平，价格位于箱体中下部，技术指标普遍中性且无共振...
+2026-01-05 00:50:08,736 - ✅ 成功加载配置文件: config.json
+2026-01-05 00:50:08,736 - 增强版Web分析器初始化完成（支持A/g/m + AI流式输出）
+2026-01-05 00:50:08,736 - === 增强版系统配置状态（支持A/g/m + AI流式输出）===
+2026-01-05 00:50:08,736 - 🤖 可用AI API: openai
+2026-01-05 00:50:08,736 - 🎯 主要API: openai
+2026-01-05 00:50:08,736 - 🌊 AI流式输出: 支持
+2026-01-05 00:50:08,737 - 🔗 自定义API地址: https://api.vectorengine.ai/v1
+2026-01-05 00:50:08,737 - 🌍 支持市场: ASTOCK, HKSTOCK, USSTOCK
+2026-01-05 00:50:08,737 - 📊 财务指标数量: 25
+2026-01-05 00:50:08,737 - 📰 最大新闻数量: 100
+2026-01-05 00:50:08,737 - 📈 技术分析周期: 180 天
+2026-01-05 00:50:08,737 - 🔐 Web鉴权: 已启用
+2026-01-05 00:50:08,737 - ==================================================
+2026-01-05 00:50:08,737 - 📁 本地缓存目录已就绪: /home/ad/code/stock/stock-scanner/3.2webapp/data_cache, /home/ad/code/stock/stock-scanner/3.2webapp/analysis_history
+
+🔍 线程启动检查: 06082🔒 [06082] 排队下载数据中...
+2026-01-05 00:50:08,748 - 处理前列名: ['open', 'close', 'high', 'low', 'volume', 'turnover', 'amplitude', 'change_pct', 'change_amount', 'turnover_rate']
+2026-01-05 00:50:08,759 - 处理后列名: ['open', 'close', 'high', 'low', 'volume', 'turnover', 'amplitude', 'change_pct', 'change_amount', 'turnover_rate']
+2026-01-05 00:50:08,760 - 📦 命中本地缓存: hk_stock_06082_20260105.csv
+ | 06082 数据不足/为空
+2026-01-05 00:50:09,261 - ✅ 成功加载配置文件: config.json
+2026-01-05 00:50:09,262 - 增强版Web分析器初始化完成（支持A/g/m + AI流式输出）
+2026-01-05 00:50:09,262 - === 增强版系统配置状态（支持A/g/m + AI流式输出）===
+2026-01-05 00:50:09,262 - 🤖 可用AI API: openai
+2026-01-05 00:50:09,262 - 🎯 主要API: openai
+2026-01-05 00:50:09,263 - 🌊 AI流式输出: 支持
+2026-01-05 00:50:09,263 - 🔗 自定义API地址: https://api.vectorengine.ai/v1
+2026-01-05 00:50:09,263 - 🌍 支持市场: ASTOCK, HKSTOCK, USSTOCK
+2026-01-05 00:50:09,263 - 📊 财务指标数量: 25
+2026-01-05 00:50:09,263 - 📰 最大新闻数量: 100
+2026-01-05 00:50:09,264 - 📈 技术分析周期: 180 天
+2026-01-05 00:50:09,264 - 🔐 Web鉴权: 已启用
+2026-01-05 00:50:09,264 - ==================================================
+2026-01-05 00:50:09,264 - 📁 本地缓存目录已就绪: /home/ad/code/stock/stock-scanner/3.2webapp/data_cache, /home/ad/code/stock/stock-scanner/3.2webapp/analysis_history
+
+🔍 线程启动检查: 09888🔒 [09888] 排队下载数据中...
+2026-01-05 00:50:09,273 - 处理前列名: ['open', 'close', 'high', 'low', 'volume', 'turnover', 'amplitude', 'change_pct', 'change_amount', 'turnover_rate']
+2026-01-05 00:50:09,281 - 处理后列名: ['open', 'close', 'high', 'low', 'volume', 'turnover', 'amplitude', 'change_pct', 'change_amount', 'turnover_rate']
+2026-01-05 00:50:09,282 - 📦 命中本地缓存: hk_stock_09888_20260105.csv
+2026-01-05 00:50:09,730 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "HOLD", "confidence": 65, "reason": "20日线走平，价格位于箱体中下部，技术指标中性且无明显共振...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:50:09,882 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "BUY", "confidence": 65, "reason": "处于震荡期底部，且出现威廉WR超卖信号", "risk_wa...
+   🛒 [买入] 12-15 |  阶段: 震荡期 | 价格: 148.60 | 理由: 处于震荡期底部，且出现威廉WR超卖信号
+   💰 [卖出] 12-30 | 收益: -2.86% | 持有9天 | 原因: 港股磨叽(时间止损)
+2026-01-05 00:50:09,925 - ✅ 成功加载配置文件: config.json
+2026-01-05 00:50:09,925 - 增强版Web分析器初始化完成（支持A/g/m + AI流式输出）
+2026-01-05 00:50:09,925 - === 增强版系统配置状态（支持A/g/m + AI流式输出）===
+2026-01-05 00:50:09,925 - 🤖 可用AI API: openai
+2026-01-05 00:50:09,925 - 🎯 主要API: openai
+2026-01-05 00:50:09,925 - 🌊 AI流式输出: 支持
+2026-01-05 00:50:09,925 - 🔗 自定义API地址: https://api.vectorengine.ai/v1
+2026-01-05 00:50:09,925 - 🌍 支持市场: ASTOCK, HKSTOCK, USSTOCK
+2026-01-05 00:50:09,925 - 📊 财务指标数量: 25
+2026-01-05 00:50:09,925 - 📰 最大新闻数量: 100
+2026-01-05 00:50:09,925 - 📈 技术分析周期: 180 天
+2026-01-05 00:50:09,925 - 🔐 Web鉴权: 已启用
+2026-01-05 00:50:09,925 - ==================================================
+2026-01-05 00:50:09,925 - 📁 本地缓存目录已就绪: /home/ad/code/stock/stock-scanner/3.2webapp/data_cache, /home/ad/code/stock/stock-scanner/3.2webapp/analysis_history
+
+🔍 线程启动检查: 00981🔒 [00981] 排队下载数据中...
+2026-01-05 00:50:09,931 - 处理前列名: ['open', 'close', 'high', 'low', 'volume', 'turnover', 'amplitude', 'change_pct', 'change_amount', 'turnover_rate']
+2026-01-05 00:50:09,934 - 处理后列名: ['open', 'close', 'high', 'low', 'volume', 'turnover', 'amplitude', 'change_pct', 'change_amount', 'turnover_rate']
+2026-01-05 00:50:09,934 - 📦 命中本地缓存: hk_stock_00981_20260105.csv
+2026-01-05 00:50:10,004 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "HOLD", "confidence": 60, "reason": "趋势走平，价格位于箱体底部区域，但技术指标仅威廉WR进入超...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:50:11,910 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {
+    "market_phase": "震荡期",
+    "action": "HOLD",
+    "confidence": 65,
+    "reason": "20日线走平，价格位于箱...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:50:12,367 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "HOLD", "confidence": 65, "reason": "20日线走平，价格位于箱体内部，RSI与KDJ信号中性，威...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:50:12,698 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "HOLD", "confidence": 50, "reason": "20日线走平，价格位于箱体中下部，技术指标呈中性且无明显共...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:50:12,796 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "HOLD", "confidence": 60, "reason": "20日线走平，价格位于箱体中下部，技术指标中性且无共振信号...
+2026-01-05 00:50:12,830 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "HOLD", "confidence": 60, "reason": "20日线走平，价格位于箱体中部，技术指标中性且无共振信号"...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:50:14,683 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "HOLD", "confidence": 65, "reason": "20日线走平，价格位于箱体内部，技术指标呈中性且无明显共振...
+2026-01-05 00:50:14,687 - ✅ 成功加载配置文件: config.json
+2026-01-05 00:50:14,688 - 增强版Web分析器初始化完成（支持A/g/m + AI流式输出）
+2026-01-05 00:50:14,688 - === 增强版系统配置状态（支持A/g/m + AI流式输出）===
+2026-01-05 00:50:14,688 - 🤖 可用AI API: openai
+2026-01-05 00:50:14,688 - 🎯 主要API: openai
+2026-01-05 00:50:14,688 - 🌊 AI流式输出: 支持
+2026-01-05 00:50:14,689 - 🔗 自定义API地址: https://api.vectorengine.ai/v1
+2026-01-05 00:50:14,689 - 🌍 支持市场: ASTOCK, HKSTOCK, USSTOCK
+2026-01-05 00:50:14,689 - 📊 财务指标数量: 25
+2026-01-05 00:50:14,689 - 📰 最大新闻数量: 100
+2026-01-05 00:50:14,690 - 📈 技术分析周期: 180 天
+2026-01-05 00:50:14,690 - 🔐 Web鉴权: 已启用
+2026-01-05 00:50:14,690 - ==================================================
+2026-01-05 00:50:14,690 - 📁 本地缓存目录已就绪: /home/ad/code/stock/stock-scanner/3.2webapp/data_cache, /home/ad/code/stock/stock-scanner/3.2webapp/analysis_history
+
+🔍 线程启动检查: 03690🔒 [03690] 排队下载数据中...
+2026-01-05 00:50:14,704 - 处理前列名: ['open', 'close', 'high', 'low', 'volume', 'turnover', 'amplitude', 'change_pct', 'change_amount', 'turnover_rate']
+2026-01-05 00:50:14,716 - 处理后列名: ['open', 'close', 'high', 'low', 'volume', 'turnover', 'amplitude', 'change_pct', 'change_amount', 'turnover_rate']
+2026-01-05 00:50:14,716 - 📦 命中本地缓存: hk_stock_03690_20260105.csv
+2026-01-05 00:50:14,757 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "HOLD", "confidence": 55, "reason": "20日线走平，价格位于箱体中下部，技术指标中性且无共振信号...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:50:15,208 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "HOLD", "confidence": 65, "reason": "20日线走平，价格位于箱体中部，技术指标普遍中性且无共振信...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:50:16,002 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "HOLD", "confidence": 65, "reason": "20日线走平，价格位于箱体中下部，技术指标普遍中性且无共振...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:50:16,251 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "HOLD", "confidence": 65, "reason": "20日线走平，价格位于箱体中下部，技术指标信号中性且未出现...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:50:17,320 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "HOLD", "confidence": 60, "reason": "20日线走平，价格处于箱体中部，技术指标中性且无共振信号"...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:50:17,843 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "HOLD", "confidence": 60, "reason": "20日线走平，价格位于箱体中位，技术指标中性且无共振信号"...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:50:17,977 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "HOLD", "confidence": 65, "reason": "20日线走平，价格位于箱体内部，KDJ死叉且威廉WR超卖，...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:50:19,738 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "HOLD", "confidence": 60, "reason": "20日线走平，价格位于箱体中位，技术指标普遍中性且无共振信...
+2026-01-05 00:50:19,786 - ✅ 成功加载配置文件: config.json
+2026-01-05 00:50:19,786 - 增强版Web分析器初始化完成（支持A/g/m + AI流式输出）
+2026-01-05 00:50:19,786 - === 增强版系统配置状态（支持A/g/m + AI流式输出）===
+2026-01-05 00:50:19,786 - 🤖 可用AI API: openai
+2026-01-05 00:50:19,786 - 🎯 主要API: openai
+2026-01-05 00:50:19,786 - 🌊 AI流式输出: 支持
+2026-01-05 00:50:19,787 - 🔗 自定义API地址: https://api.vectorengine.ai/v1
+2026-01-05 00:50:19,787 - 🌍 支持市场: ASTOCK, HKSTOCK, USSTOCK
+2026-01-05 00:50:19,787 - 📊 财务指标数量: 25
+2026-01-05 00:50:19,787 - 📰 最大新闻数量: 100
+2026-01-05 00:50:19,787 - 📈 技术分析周期: 180 天
+2026-01-05 00:50:19,787 - 🔐 Web鉴权: 已启用
+2026-01-05 00:50:19,787 - ==================================================
+2026-01-05 00:50:19,787 - 📁 本地缓存目录已就绪: /home/ad/code/stock/stock-scanner/3.2webapp/data_cache, /home/ad/code/stock/stock-scanner/3.2webapp/analysis_history
+
+🔍 线程启动检查: 01810🔒 [01810] 排队下载数据中...
+2026-01-05 00:50:19,792 - 处理前列名: ['open', 'close', 'high', 'low', 'volume', 'turnover', 'amplitude', 'change_pct', 'change_amount', 'turnover_rate']
+2026-01-05 00:50:19,795 - 处理后列名: ['open', 'close', 'high', 'low', 'volume', 'turnover', 'amplitude', 'change_pct', 'change_amount', 'turnover_rate']
+2026-01-05 00:50:19,795 - 📦 命中本地缓存: hk_stock_01810_20260105.csv
+2026-01-05 00:50:20,332 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "HOLD", "confidence": 65, "reason": "20日线走平，价格位于箱体中下部，技术指标中性且无共振信号...
+2026-01-05 00:50:20,378 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "HOLD", "confidence": 60, "reason": "20日线走平，价格位于箱体内部，威廉指标超卖但无明确共振信...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:50:20,999 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {
+                "market_phase": "突破期",
+                "action": "BUY",
+                "confidenc...
+   🛒 [买入] 12-19 |  阶段: 突破期 | 价格: 25.90 | 理由: 处于突破期，且出现RSI金叉共振
+   🔚 [清仓] 回测结束 | 收益: +2.47%
+2026-01-05 00:50:21,259 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "HOLD", "confidence": 65, "reason": "20日线走平，价格位于箱体中上部，资金强度中性，威廉指标超...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:50:22,729 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "HOLD", "confidence": 60, "reason": "20日线走平，价格位于箱体中位，技术指标中性且无共振信号"...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:50:23,217 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "HOLD", "confidence": 60, "reason": "20日线走平，价格位于箱体中下部，技术指标无共振信号，资金...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:50:23,870 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "HOLD", "confidence": 60, "reason": "趋势走平，价格位于箱体中上部，威廉指标超买但资金强度一般，...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:50:25,256 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "HOLD", "confidence": 65, "reason": "20日线走平，价格位于箱体内部，技术指标呈中性且无明显共振...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:50:25,582 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "HOLD", "confidence": 45, "reason": "20日线走平，价格位于箱体内部，技术指标中性且无共振信号"...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:50:26,050 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "HOLD", "confidence": 65, "reason": "20日线走平，价格位于箱体中上部，技术指标信号中性且存在分...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:50:26,760 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "HOLD", "confidence": 60, "reason": "20日线走平，价格在箱体中部，KDJ死叉但RSI中性，信号...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:50:27,721 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "HOLD", "confidence": 55, "reason": "20日线走平，价格位于箱体中下部，技术指标普遍中性且无共振...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:50:28,006 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "HOLD", "confidence": 60, "reason": "20日线走平，价格位于箱体中下部，技术指标普遍中性且无共振...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:50:28,775 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "HOLD", "confidence": 60, "reason": "趋势走平，价格位于箱体内部，威廉指标超买但资金强度一般，动...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:50:29,871 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "HOLD", "confidence": 65, "reason": "20日线走平，价格位于箱体中部，资金强度中性，威廉指标超买...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:50:30,408 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "BUY", "confidence": 65, "reason": "20日线走平，价格处于箱体低位，威廉WR进入超卖区，存在左侧...
+   🛒 [买入] 12-15 |  阶段: 震荡期 | 价格: 64.70 | 理由: 20日线走平，价格处于箱体低位，威廉WR
+   🔚 [清仓] 回测结束 | 收益: +16.07%
+2026-01-05 00:50:31,016 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "HOLD", "confidence": 65, "reason": "20日线走平，价格位于箱体中部，技术指标普遍中性且无共振信...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:50:31,675 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "HOLD", "confidence": 60, "reason": "20日线走平，价格位于箱体中上部，资金强度中性，威廉指标超...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:50:34,644 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "HOLD", "confidence": 60, "reason": "20日线走平，价格在箱体中部，技术指标无共振信号，资金强度...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:50:36,071 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {
+    "market_phase": "震荡期",
+    "action": "HOLD",
+    "confidence": 65,
+    "reason": "20日线走平，价格在箱体...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:50:37,198 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "突破期", "action": "BUY", "confidence": 75, "reason": "相对位置>90%且趋势走平，资金强度中性，信号共振支持多头"...
+   🛒 [买入] 12-12 |  阶段: 突破期 | 价格: 42.96 | 理由: 相对位置>90%且趋势走平，资金强度中性
+   💰 [卖出] 12-18 | 收益: -6.52% | 持有4天 | 原因: 硬止损(-6.5%)
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:50:37,826 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {
+    "market_phase": "震荡期",
+    "action": "HOLD",
+    "confidence": 65,
+    "reason": "20日线走平，价格在箱体...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:50:39,626 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {
+    "market_phase": "突破期",
+    "action": "BUY",
+    "confidence": 85,
+    "reason": "相对位置91.2%接近箱顶...
+   🛒 [买入] 12-12 |  阶段: 突破期 | 价格: 126.00 | 理由: 相对位置91.2%接近箱顶，资金强度70
+   💰 [卖出] 12-15 | 收益: -5.89% | 持有1天 | 原因: 硬止损(-5.9%)
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:50:39,840 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "HOLD", "confidence": 55, "reason": "20日线走平，价格位于箱体中下部，威廉指标超卖但无明确共振...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:50:40,373 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "BUY", "confidence": 65, "reason": "处于震荡期，20日线走平，价格位于箱体中位，但出现KDJ金叉...
+   🛒 [买入] 12-10 |  阶段: 震荡期 | 价格: 100.00 | 理由: 处于震荡期，20日线走平，价格位于箱体中
+   🔚 [清仓] 回测结束 | 收益: +4.60%
+2026-01-05 00:50:42,246 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "HOLD", "confidence": 60, "reason": "20日线走平，价格处于箱体中部，技术指标中性且无共振信号"...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:50:42,418 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "BUY", "confidence": 65, "reason": "处于震荡期底部，且出现威廉WR超卖与信号共振的反弹预期", ...
+   🛒 [买入] 12-22 |  阶段: 震荡期 | 价格: 39.80 | 理由: 处于震荡期底部，且出现威廉WR超卖与信号
+   🔚 [清仓] 回测结束 | 收益: +1.21%
+2026-01-05 00:50:44,771 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "HOLD", "confidence": 65, "reason": "20日线走平，价格位于箱体中位，技术指标普遍中性且无共振信...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:50:47,500 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "震荡期", "action": "HOLD", "confidence": 65, "reason": "20日线走平，价格位于箱体中位，技术指标普遍中性且无共振信...
+   🤖 调用AI模型: deepseek-v3.2, API: https://api.vectorengine.ai/v1
+2026-01-05 00:50:50,036 - HTTP Request: POST https://api.vectorengine.ai/v1/chat/completions "HTTP/1.1 200 OK"
+   📥 AI原始响应: {"market_phase": "突破期", "action": "BUY", "confidence": 75, "reason": "相对位置100%且资金强度70，符合突破期特征，动量共振提供...
+   🛒 [买入] 12-30 |  阶段: 突破期 | 价格: 129.70 | 理由: 相对位置100%且资金强度70，符合突破
+   🔚 [清仓] 回测结束 | 收益: +10.87%
+
+============================================================
+📊 AI 并行回测报告 | 耗时: 68.6秒
+🌍 市场分布: A股0 | 港股10 | 美股0
+🤖 AI 建议买入: 10 次
+🏆 胜率: 50.0%
+💰 平均收益: 1.74%
+📈 总收益: 17.39%
+============================================================
+

@@ -37,7 +37,7 @@ logging.basicConfig(
 class EnhancedWebStockAnalyzer:
     """增强版Web分析器（支持A/g/m + AI流式输出）"""
     
-    def __init__(self, config_file='config.json'):
+    def __init__(self, config_file='config_back.json'):
         """初始化分析器"""
         self.logger = logging.getLogger(__name__)
         self.config_file = config_file
