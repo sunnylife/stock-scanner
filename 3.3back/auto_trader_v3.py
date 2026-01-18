@@ -62,8 +62,8 @@ logging.Formatter.converter = beijing_converter
 # ⚙️ 全局配置区
 # ==========================================
 CONFIG = {
-    "SIMULATION_MODE": False,  # ⚠️ 调试为True，实盘请改为 False
-    
+    "SIMULATION_MODE": False,  # ⚠️ 全局总开关：True=全模拟，False=读取各市场配置
+
     # 请填入你的长桥 API Key
     "LB_APP_KEY": "f1bcf06adc2989210ab7caa4fd9101f6",
     "LB_APP_SECRET": "5e62e4155b17eba48c7e56e93045d5ea44e130dd411433c859b5da0db4d36cd1",
@@ -77,6 +77,7 @@ CONFIG = {
     # --- 🇺🇸 美股配置 ---
     "US_SETTINGS": {
         "ENABLED": True,
+        "SIMULATION": False, # 🟢 False = 实盘
         "MAX_HOLDINGS": 2,
         "ALLOCATED_CAPITAL": 1800, 
         "MIN_TRADE_AMT": 50
@@ -85,6 +86,7 @@ CONFIG = {
     # --- 🇭🇰 港股配置 ---
     "HK_SETTINGS": {
         "ENABLED": True,
+        "SIMULATION": True,  # 🔵 True = 模拟 (虚拟盘)
         "MAX_HOLDINGS": 2,
         "ALLOCATED_CAPITAL": 10000,
         "MIN_TRADE_AMT": 3000
@@ -214,27 +216,43 @@ class HoldingsManager:
 class LongbridgeExecutor:
     def __init__(self):
         self.ctx = None
-        if LONGBRIDGE_INSTALLED and not CONFIG["SIMULATION_MODE"]:
+        
+        # 判断是否需要连接实盘 API
+        # 逻辑：全局模拟为False 且 (美股是实盘 OR 港股是实盘)
+        is_global_sim = CONFIG["SIMULATION_MODE"]
+        us_need_real = CONFIG["US_SETTINGS"]["ENABLED"] and not CONFIG["US_SETTINGS"].get("SIMULATION", False)
+        hk_need_real = CONFIG["HK_SETTINGS"]["ENABLED"] and not CONFIG["HK_SETTINGS"].get("SIMULATION", False)
+        
+        need_connection = not is_global_sim and (us_need_real or hk_need_real)
+
+        if LONGBRIDGE_INSTALLED and need_connection:
             try:
                 conf = Config(CONFIG["LB_APP_KEY"], CONFIG["LB_APP_SECRET"], CONFIG["LB_ACCESS_TOKEN"])
                 self.ctx = TradeContext(conf)
-                logger.info("🔌 长桥 API 已连接")
+                logger.info("🔌 长桥 API 已连接 (混合模式)")
             except Exception as e:
                 logger.error(f"❌ API 连接失败: {e}")
 
     def get_symbol_suffix(self, code, market):
         return f"{code}.HK" if market == 'hk' else f"{code}.US"
 
+    def _is_simulated(self, market):
+        """判断指定市场是否处于模拟模式"""
+        if CONFIG["SIMULATION_MODE"]: return True
+        if market == 'hk' and CONFIG["HK_SETTINGS"].get("SIMULATION", False): return True
+        if market == 'us' and CONFIG["US_SETTINGS"].get("SIMULATION", False): return True
+        return False
+
     def get_lot_size(self, code, market):
         if market == 'us': return 1
-        if CONFIG["SIMULATION_MODE"]: return 100
+        if self._is_simulated(market): return 100
         try:
             info = self.ctx.static_info([self.get_symbol_suffix(code, market)])
             return int(info[0].board_lot) if info else 100
         except: return 100
 
     def estimate_max_buy(self, code, price, market):
-        if CONFIG["SIMULATION_MODE"]: return 99999
+        if self._is_simulated(market): return 99999
         if not self.ctx: return 0
         try:
             resp = self.ctx.estimate_max_purchase_quantity(
@@ -247,9 +265,9 @@ class LongbridgeExecutor:
     def execute_order(self, code, side, price, shares, market):
         symbol = self.get_symbol_suffix(code, market)
         
-        # 1. 模拟模式直接返回
-        if CONFIG["SIMULATION_MODE"]:
-            logger.info(f"🛠️ [模拟交易] {symbol} {side} {shares}股 @ {price}")
+        # 1. 检查是否为模拟模式 (分市场)
+        if self._is_simulated(market):
+            logger.info(f"🛠️ [{market.upper()}模拟] {symbol} {side} {shares}股 @ {price}")
             return True
             
         if not self.ctx: return False
@@ -292,15 +310,17 @@ class LongbridgeExecutor:
             return False
 
     def get_cash_balance(self):
-        if CONFIG["SIMULATION_MODE"]: return 100000.0
-        if not self.ctx: return 0.0
-        try:
-            resp = self.ctx.account_balance()
-            for acc in resp:
-                for cash in acc.cash_infos:
-                    if cash.currency == 'USD': return float(cash.available_cash)
-            return 0.0
-        except: return 0.0
+        # 只要连上了 API，就返回真实资金，否则返回模拟资金
+        if self.ctx:
+            try:
+                resp = self.ctx.account_balance()
+                for acc in resp:
+                    for cash in acc.cash_infos:
+                        if cash.currency == 'USD': return float(cash.available_cash)
+                return 0.0
+            except: return 0.0
+        
+        return 100000.0
 
 # ==========================================
 # 🧠 策略控制器 (完整版)
@@ -814,13 +834,21 @@ class AutoTrader:
 
     def run(self):
         logger.info("⏳ AutoTrader V3 (修复版) 启动...")
-        logger.info(f"模式: {'🛠️ 模拟' if CONFIG['SIMULATION_MODE'] else '💸 实盘'}")
+        mode_str = []
+        if CONFIG["US_SETTINGS"]["ENABLED"]:
+            us_mode = "模拟" if CONFIG["US_SETTINGS"].get("SIMULATION", False) or CONFIG["SIMULATION_MODE"] else "实盘"
+            mode_str.append(f"美股:{us_mode}")
+        if CONFIG["HK_SETTINGS"]["ENABLED"]:
+            hk_mode = "模拟" if CONFIG["HK_SETTINGS"].get("SIMULATION", False) or CONFIG["SIMULATION_MODE"] else "实盘"
+            mode_str.append(f"港股:{hk_mode}")
+            
+        logger.info(f"模式: {' | '.join(mode_str)}")
         
         # 调度任务
-        # schedule.every().day.at("09:40").do(self.job_scan_market, market='hk')
-        # schedule.every().day.at("11:30").do(self.job_monitor)
-        # schedule.every().day.at("13:35").do(self.job_scan_market, market='hk')
-        # schedule.every().day.at("15:30").do(self.job_monitor)
+        schedule.every().day.at("09:40").do(self.job_scan_market, market='hk')
+        schedule.every().day.at("11:30").do(self.job_monitor)
+        schedule.every().day.at("13:35").do(self.job_scan_market, market='hk')
+        schedule.every().day.at("15:39").do(self.job_monitor)
         
         schedule.every().day.at("22:35").do(self.job_scan_market, market='us')
         schedule.every().day.at("02:00").do(self.job_monitor)
@@ -828,6 +856,11 @@ class AutoTrader:
         
         # 启动时立即执行一次监控，处理积压的持仓
         self.job_monitor()
+        
+        # 启动时立即执行一次港股扫描（如果启用）
+        if CONFIG["HK_SETTINGS"]["ENABLED"]:
+            logger.info("🔍 启动时触发港股市场扫描...")
+            self.job_scan_market(market='hk')
 
         logger.info("💤 系统进入待机模式，等待下一次调度任务...")
         
